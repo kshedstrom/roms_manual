@@ -1,0 +1,876 @@
+\section{\code{Makefiles}}
+\label{Gmake}
+One of the software development tools which comes with the UNIX
+operating system is called \code{make}. \code{Make} has many uses,
+but is most commonly used to keep track of how a large program
+should be compiled. ROMS now requires the \code{gnu} version of 
+\code{make}, sometimes known as \code{gmake} (Mecklenburg \cite{GMAKE}).
+This appendix describes generic \code{make}, the \code{gnu}
+enhancements to \code{make}, as well as describing the
+\code{makefile} structure used in ROMS. This material first
+appeared in the \href{http://www.arsc.edu/support/news/HPCnews.shtml}{ARSC
+HPC Newsletter} in several segments and has been updated and restructured
+here.
+
+\subsection{Introduction to Portable \code{make}}
+
+\code{Make} gets its instructions from a description file, by default named
+\code{makefile} or \code{Makefile}. This file is called the
+\code{Makefile}, but other files
+can be used by invoking \code{make} with the \code{-f} option:
+\begin{verbatim}
+     make -f Makefile.yukon
+\end{verbatim}
+
+The ancester to ROMS originally had a \code{Makefile} that looked
+something like:
+\begin{verbatim}
+model: main.o init.o plot.o
+<TAB>   f77 -o model main.o init.o plot.o
+
+main.o: main.f
+<TAB>   f77 -c -O main.f
+
+init.o: init.f
+<TAB>   f77 -c -O init.f
+
+plot.o: plot.f
+<TAB>   f77 -c -O0 plot.f
+
+clean:
+<TAB>   rm *.o core
+\end{verbatim}
+The default thing to build is \code{model}, the first target. The syntax
+is:
+\begin{verbatim}
+target: dependencies
+<TAB>  command
+<TAB>  command
+\end{verbatim}
+The target \code{model} depends on the object files, \code{main.o}
+and friends. They have to exist and be up to date before model's link
+command can be run. If the target is out of date according to the
+timestamp on the file, then the commands will
+be run. Note that the tab is required on the command lines.
+
+The other targets tell \code{make} how to create the object files
+and that they in turn have dependencies.  To compile \code{model}, simply
+type ``\code{make}''. \code{Make} will look for the file \code{makefile},
+read it, and do whatever is necessary to make \code{model} up
+to date. If you edit \code{init.f}, that file will be newer than
+\code{init.o}. \code{Make} would see that \code{init.o} is out of date
+and run the ``\code{f77 -c -O init.f}'' command. Now \code{init.o}
+is newer than \code{model}, so the link command ``\code{f77 -o model
+main.o init.o plot.o}'' must be executed.
+
+To clean up, type ``\code{make clean}'' and the \code{clean} target will
+be brought up to date. The \code{clean} target has no dependencies. What
+happens in that case is that the command (``\code{rm *.o core}'') will
+always be executed.
+
+The original version of this \code{Makefile} turned off
+optimization on \code{plot.f} due to a compiler bug, but hopefully you
+won't ever have to worry about that.
+
+\subsubsection{Macros}
+
+\code{Make} supports a simple string substitution macro. Set it with:
+\begin{verbatim}
+MY_MACRO = nothing today
+\end{verbatim}
+and refer to it with:
+\begin{verbatim}
+$(MY_MACRO)
+\end{verbatim}
+
+The convention is to put the macros near the top of your \code{Makefile}
+and to use upper case. Also, use separate macros for the name of
+your compiler and the flags it needs:
+\begin{verbatim}
+F90 = f90
+F90FLAGS = -O3
+LIBDIR = /usr/local/lib
+LIBS = -L$(LIBDIR) -lmylib
+\end{verbatim}
+
+Let's rewrite our \code{Makefile} using macros:
+\begin{verbatim}
+#
+# IBM version
+#
+F90 = xlf90_r
+F90FLAGS = -O3 -qstrict
+LDFLAGS = -bmaxdata:0x40000000
+
+model: main.o init.o plot.o
+        $(F90) $(LDFLAGS) -o model main.o init.o plot.o
+
+main.o: main.f
+        $(F90) -c $(F90FLAGS) main.f
+
+init.o: init.f
+        $(F90) -c $(F90FLAGS) init.f
+
+plot.o: plot.f
+        $(F90) -c $(F90FLAGS) plot.f
+
+clean:
+        rm *.o core
+\end{verbatim}
+
+Now when we change computers, we only have to change the compiler name
+in one place. Likewise, if we want to try a different optimization level,
+we only specify that in one place.
+
+Notice that you can use comments by starting the line with a \code{\#}.
+
+\subsubsection{Implicit Rules}
+
+\code{Make} has some rules already built in. For fortran, you might be able
+to get away with:
+\begin{verbatim}
+OBJS = main.o init.o plot.o
+
+model: $(OBJS)
+        $(FC) $(LDFLAGS) -o model $(OBJS)
+\end{verbatim}
+as your whole \code{Makefile}. \code{Make} will automatically invoke its
+default Fortran compiler, possibly \code{f77} or \code{g77}, with whatever
+default compile options it happens to have (\code{FFLAGS}). One built
+in rule often looks like:
+\begin{verbatim}
+.c.o:
+        $(CC) $(CFLAGS) -c $<
+\end{verbatim}
+which says to compile \code{.c} files to \code{.o} files using the
+compiler \code{CC} and options \code{CFLAGS}. We can write our own suffix
+rules in this same style.  The only thing to watch for is that make by
+default has a limited set of file extentions that it knows about. Let's
+write our \code{Makefile} using a suffix rule:
+\begin{verbatim}
+#
+# Cray version
+#
+F90 = f90
+F90FLAGS = -O3
+LDFLAGS =
+
+.f.o:
+        $(F90) $(F90FLAGS) -c $<
+
+model: main.o init.o plot.o
+        $(F90) $(LDFLAGS) -o model main.o init.o plot.o
+
+clean:
+        rm *.o core
+\end{verbatim}
+
+\subsubsection{Dependencies}
+
+There may be additional dependencies beyond the \code{source->object} ones.
+In our little example, all our source files include a file called
+\code{commons.h}. If \code{commons.h} gets modified to add a new variable,
+everything must be recompiled. \code{Make} won't know that unless you
+tell it:
+\begin{verbatim}
+# include dependencies
+main.o: commons.h
+init.o: commons.h
+plot.o: commons.h
+\end{verbatim}
+Fortran 90 introduces module dependencies as well. See \S\ref{sfm}
+for how we automatically generate this dependency information.
+
+The most common newbie mistake is to forget that the commands after
+a target {\em have} to start with a tab.
+
+\subsection{\code{gnu make}}
+
+Over the years, the community has moved from the stance of writing
+portable \code{Makefiles} to a stance of just using a powerful, portable
+\code{make}. The previous section described a portable subset of
+\code{make} features. We now delve into some of the more powerful
+tools available in \code{gnu make}.
+
+\subsubsection{Make rules}
+
+The core of \code{make} hasn't changed in decades, but concentrating on
+\code{gmake} allows one to make use of its nifty little extras designed
+by real programmers to help with real projects. The first change that
+matters to my \code{Makefiles} is the change from suffix rules to
+pattern rules. I've always found the \code{.SUFFIXES} list to be odd,
+especially since \code{.f90} is not in the default list. Good riddance
+to all of that! For a concrete example, the old way to provide a rule
+for going from \code{file.f90} to \code{file.o} is:
+\begin{verbatim}
+.SUFFIXES: .o .f90 .F .F90
+.f90.o:
+<TAB>   $(FC) -c $(FFLAGS) $<
+\end{verbatim}
+while the new way is:
+\begin{verbatim}
+%.o: %.f90
+<TAB>   $(FC) -c $(FFLAGS) $<
+\end{verbatim}
+In fact, going to a uniform \code{make} means that we can figure out what
+symbols are defined and use their standard values---in this case,
+\$\code{(FC)} and \$\code{(FFLAGS)} are the built-in default names
+for the compiler and its options.
+If you have any
+questions about this, you can always run \code{make} with the \code{-p} (or
+\code{-\mbox{}-print-data-base}) option. This prints out all the rules
+\code{make} knows about, such as:
+\begin{verbatim}
+# default
+COMPILE.f = $(FC) $(FFLAGS) $(TARGET_ARCH) -c
+\end{verbatim}
+Printing the rules database will show variables that \code{make} is
+picking up from the environment, from the \code{Makefile}, and from its
+built-in rules---and which of these sources is providing each
+value.
+
+\subsubsection{Assignments}
+
+In the old days, I only used one kind of assignment: \code{=} (equals
+sign). \code{Gmake} has several kinds of assignment (other \code{makes}
+might as well, but I no longer have to know or care). An example of
+the power of \code{gnu make} is shown by an example from my Cray X1
+\code{Makefile}.  There is a routine which runs much more quickly if a
+short function in another file is inlined. The way to accomplish this is
+through the \code{-O inlinefrom=file} directive to the compiler. I can't
+add this option to \code{FFLAGS}, since the inlined routine won't compile
+with this directive---there is only the one file that needs it. I had:
+\begin{verbatim}
+    FFLAGS = -O 3,aggress -e I -e m
+    FFLAGS2 = -O 3,aggress -O inlinefrom=lmd_wscale.f90 -e I -e m
+
+lmd_skpp.o:
+<TAB>   $(FC) -c $(FFLAGS2) $*.f90
+\end{verbatim}
+The first change I can make to this using other assignments is:
+\begin{verbatim}
+    FFLAGS := -O 3,aggress -e I -e m
+    FFLAGS2 := $(FFLAGS) -O inlinefrom=lmd_wscale.f90
+\end{verbatim}
+The \code{:=} assignment means to evaluate the right hand side immediately.
+In this case, there is no reason not to, as long as the second
+assigment follows the first one (since it's using the value of
+\$\code{(FFLAGS))}. For the plain equals, \code{make} doesn't evaluate the
+right-hand side until its second pass through the \code{Makefile}. However,
+\code{gnu make}
+supports an assignment which avoids the need for \code{FFLAGS2} entirely:
+\begin{verbatim}
+lmd_skpp.o: FFLAGS += -O inlinefrom=lmd_wscale.f90
+\end{verbatim}
+What this means is that for the target \code{lmd\_skpp.o} only, append the
+inlining directive to \code{FFLAGS}. I think this is pretty cool!
+
+One last kind of assignment is to set the value only if there is no
+value from somewhere else (the environment, for instance):
+\begin{verbatim}
+     FC ?= mpxlf90_r
+\end{verbatim}
+If we used \code{:=} or \code{=}, we would override the value from the
+environment.
+
+\subsubsection{Include and a Few Functions}
+\label{Inc_fort}
+
+One reasonably portable \code{make} feature is the include directive. It
+can be used to clean up the \code{Makefile} by putting bits in an
+include file. The syntax is simply:
+\begin{verbatim}
+   include file
+\end{verbatim}
+and we use it liberally to keep the project
+information neat. We can also include a file with the system/compiler
+information in it, assuming we have some way of deciding {\em which}
+file to include. We can use \code{uname -s} to find out which operating
+system we're using. We also need to know which compiler we're using.
+
+One user-defined variable is called \code{FORT}, the name of the
+Fortran compiler. This value is combined with the result of
+``\code{uname -s}'' to
+provide a machine and compiler combination. For instance, \code{ftn} on
+Linux is the Cray cross-compiler. This would link to a different copy
+of the NetCDF library and use different compiler flags than the Intel
+compiler which might be on the same system.
+\begin{verbatim}
+# The user sets FORT:
+  FORT ?= ftn
+  OS := $(shell uname -s | sed 's/[\/ ]/-/g')
+
+  include $(COMPILERS)/$(OS)-$(strip $(FORT)).mk
+\end{verbatim}
+We pick one include file at compile time, here picking
+\code{Linux-ftn.mk}, containing the Cray cross-compiler information. The
+value \code{Linux} comes from the \code{uname} command, the \code{ftn}
+comes from the user, and the two are concatenated.
+The sed command will turn the
+slash in \code{UNICOS/mp} into a dash; the native Cray include file is
+\code{UNICOS-mp-ftn.mk}. Strip is a built-in function to strip away
+any extra white space.
+
+Another tricky system is \code{CYGWIN}, which puts a version number
+in the \code{uname} output, such as \code{CYGWIN\_NT-5.1}. \code{Gnu make} has
+quite a few built-in functions, one of which allows us to do string
+substitution:
+\begin{verbatim}
+OS := $(patsubst CYGWIN_%,CYGWIN,$(OS))
+\end{verbatim}
+In \code{make}, the \code{\%} symbol is a sort of wild card, much
+like \code{*} in the shell.
+Here, we match \code{CYGWIN} followed by an underscore and anything else,
+replacing the whole with simply \code{CYGWIN}. Another example of a
+built-in function is the substitution we do in:
+\begin{verbatim}
+   objects = $(subst .F,.o,$(sources))
+\end{verbatim}
+where we build our list of objects from the list of sources.
+There are quite a few other functions, plus the user can define
+their own. From the book\cite{GMAKE}:
+\begin{quote}
+GNU make supports both built-in and user-defined functions.
+A function invocation looks much like a variable reference, but
+includes one or more parameters separated by commas.  Most built-in
+functions expand to some value that is then assigned to a variable
+or passed to a subshell. A user-defined function is stored in a
+variable or macro and expects one or more parameters to be passed
+by the caller.
+\end{quote}
+We will show some user-defined functions in \S\ref{make_fun2}.
+
+\subsubsection{Conditionals}
+
+We used to have way too many \code{Makefiles}, a separate one for each
+of the serial/MPI/OpenMP versions on each system (if supported). For
+instance, the name of the IBM compiler changes when using MPI; the
+options change for OpenMP. The compiler options also change when using
+64-bit addressing or for debugging.
+A better way to organize this is to have the user select 64-bit or not, MPI
+or not, etc., then use conditionals. The complete list of
+user definable \code{make} variables is given in \S\ref{make_var}.
+
+\code{Gnu make} supports two kinds of \code{if} test, \code{ifdef} and
+\code{ifeq} (plus the
+negative versions \code{ifndef, ifneq}). The example from the book is:
+\begin{verbatim}
+ifdef COMSPEC
+   # We are running Windows
+else
+   # We are not on Windows
+endif
+\end{verbatim}
+An example from the IBM include file is:
+\begin{verbatim}
+ifdef USE_DEBUG
+           FFLAGS += -g -qfullpath
+else
+           FFLAGS += -O3 -qstrict
+endif
+\end{verbatim}
+To test for equality, an example is:
+\begin{verbatim}
+ifeq ($(USE_MPI),on)
+   # Do MPI things
+endif
+\end{verbatim}
+or 
+\begin{verbatim}
+ifeq "$(USE_MPI)" "on"
+   # Do MPI things
+endif
+\end{verbatim}
+The user has to set values for the \code{USE\_MPI}, \code{USE\_DEBUG},
+and \code{USE\_LARGE} switches in the \code{Makefile} or the build
+script {\em before} the compiler-dependent piece is included:
+\begin{verbatim}
+    USE_MPI ?= on
+    USE_DEBUG ?=
+    USE_LARGE ?=
+\end{verbatim}
+The \code{Makefile} uses the conditional assign ``\code{?=}''
+in case a build script is used to set them in the environment.
+Be sure to leave the switches meant to be off set to an empty string---the
+string ``\code{off}'' will test true on an \code{ifdef} test.
+
+\subsection{Multiple Source Directories the ROMS Way}
+
+There's more than one way to divide your sources into separate
+directories. The choices we have made include nonrecursive \code{make}
+and putting the temporary files in their own \code{\$(SCRATCH\_DIR)}
+directory. These include the \code{.f90} files which have been through
+the C preprocessor, object files, module files, and libraries.
+
+\subsubsection{Directory Structure}
+
+The directory structure of the source code has the top directory,
+a \code{Master} directory, a \code{ROMS} directory with a number of
+subdirectories, and several other directories. \code{Master} contains
+the main program while the rest contain sources for libraries and
+other files. Note that the bulk of the source code gets compiled into
+files that become libraries with the \code{ar} command, one library per
+directory. There is also a \code{Compilers} directory for the system-
+and compiler-specific \code{Makefile} components.
+
+\subsubsection{Conditionally Including Components}
+
+The \code{makefile} will build the lists of libraries to create and source
+files to compile. They start out empty at the top of the
+\code{makefile}:
+\begin{verbatim}
+  sources    := 
+  libraries  :=
+\end{verbatim}
+That's simple enough, but the list of directories to search for
+these sources will depend on the options chosen by the user, not
+just in the \code{make} options (\S\ref{make_var}), but inside the
+\code{ROMS\_HEADER} file as well. How does this happen? Once \code{make}
+knows how to find the \code{ROMS\_HEADER}, it is used by \code{cpp}
+to generate an include file telling \code{make} about these other options.
+\begin{verbatim}
+MAKE_MACROS := Compilers/make_macros.mk
+ MACROS := $(shell cpp -P $(ROMS_CPPFLAGS) Compilers/make_macros.h > \
+                 $(MAKE_MACROS); $(CLEAN) $(MAKE_MACROS))
+\end{verbatim}
+The \code{make\_macros.h} file contains blocks such as:
+\begin{verbatim}
+#ifdef SWAN_COUPLING
+  USE_SWAN := on
+#else
+  USE_SWAN :=
+#endif
+\end{verbatim}
+The resulting \code{make\_macros.mk} file will simply end up with
+either 
+\begin{verbatim}
+  USE_SWAN := on
+\end{verbatim}
+or
+\begin{verbatim}
+  USE_SWAN :=
+\end{verbatim}
+This file can then be included by the \code{makefile} and the
+variable \code{USE\_SWAN} will have the correct state for this
+particular compilation. We can now use it and all the similar flags
+to build a list of directories.
+
+We initialize two lists:
+\begin{verbatim}
+ modules  :=
+ includes :=    ROMS/Include
+\end{verbatim}
+Add the adjoint bits:
+\begin{verbatim}
+ifdef USE_ADJOINT
+ modules  +=    ROMS/Adjoint
+endif
+ifdef USE_ADJOINT
+ includes +=    ROMS/Adjoint
+endif
+\end{verbatim}
+Add the bits we'll always need:
+\begin{verbatim}
+ modules  +=    ROMS/Nonlinear \
+                ROMS/Functionals \
+                ROMS/Utility \
+                ROMS/Modules
+ includes +=    ROMS/Nonlinear \
+                ROMS/Utility \
+                ROMS/Drivers
+\end{verbatim}
+Then we add in some more:
+\begin{verbatim}
+ifdef USE_SWAN
+ modules  +=    Waves/SWAN/Src
+ includes +=    Waves/SWAN/Src
+endif
+
+ modules  +=    Master
+ includes +=    Master Compilers
+\end{verbatim}
+Now that our lists are complete, let's put them to use:
+\begin{verbatim}
+vpath %.F $(modules)
+vpath %.h $(includes)
+vpath %.f90 $(SCRATCH_DIR)
+vpath %.o $(SCRATCH_DIR)
+
+include $(addsuffix /Module.mk,$(modules))
+
+CPPFLAGS += $(patsubst %,-I%,$(includes))
+\end{verbatim}
+\begin{enumerate}
+\item \code{vpath} is a standard \code{make} feature for
+providing a list of directories for \code{make} to search for files
+of different types. Here we are saying that \code{*.F} files can be
+found in the directories provided in the \code{\$(modules)} list, and
+so on for the others.
+
+\item For each directory in the \code{\$(modules)} list, \code{make}
+will include the file \code{Module.mk} that is found there. More on
+these later.
+
+\item For each directory in the \code{\$(includes)} list, add
+that directory to the list searched by \code{cpp} with the \code{$-$I}
+flag.
+\end{enumerate}
+
+\subsubsection{User-defined \code{make} Functions}
+\label{make_fun2}
+
+The \code{Module.mk} fragments mentioned before call some
+user-defined functions.  It's time to show these functions and
+talk about how they work. They get defined in the top Makefile:
+\begin{verbatim}
+#--------------------------------------------------------------------------
+#  Make functions for putting the temporary files in $(SCRATCH_DIR)
+#--------------------------------------------------------------------------
+
+# $(call source-dir-to-binary-dir, directory-list)
+source-dir-to-binary-dir = $(addprefix $(SCRATCH_DIR)/, $(notdir $1))
+
+# $(call source-to-object, source-file-list)
+source-to-object = $(call source-dir-to-bindary-dir,   \
+                   $(subst .F,.o,$(filter %.F,$1)))
+
+# $(call f90-source, source-file-list)
+f90-source = $(call source-dir-to-binary-dir,     \
+                   $(subst .F,.f90,$1))
+
+# $(call make-library, library-name, source-file-list)
+define make-library
+   libraries += $(SCRATCH_DIR)/$1
+   sources   += $2
+
+   $(SCRATCH_DIR)/$1: $(call source-dir-to-binary-dir,    \
+                      $(subst .F,.o,$2))
+       $(AR) $(ARFLAGS) $$@ $$^
+       $(RANLIB) $$@
+endef
+
+# $(call one-compile-rule, binary-file, f90-file, source-files)
+define one-compile-rule
+  $1: $2 $3
+       cd $$(SCRATCH_DIR); $$(FC) -c $$(FFLAGS) $(notdir $2)
+
+  $2: $3
+       $$(CPP) $$(CPPFLAGS) $$(MY_CPP_FLAGS) $$< > $$@
+       $$(CLEAN) $$@
+
+endef
+
+# $(compile-rules)
+define compile-rules
+  $(foreach f, $(local_src),       \
+    $(call one-compile-rule,$(call source-to-object,$f), \
+    $(call f90-source,$f),$f))
+endef
+\end{verbatim}
+
+\begin{enumerate}
+
+\item We define a function to convert the path from
+the source directory to the \code{Build} directory, called
+\code{source-dir-to-binary-dir}. Note that the \code{Build} directory
+is called \$\code{(SCRATCH\_DIR)} here. All it does is strip off the
+leading directory with the the built-in function \code{notdir}, then
+paste on the \code{Build} directory.
+
+\item Next comes \code{source-to-object}, which calls the function above to
+return the object filename when given the source filename. It assumes
+that all sources have a \code{.F} extension.
+
+\item A similar function is \code{f90-source}, which returns the name of the
+intermediate source which is created by \code{cpp} from our
+\code{.F} file.
+
+\item The \code{Module.mk} fragment in each library source directory invokes
+\code{make-library}, which takes the library name and the list of sources
+as its arguments. The function adds its \code{library} to the global list
+of \code{libraries} and provides rules for building itself. The double
+dollar signs are to delay the variable substitution. Note that we call
+\code{source-dir-to-binary-dir} instead of \code{source-to-object}---this
+is a work-around for a make bug.
+
+\item The next, \code{one-compile-rule}, takes three arguments: the \code{.o}
+filename, the \code{.f90} filename, and the \code{.F} filename. From
+these, it produces the \code{make} rules for running \code{cpp} and the
+compiler.
+
+A note on directories: \code{make} uses \code{vpath} to find the
+source file where it resides. It would be possible to compile from
+the top directory and put the \code{.o} file in \code{Build} with the
+appropriate arguments, but I don't know how to get the \code{.mod} file
+into \code{Build} short of a \code{mv} command. Likewise, if we compile
+in the top directory, we need to know the compiler option to tell it to
+look in \code{Build} for the \code{.mod} files it uses. Doing a \code{cd}
+to \code{Build} before compiling is just simpler.
+
+\item The last, \code{compile-rules}, is given a list of sources, then calls
+\code{one-compile-rule} once per source file.
+\end{enumerate}
+
+Again, you can invoke \code{make -p} to see how \code{make}
+internally transforms all this into actual targets and rules.
+
+\subsubsection{Library \code{Module.mk}}
+
+In each library directory, there is a file called \code{Module.mk}
+which gets included by the top level \code{makefile}. These
+\code{Module.mk} bits build onto the list of sources and libraries
+to be compiled and built, respectively.
+These \code{Module.mk} files look something like:
+\begin{verbatim}
+local_sub  := ROMS/Nonlinear
+local_lib  := libNLM.a
+
+local_src  := $(wildcard $(local_sub)/*.F)
+
+$(eval $(call make-library,$(local_lib),$(local_src)))
+
+$(eval $(compile-rules))
+\end{verbatim}
+First, we provide the name of the current directory and the library
+to be built from the resident sources.  Next, we use the \code{wildcard}
+function to search the subdirectory for these sources. Note that
+every \code{.F} file found will be compiled. If you have half-baked
+files that you don't want used, make sure they have a different
+extension.
+
+Each subdirectory is resetting the \code{local\_src} variable. That's
+OK because we're saving the values in the global \code{sources} variable
+inside the \code{make-library} function, which also adds the local library
+to the \code{libraries} list. The \code{compile-rules} function uses this
+\code{local\_src} variable to generate the rules for compiling each file,
+placing the resulting files in the \code{Build} directory.
+
+%the user-defined \code{subdirectory} function, from \cite{GMAKE}:
+%\begin{verbatim}
+%subdirectory  = $(patsubst %/Module.mk,%, \
+%                $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST)))
+%\end{verbatim}
+%This does the right thing to figure out which subdirectory we are
+%in from \code{make}'s internal list of the \code{Makefiles} it is
+%parsing. It depends on all the subdirectory include files being called
+%\code{Module.mk}.
+
+\subsubsection{Main Program}
+
+The main program is in a directory called \code{Master} and its
+\code{Module.mk} is similar to the library one:
+\begin{verbatim}
+local_sub  := Master
+local_src  := $(wildcard $(local_sub)/*.F)
+
+local_objs := $(subst .F,.o,$(local_src))
+local_objs := $(addprefix $(SCRATCH_DIR)/, $(notdir $(local_objs)))
+
+sources    += $(local_src)
+
+ifdef LD_WINDOWS
+$(BIN): $(libraries) $(local_objs)
+        $(LD) $(FFLAGS) $(local_objs) -o $@ $(libraries) $(LIBS_WIN32) $(LDFLAGS)
+else
+$(BIN): $(libraries) $(local_objs)
+        $(LD) $(FFLAGS) $(LDFLAGS) $(local_objs) -o $@ $(libraries) $(LIBS)
+endif
+
+$(eval $(compile-rules))
+\end{verbatim}
+Instead of a rule for building a library, we have a rule for building
+a binary \code{\$(BIN)}. In this case, the name of the ROMS binary
+is defined elsewhere. The binary depends
+on the \code{libraries} getting compiled first, as well as the local
+sources. During the link, the \$\code{(libraries)} are compiled from
+the sources in the other directories, while \$\code{(LIBS)} are exteral
+libraries such as NetCDF.
+
+\subsubsection{Top Level Makefile}
+
+Now we get to the glue that holds it all together. We've covered
+many things so far, but there's still a few bits which might be
+confusing:
+\begin{enumerate}
+\item There can be rare cases where you might have special code for
+some systems. You can check which system you are on in the \code{.F}
+file with:
+\begin{verbatim}
+#ifdef X86_64
+!      special stuff
+#endif
+\end{verbatim}
+To be sure this is defined on each \code{X86\_64} system, it has to
+be passed to \code{cpp}:
+\begin{verbatim}
+CPPFLAGS += -D$(shell echo ${OS} | tr "-" "_" | tr [a-z] [A-Z])
+CPPFLAGS += -D$(shell echo ${CPU} | tr "-" "_" | tr [a-z] [A-Z])
+CPPFLAGS += -D$(shell echo ${FORT} | tr "-" "_" | tr [a-z] [A-Z])
+
+CPPFLAGS += -D'ROOT_DIR="$(ROOTDIR)"'
+ifdef ROMS_APPLICATION
+  CPPFLAGS  += $(ROMS_CPPFLAGS)
+  CPPFLAGS  += -DNestedGrids=$(NestedGrids)
+  MDEPFLAGS += -DROMS_HEADER="$(HEADER)"
+endif
+\end{verbatim}
+This guarantees that \code{CPPFLAGS} will have terms in it such
+as:
+\begin{verbatim}
+       -DLINUX -DX86_64 -DPGI
+       -D'ROOT_DIR="/export/staffdata/kate/roms/trunk"' -DSHOREFACE
+       -D'HEADER="shoreface.h"' -D'ROMS_HEADER="shoreface.h"'
+       -DNestedGrids=1
+\end{verbatim}
+
+\item For \code{mod\_strings.F}, there is a special case:
+\begin{verbatim}
+$(SCRATCH_DIR)/mod_strings.f90: CPPFLAGS += -DMY_OS='"$(OS)"' \
+              -DMY_CPU='"$(CPU)"' -DMY_FORT='"$(FORT)"' \
+              -DMY_FC='"$(FC)"' -DMY_FFLAGS='"$(FFLAGS)"'
+\end{verbatim}
+allowing ROMS to report in its output:
+\begin{verbatim}
+ Operating system : Linux
+ CPU/hardware     : x86_64
+ Compiler system  : pgi
+ Compiler command : pgf90
+ Compiler flags   :  -O3 -tp k8-64 -Mfree
+
+ Local Root    : /export/staffdata/kate/roms/trunk
+ Header Dir    : ./ROMS/Include
+ Header file   : shoreface.h
+\end{verbatim}
+Though this doesn't seem to work on the Mac.
+
+\item The very first \code{makefile} I showed had a set list of
+files to remove on \code{make clean}. We now build a list,
+called \code{clean\_list}:
+\begin{verbatim}
+ clean_list := core *.ipo $(SCRATCH_DIR)
+
+ifeq "$(strip $(SCRATCH_DIR))" "."
+  clean_list := core *.o *.oo *.mod *.f90 lib*.a *.bak
+  clean_list += $(CURDIR)/*.ipo
+endif
+\end{verbatim}
+In other words, we want to clean up the \code{Build} directory unless
+it happens to be the top level directory, in which case we only want
+to remove specific files there.
+
+\item ``\code{all}'' is the first target that gets seen by \code{make},
+making it the default \code{target}. In this case, we know there is only
+the one binary, whose name we know---the book\cite{GMAKE} shows what to
+do with more than one binary. Both ``\code{all}'' and ``\code{clean}''
+are phony targets in that no files of those names get generated---make
+has the \code{.PHONY} designation for such targets. Also, the \code{clean}
+target doesn't require any compiler information, so the compiler include
+doesn't happen if the target is ``clean'':
+
+\begin{verbatim}
+ifneq "$(MAKECMDGOALS)" "clean"
+  include $(COMPILERS)/$(OS)-$(strip $(FORT)).mk
+endif
+\end{verbatim}
+\code{\$(MAKECMDGOALS)} is a special variable containing the current
+\code{make} target.
+
+\item We'll be creating different executable names, depending on
+which options we've picked:
+\begin{verbatim}
+BIN := $(BINDIR)/oceanS
+ifdef USE_DEBUG
+  BIN := $(BINDIR)/oceanG
+else
+ ifdef USE_MPI
+   BIN := $(BINDIR)/oceanM
+ endif
+ ifdef USE_OpenMP
+   BIN := $(BINDIR)/oceanO
+ endif
+endif
+\end{verbatim}
+
+\item The NetCDF library gets included during the final link stage.
+However, we are now using the Fortran 90 version of it which
+requires its module information as well. We just copy the \code{.mod}
+files into the \code{Build} directory:
+\begin{verbatim}
+   NETCDF_MODFILE := netcdf.mod
+TYPESIZES_MODFILE := typesizes.mod
+
+$(SCRATCH_DIR)/$(NETCDF_MODFILE): | $(SCRATCH_DIR)
+        cp -f $(NETCDF_INCDIR)/$(NETCDF_MODFILE) $(SCRATCH_DIR)
+
+$(SCRATCH_DIR)/$(TYPESIZES_MODFILE): | $(SCRATCH_DIR)
+        cp -f $(NETCDF_INCDIR)/$(TYPESIZES_MODFILE) $(SCRATCH_DIR)
+\end{verbatim}
+Old versions of NetCDF do not have the \code{typesizes.mod} file, in which
+case it has to be removed from the following dependency list:
+\begin{verbatim}
+$(SCRATCH_DIR)/MakeDepend: makefile \
+                           $(SCRATCH_DIR)/$(NETCDF_MODFILE) \
+                           $(SCRATCH_DIR)/$(TYPESIZES_MODFILE) \
+                           | $(SCRATCH_DIR)
+\end{verbatim}
+
+\item Then there is \code{MakeDepend} itself. This file is created
+by the \code{Perl} script \code{sfmakedepend}. \code{MakeDepend}
+gets created by ``\code{make depend}'' and included on \code{make}'s
+second pass through the \code{makefile}:
+\begin{verbatim}
+depend: $(SCRATCH_DIR)
+        $(SFMAKEDEPEND) $(MDEPFLAGS) $(sources) > $(SCRATCH_DIR)/MakeDepend 
+
+ifneq "$(MAKECMDGOALS)" "clean"
+  -include $(SCRATCH_DIR)/MakeDepend
+endif
+\end{verbatim}
+The dash before the \code{include} tells \code{make} to ignore
+errors so that \code{make depend} will succeed before the file
+exists. The \code{MakeDepend} file will contain the include and
+module dependencies for each source file, such as:
+\begin{verbatim}
+Build/mod_diags.o: tile.h cppdefs.h globaldefs.h shoreface.h
+Build/mod_diags.f90: tile.h cppdefs.h globaldefs.h shoreface.h
+Build/mod_diags.o: Build/mod_kinds.o Build/mod_param.o Build/mod_diags.f90
+\end{verbatim}
+Note that the \code{.h} files are included by \code{cpp}, so that
+both the \code{.f90} and \code{.o} files become out of date when an
+include file is modified. Without the module dependencies,
+\code{make} would try to build the sources in the wrong order and
+the compiler would fail with a complaint about not finding
+\code{mod\_param.mod}, for instance.
+\end{enumerate}
+
+\subsection{Final warnings}
+
+The cost of this nifty \code{make} stuff is:
+\begin{enumerate}
+\item We're a little closer to the \code{gnu make} bugs here, and we
+need a newer version of \code{gnu make} than before (version 3.81,
+3.80 if you're lucky).
+Hence this stuff at the top of the \code{makefile}:
+\begin{verbatim}
+NEED_VERSION := 3.80 3.81
+$(if $(filter $(MAKE_VERSION),$(NEED_VERSION)),,        \
+ $(error This makefile requires one of GNU make version $(NEED_VERSION).))
+\end{verbatim}
+
+\item One annoyance is that the compile phase of \code{one-compile-rule}
+didn't seem to be working. I was forced to keep the pattern rule for
+\code{.o} files:
+\begin{verbatim}
+%.o: %.f90
+<TAB>  cd $(SCRATCH_DIR); $(FC) -c $(FFLAGS) $(notdir $<)
+\end{verbatim}
+
+\item The \code{Makefile} dependencies get just a little trickier every
+change we make. Note that \code{F90} has potentially both \code{include}
+and \code{module} use dependencies. The book example uses the C compiler
+to produce its own dependencies for each source file into a corresponding
+\code{.d} file to be included by \code{make}. Our Fortran compilers are
+not so smart. For these hairy compiles, it's critical to have accurate
+dependency information unless we're willing to \code{make clean} between
+compiles.
+\end{enumerate}

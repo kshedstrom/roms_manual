@@ -1,0 +1,466 @@
+#LyX 1.5.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 276
+\begin_document
+\begin_header
+\textclass article
+\language english
+\inputencoding default
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics dvips
+\paperfontsize 12
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 0
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle plain
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+THIS IS THE TITLE OF THE DOCUMENT 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Hint: the title should look more like a title
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+by Fee LyX
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Author
+Hint: Fee is the AUTHOR
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Date
+June 12, 1972
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Date
+Hint: this is a DATE
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset LatexCommand tableofcontents
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Hint: It would be nice if we didn't have to type the Table
+\end_layout
+
+\begin_layout Standard
+of Contents explicitly
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+1.
+ Basic Philosophy..................1
+\end_layout
+
+\begin_layout Standard
+1.1 How LyX Does It...............1
+\end_layout
+
+\begin_layout Standard
+1.2 Why LyX is Better...............1
+\end_layout
+
+\begin_layout Standard
+2.
+ Features of LyX
+\end_layout
+
+\begin_layout Standard
+3.
+ Lame Attempts to use more LyX stuff
+\end_layout
+
+\begin_layout Standard
+4.
+ Math Stuff
+\end_layout
+
+\begin_layout Standard
+---------------------------------------------------
+\end_layout
+
+\begin_layout Section
+ Basic Philosophy
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Hint: Section titles should probably stand out more
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The basic philosophy of LyX is that you should worry about the content of
+ what you're writing and not the form.
+\end_layout
+
+\begin_layout Subsection
+How LyX does it
+\end_layout
+
+\begin_layout Standard
+LyX uses LaTeX, a document preparation system designed by Leslie Lamport
+ in 1985.
+ It, in turn, was built up from a typesetting language called TeX, created
+ by Donald Knuth in 1984.
+ LaTeX is designed around a philosophy similar to that of LyX.
+ Leslie Lamport once said (see reference [1])
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Hint: Probably, this CITATION REFERENCE shouldn't be
+\end_layout
+
+\begin_layout Standard
+"hard-coded".
+ What if we make Lamport's book the second
+\end_layout
+
+\begin_layout Standard
+item in the bibliography?
+\end_layout
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Quote
+The function of typographic design is to help the reader understand the
+ author's ideas.
+ For a document to be easy to read, its visual structure must reflect its
+ logical structure.
+ Quotations and computer programs, being logically distinct structural elements,
+ should be distinguished visually from one another....
+ Since LaTeX can't understand your prose, you must explicitly indicate the
+ logical structure by typing special commands....
+ As you are writing your document, you should be concerned with its logical
+ structure, not its visual appearance.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Hint: This is a QUOTE
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Why LyX is better
+\end_layout
+
+\begin_layout Standard
+LyX can be useful to more people than LaTeX.
+ It's considerably easier to learn, because you don't need to learn LaTeX
+ (which is practically a programming language).
+ LyX is basically like other 
+\begin_inset Quotes eld
+\end_inset
+
+What you see is what you get
+\begin_inset Quotes erd
+\end_inset
+
+ word processors, except that LyX is 
+\begin_inset Quotes eld
+\end_inset
+
+What you see is what you mean
+\begin_inset Quotes erd
+\end_inset
+
+.
+ In this way, it combines the ease of use of word processors with the power
+ of LaTeX.
+ This is a Good Thing.
+ Also, the file format is platform independent.
+ Best of all, it's FREE!
+\end_layout
+
+\begin_layout Section
+Features of LyX
+\begin_inset LatexCommand label
+name "sec:Features-of-LyX"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+LyX has many features which make writing documents easier.
+ 
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+After all, why else would you want to use it?
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Hint: This parenthetical statement would look better in a footnote
+\end_layout
+
+\end_inset
+
+ I'm 
+\emph on
+very excited
+\emph default
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Hint: Emphasize!
+\end_layout
+
+\end_inset
+
+ to talk about them.
+ Here's a list of just a few.
+\end_layout
+
+\begin_layout Itemize
+LyX worries about margins, and footnote numbering for you
+\end_layout
+
+\begin_layout Itemize
+LyX makes it simple to write and edit mathematical formulae
+\end_layout
+
+\begin_layout Standard
+For a more philosophical discussion of why LyX is better than lots of other
+ word processors, see Section 1.2, which can be found on page 1.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Hint: Probably, these CROSS-REFERENCES shouldn't be
+\end_layout
+
+\begin_layout Standard
+"hard-coded".
+ What if we change the section numbers?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Lame attempts to use other LyX stuff
+\end_layout
+
+\begin_layout Standard
+Lyx is OK - see Section 
+\begin_inset LatexCommand ref
+reference "sec:Features-of-LyX"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+I wrote a program the other day.
+ It looked like this.
+\end_layout
+
+\begin_layout LyX-Code
+5 REMARK MY AWESOME PROGRAM
+\end_layout
+
+\begin_layout LyX-Code
+10 PRINT 
+\begin_inset Quotes eld
+\end_inset
+
+I'M AWESOME!
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout LyX-Code
+20 GOTO 10 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Hint: This is computer CODE
+\end_layout
+
+\end_inset
+
+
+\begin_inset LatexCommand label
+name "sec:My-favorite-equation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Verse
+LyX is really great
+\end_layout
+
+\begin_layout Verse
+Typesetting word processor
+\end_layout
+
+\begin_layout Verse
+It saves so much time 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Hint: It's not very good, but it is poetry,
+\end_layout
+
+\begin_layout Standard
+otherwise known as VERSE
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Math Stuff
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Hint: these math things should be printed in math mode!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+My favorite equation is the solution to a quadratic equation.
+ If
+\begin_inset Formula \[
+ax^{2}+bx+c=0\]
+
+\end_inset
+
+ then 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+x=\frac{-b\pm\sqrt{b^{2}-4ac}}{2a}.\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Another favorite equation is the basis of calculus:
+\begin_inset Formula \[
+f'(x)\equiv\lim dx\rightarrow0\frac{f(x+\delta x)-f(x)}{\delta x}.\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+------------------------------------------------
+\end_layout
+
+\begin_layout Standard
+REFERENCES
+\end_layout
+
+\begin_layout Standard
+[1] Lamport, Leslie.
+ LaTeX: A Document Preparation System.
+ Addison-Wesley, Reading, Massachusetts, second edition, 1994.
+\end_layout
+
+\end_body
+\end_document

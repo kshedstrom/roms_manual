@@ -1,0 +1,198 @@
+\section {Model Time-stepping Schemes}
+\label{Frog}
+Numerical time stepping uses a discrete approximation to:
+\begin{equation}
+  \frac{\partial \phi(t)}{\partial t} = {\cal F}(t)
+  \label{eq_rhs1}
+\end{equation}
+where $\phi$ represents one of $u$, $v$, $C$, or $\zeta$,
+and ${\cal F}(t)$
+represents all the right-hand-side terms.
+In ROMS, the goal is to find time-stepping schemes which are accurate
+where they are valid and damping on unresolved signals
+(\cite{SS2008b}). Also, the preference is for time-stepping schemes
+requiring only one set of the right-hand-side terms so that different
+time-stepping schemes can be used for different terms in the equations.
+Finally, as mentioned in Table~\ref{ttimestep1}, not all versions of
+ROMS use the same time-stepping algorithm. We list some
+time-stepping schemes here which are used or have been used by the
+ROMS/SCRUM family of models, plus a few to help explain some of the
+more esoteric ones.
+
+\subsection{Euler}
+The simplest approximation is the Euler time step:
+\begin{equation}
+  \frac{\phi(t + \Delta t) - \phi(t)}{\Delta t} = {\cal F}(t)
+\end{equation}
+where you predict the next $\phi$ value based only on the current
+fields.  This method is accurate to first order in $\Delta t$; however,
+it is unconditionally unstable with respect to advection.
+
+\subsection{Leapfrog}
+The leapfrog time step is accurate to O($\Delta t^2$):
+\begin{equation}
+  \frac{\phi(t + \Delta t) - \phi(t - \Delta t)}{2\Delta t} =
+  {\cal F}(t).
+\end{equation}
+This time step is more accurate, but it is unconditionally unstable
+with respect to diffusion.  Also,
+the even and odd time steps tend to diverge in a computational mode.
+This computational mode can be damped by taking
+correction steps.  SCRUM's time step on the depth-integrated
+equations was a leapfrog step with a trapezoidal correction (LF-TR)
+on every step, which uses a leapfrog step to obtain an initial guess of
+$\phi(t+\Delta t)$.  We will call the right-hand-side terms calculated
+from this initial guess ${\cal F}^*(t+\Delta t)$:
+\begin{equation}
+  \frac{\phi(t + \Delta t) - \phi(t)}{\Delta t} = \frac{1}{2}
+  \left[ {\cal F}(t) + {\cal F}^*(t+\Delta t) \right] .
+\end{equation}
+This leapfrog-trapezoidal time step is stable with respect to diffusion
+and it strongly damps the computational mode.  However, the
+right-hand-side terms are computed twice per time step.
+
+\subsection{Third-order Adams-Bashforth (AB3)}
+The time step on SCRUM's full 3-D fields is done with
+a third-order Adams-Bashforth step.  It uses three time-levels of the
+right-hand-side terms:
+\begin{equation}
+  \frac{\phi(t + \Delta t) - \phi(t)}{\Delta t} =
+  \alpha {\cal F}(t) +
+  \beta  {\cal F}(t - \Delta t) +
+  \gamma {\cal F}(t - 2 \Delta t)
+\end{equation}
+where the coefficients $\alpha$, $\beta$ and $\gamma$ are chosen to
+obtain a third-order estimate of $\phi(t + \Delta t)$.  We use a Taylor
+series expansion:
+\begin{equation}
+   \frac{\phi(t + \Delta t) - \phi(t)}{\Delta t} =
+   \phi^{\prime} + \frac{\Delta t}{2} \phi^{\prime \prime} +
+   \frac{\Delta t^2}{6} \phi^{\prime \prime \prime} + \cdots
+\end{equation}
+where
+\begin{eqnarray*}
+   {\cal F}(t) & = & \phi^{\prime} \\
+   {\cal F}(t - \Delta t) & = & \phi^{\prime}
+   - \Delta t \phi^{\prime \prime}
+   + \frac{\Delta t^2}{2} \phi^{\prime \prime \prime} + \cdots \\
+   {\cal F}(t - 2\Delta t) & = & \phi^{\prime}
+   - 2\Delta t \phi^{\prime \prime}
+   + 2\Delta t^2 \phi^{\prime \prime \prime} + \cdots
+\end{eqnarray*}
+We find that the coefficients are:
+$$
+   \alpha = \frac{23}{12}, \qquad
+   \beta  = - \frac{4}{3}, \qquad
+   \gamma = \frac{5}{12} 
+$$
+This requires one time level for the physical fields and three time
+levels of the right-hand-side information and requires special
+treatment on startup.
+
+\subsection{Forward-Backward}
+In equation~\ref{eq_rhs1} above, we assume that multiple equations 
+for any number of variables are time stepped synchronously. For
+coupled equations, we can actually do better by time stepping
+asynchronously. Consider these equations:
+\begin{equation}\begin{split}
+  \frac{\partial \zeta}{\partial t} &= {\cal F}(u) \\
+  \frac{\partial u}{\partial t} &= {\cal G}(\zeta)
+  \label{two_eqs}
+\end{split}\end{equation}
+If we time step them alternately, we can always be using the newest
+information:
+\begin{equation}\begin{split}
+   \zeta^{n+1} &= \zeta^n + {\cal F}(u^n) \Delta t \\
+   u^{n+1} &= u^n + {\cal G}(\zeta^{n+1}) \Delta t
+\end{split}\end{equation}
+This scheme is second-order accurate and is stable for longer
+time steps than many other schemes. It is however unstable for
+advection terms.
+
+\subsection{Forward-Backward Feedback (RK2-FB)}
+One option for solving equation \ref{two_eqs} is a predictor-corrector
+with predictor step:
+\begin{equation}\begin{split}
+   \zeta^{n+1,\star} &= \zeta^n + {\cal F}(u^n)\Delta t \\
+   u^{n+1,\star} &= u^n + \left[\beta {\cal G}(\zeta^{n+1,\star}) +
+   (1-\beta) {\cal G}(\zeta^n)\right] \Delta t
+\end{split}\end{equation}
+and corrector step:
+\begin{equation}\begin{split}
+   \zeta^{n+1} &= \zeta^n + \frac{1}{2} \left[{\cal F}(u^{n+1,\star}) +
+   {\cal F}(u^n) \right] \Delta t \\
+   u^{n+1} &= u^n + \frac{1}{2} \left[\epsilon {\cal G}(\zeta^{n+1}) +
+   (1-\epsilon){\cal G}(\zeta^{n+1,\star}) + {\cal G}(\zeta^n)
+   \right] \Delta t
+\end{split}\end{equation}
+Setting $\beta = \epsilon = 0$ in the above, it becomes a standard
+second order Runge-Kutta scheme, which is unstable for a
+non-dissipative system. Adding the $\beta$ and $\epsilon$ terms adds
+Forward-Backward feedback to this algorithm, and allows us to
+improve both its accuracy and stability. The choice of $\beta = 1/3$
+and $\epsilon = 2/3$ leads to a stable third-order scheme with
+$\alpha_{\max} = 2.14093$ (\cite{SS2008b}).
+
+\subsection{LF-TR and LF-AM3 with FB Feedback}
+Another possibility is a leapfrog predictor:
+\begin{equation}\begin{split}
+   \zeta^{n+1,\star} &= \zeta^{n-1} + 2{\cal F}(u^n) \Delta t \\
+   u^{n+1,\star} &= u^{n-1} + 2\left\{ (1-2\beta){\cal G}(\zeta^n)
+   + \beta \left[{\cal G}(\zeta^{n+1,\star}) + {\cal G}(\zeta^{n-1}) \right]
+   \right\} \Delta t
+\end{split}\end{equation}
+and either a two-time trapezoidal or a three-time Adams-Moulton corrector:
+\begin{equation}\begin{split}
+   \zeta^{n+1} &= \zeta^n + \left[ \left( \frac{1}{2}-\gamma \right)
+   {\cal F}(u^{n+1,\star}) + \left( \frac{1}{2}+ 2\gamma \right) {\cal F}(u^n) -
+   \gamma {\cal F}(u^{n-1}) \right] \Delta t \\
+   u^{n+1} &= u^n + \left\{ \left( \frac{1}{2}-\gamma \right) \left[
+   \epsilon {\cal G}(\zeta^{n+1}) +
+   (1-\epsilon){\cal G}(\zeta^{n+1,\star}) \right] +
+   \left( \frac{1}{2} + 2\gamma \right) {\cal G}(\zeta^n) - \gamma  {\cal
+   G}(\zeta^{n-1}) \right\} \Delta t
+\end{split}\end{equation}
+where the parameters $\beta$ and $\epsilon$ introduce FB-feedback
+during both stages, while $\gamma$ controls the type of corrector
+scheme. Without FB-feedback, we have:
+$$
+   \beta = \epsilon = 0 \Rightarrow \left\{ \begin{array}
+   { l @{\quad \Rightarrow \quad}l l}
+   \gamma = 0 & \hbox{LF-TR} & \alpha_{\max} = \sqrt{2} \\
+   \gamma = 1/12 & \hbox{LF-AM3} & \alpha_{\max} = 1.5874 \\
+   \gamma = 0.0804 & \hbox{max stability} & \alpha_{\max}
+   = 1.5876
+   \end{array} \right.
+$$
+Keeping $\gamma = 1/12$ maintains third-order accuracy. The most
+accurate choices for $\beta$ and $\epsilon$ are $\beta = 17/120$ and
+$\epsilon = 11/20$, which yields a fourth-order scheme with low
+numerical dispersion and diffusion and $\alpha_{\max} =
+1.851640$ (\cite{SS2008b}).
+
+\subsection{Generalized FB with an AB3-AM4 Step}
+One drawback of the previous two schemes is the need to evaluate the
+right-hand-side (r.h.s.) terms twice per time step. The original
+forward-backward scheme manages to achieve $\alpha_{\max}
+= 2$ while only evaluating each r.h.s.\ term once. It is possible to
+contruct a robust scheme using a combination of a three-time
+AB3-like step for $\zeta$ with a four-time AM4-like step for $u$:
+\begin{equation}\begin{split}
+   \zeta^{n+1} &= \zeta^n + \left[ \left( \frac{3}{2}+\beta \right)
+   {\cal F}(u^n) - \left( \frac{1}{2}+ 2\beta \right) {\cal F}(u^{n-1}) +
+   \beta {\cal F}(u^{n-2}) \right] \Delta t \\
+   u^{n+1} &= u^n + \left[ \left( \frac{1}{2}+\gamma + 2\epsilon \right)
+   {\cal G}(\zeta^{n+1}) +
+   \left( \frac{1}{2}-2\gamma-3\epsilon \right){\cal G}(\zeta^n) +
+   \gamma {\cal G}(\zeta^{n-1}) + \epsilon  {\cal G}(\zeta^{n-2}) \right]
+   \Delta t
+\end{split}\end{equation}
+This is second-order accurate for any set of values for $\beta$,
+$\gamma$, and $\epsilon$. It is third-order accurate if $\beta =
+5/12$. However, it has a wider stability range for $\beta =
+0.281105$. Shchepetkin and McWilliams (\cite{SS2008b}) choose to use
+this scheme for the barotropic mode in their model with $\beta=
+0.281105$, $\gamma = 0.0880$, and $\epsilon = 0.013$, to obtain
+$\alpha_{\max} = 1.7802$, close to the value of 2 for
+pure FB, but with better stability properties for the combination of
+waves, advection, and Coriolis terms.

@@ -1,0 +1,254 @@
+\section{\code{Perl} scripts for Fortran}
+\label{Perl}
+\code{Perl} is a computer language, invented by Larry Wall, for
+manipulating text and other useful things.  It is fully described in
+Wall et al.\ \cite{perl1}, while a more tutorial approach is given
+by Schwartz \cite{perl2}.  \code{Perl} itself is available from your
+nearest \code{CPAN} archive site, for instance:
+\begin{verbatim}
+      http://www.perl.com/CPAN/
+\end{verbatim}
+
+I have several \code{Perl} scripts which I find useful when working
+with Fortran programs, and which are available from:
+\begin{verbatim}
+      http://marine.rutgers.edu/po/perl.html
+\end{verbatim}
+It is not necessary to know \code{Perl} to
+use these scripts, but it must be installed on your system.  To use
+these scripts, simply place them somewhere in your path and make sure
+that they are executable:
+\begin{verbatim}
+      chmod 755 relabel
+\end{verbatim}
+(on a UNIX machine).
+
+The following scripts modify your source code and usually work on the
+style of Fortran in SCRUM, but have been known to do the wrong thing.
+Some of the scripts become confused when part of an \code{if} or
+\code{do} statement is inside an \code{\#ifdef} clause.  The following
+will parse as two nested do loops, only one of which is terminated:
+\begin{verbatim}
+     #ifdef EW_PERIODIC
+           do i=1,Lm
+     #else
+           do i=0,L
+     #endif
+             :
+           enddo
+\end{verbatim}
+It is also extremely dangerous to run \code{relabel} on an arithmetic
+\code{if}.
+
+{\bf Do not delete your original code before checking the new code.}
+
+\subsection{\code{redo}}
+This program reformats \code{do} loops and was written to convert
+\begin{verbatim}
+          do 10 i=1,20
+      10     sum = sum+i
+\end{verbatim}
+to
+\begin{verbatim}
+          do 10 i=1,20
+             sum = sum+i
+      10  continue
+\end{verbatim}
+The \code{-E} option tells it to use \code{enddo} instead of
+\code{continue} as in
+\begin{verbatim}
+          do  i=1,20
+             sum = sum+i
+          enddo
+\end{verbatim}
+\code{redo} is used as follows:
+\begin{verbatim}
+       redo < file.F > file.new
+\end{verbatim}
+\code{redo} was written so that \code{findent} would work on SPEM.
+
+\subsection{\code{findent}}
+\code{findent} will indent your Fortran code two spaces for \code{do}
+loops and \code{if} statements.  It will not correct lines which extend
+beyond 72 characters, but will print out a warning for each one.  It
+assumes that each \code{do} loop ends with a \code{continue} or
+\code{enddo}.  \code{findent} is used as follows:
+\begin{verbatim}
+       findent < file.F > file.new
+\end{verbatim}
+There is an option to change the number of spaces for each level of
+indenting.  To get an indent of four instead of two, use:
+\begin{verbatim}
+       findent -n 4 < file.F > file.new
+\end{verbatim}
+See the comments at the top of the code for the more obscure options.
+
+\subsection{\code{relabel}}
+\code{relabel} was written by Sverre Froyen to replace the numbered
+Fortran labels with new sequentially ordered labels.  It was the first
+of these scripts and helped me to write the rest.  \code{relabel} is
+used as follows:
+\begin{verbatim}
+       relabel < file.F > file.new
+\end{verbatim}
+It does have some known bugs, however:
+\begin{itemize}
+\item No computed goto.
+\item No assigned goto or assign.
+\item No arithmetic if.
+\item No new-lines inside the parenthesis immediately following a
+read/write.
+\item Others not yet discovered.
+\end{itemize}
+
+All the source files in SPEM have been run through \code{redo},
+\code{findent}, and \code{relabel}.  In the C shell (\code{csh}), a
+series of files can be processed at once:
+\begin{verbatim}
+       ahab% foreach file (*.F)
+       foreach? redo < $file > $file.red
+       foreach? findent < $file.red > $file.fin
+       foreach? relabel < $file.fin > $file.rel
+       foreach? echo $file done
+       foreach? end
+\end{verbatim}
+You can then rename \code{\$file.rel} to \code{\$file.F} and get rid of
+the temporary files {\sl after} checking to make sure that all the
+files still look sensible.
+
+\subsection{\code{unenddo}}
+\code{unenddo} will turn all \code{do-enddo} loops into
+\code{do-continue} loops to comply with the Fortran 77 standard.  It is
+used as follows:
+\begin{verbatim}
+       unenddo < file.F > file.new
+\end{verbatim}
+\code{unenddo} replaces \code{enddo} statements with labelled
+\code{continue} statements.  It starts numbering these statements at
+2000 assuming that existing labels use only three digits.  If
+desired, \code{unenddo} can be told to start labelling with a
+different number by modifying the \code{\$label\_no\_start}
+variable.
+
+\subsection{\code{ifspace}}
+When I am feeling particularly contentious I also run \code{ifspace} on
+the code.  It will convert
+\begin{verbatim}
+         if(i.eq.0.or.j.eq.0)   then
+\end{verbatim}
+to
+\begin{verbatim}
+         if (i .eq. 0 .or. j .eq. 0) then
+\end{verbatim}
+Use as follows:
+\begin{verbatim}
+       ifspace < file.F > file.new
+\end{verbatim}
+
+\subsection{\code{sfmakedepend}}
+The other \code{Perl} script I use with Fortran modifies the
+\code{Makefile} to include dependency information, much like the X11
+program \code{makedepend}.  I originally wrote \code{fmakedepend} which
+was used with traditional Fortran include statements.
+I later wrote a variant of it for use with the C preprocessor,
+called \code{sfmakedepend}.  The latest version of
+\code{sfmakedepend} does the job of both programs and also searches for
+the dependencies introduced by Fortran 90 modules.  It is used by the
+\code{Makefiles} described in \S\ref{Imake}.
+
+It recursively searches for Fortran
+style includes, for instance if \code{file.f} has the statement:
+\begin{verbatim}
+           include 'commons.h'
+\end{verbatim}
+the line
+\begin{verbatim}
+        file.o: commons.h
+\end{verbatim}
+will be added to the bottom of the \code{Makefile}.  This tells
+\code{make} that \code{file.o} depends on \code{commons.h} as well
+as \code{file.f}, and to recompile \code{file.f} whenever
+\code{commons.h} is modified.
+It likewise searches source files for C style includes such as
+\begin{verbatim}
+       #include "commons.h"
+\end{verbatim}
+and adds the corresponding dependencies to the \code{Makefile}.
+It has several options, including \code{-s}, required for Fortran
+compilers which will not invoke the C preprocessor for you.  In this
+case the above dependency line would become
+\begin{verbatim}
+        file.o: commons.h
+        file.f: commons.h
+\end{verbatim}
+letting \code{make} know that the C preprocessor must be rerun on
+\code{file.F} whenever \code{commons.h} is updated.
+
+When using the C preprocessor, you can ask it to search directories
+other than the current directory.  Likewise, \code{sfmakedepend} can be
+instructed to search other directories with \code{-I dir} options.
+Note that it is legal to have more than one \code{-I dir} option as in:
+\begin{verbatim}
+      sfmakedepend -I /usr/local/include -I /home/me/include *.F
+\end{verbatim}
+
+Fortran 90 introduces some interesting dependencies.  Two compilers I
+have access to (NAG \code{f90} and IBM \code{xlf}) produce a private
+\code{my\_module.mod} file if you define \code{module}
+\code{My\_Module} in file \code{mod.f90}.  This file is used by the
+compiler when you use the module as a consistency check (type-safe
+programming).  If \code{foo.f90} uses that module, you will need the
+following dependency information:
+\begin{verbatim}
+      foo.o: my_module.mod
+      my_module.mod: mod.o
+\end{verbatim}
+This says that before compiling \code{foo.f90} we need to have the file
+\code{my\_module.mod}.  This file in turn depends on \code{mod.o}, so
+that \code{mod.f90} must be compiled before \code{foo.f90}.
+The sgi is similar except that it uses the file \code{MY\_MODULE.kmo}
+to store the private module information.  Use \code{sfmakedepend -g}
+on the SGI.
+
+Rather than creating extra module files,
+the Cray and Parasoft compilers store the module information in the
+object file and then files which use the modules need to be compiled
+with extra flags pointing to the module object files.  For instance, if
+\code{foo.f90} uses \code{My\_Module} which was defined in
+\code{mod.f90}, then you will need to compile \code{mod.f90} first and
+provide the Cray compiler with the extra option \code{-p mod.o} when
+compiling \code{foo.f90}.  When using the Cray, use \code{sfmakedepend
+-c} to get the dependency information:
+\begin{verbatim}
+       foo.o: mod.o
+               $(CFT) $(FFLAGS) -c -p mod.o foo.f90
+\end{verbatim}
+\code{\$(CFT)} and \code{\$(FFLAGS)} are assumed to be previously
+defined as the name of the compiler and the compiler options,
+respectively.
+
+{\bf Note:} These f90 module dependencies can confuse some versions of
+\code{make}, especially of the System V variety.  We use gnu
+\code{make} because it can follow these chained dependencies and do the
+right thing.
+
+\code{sfmakedepend} assumes that all the files using and defining
+modules are in the same directory and are all in the list of
+files to be searched.  It seems that the industry has not
+settled on a practical way to deal with a separate modules
+directory, anyway.
+
+I sometimes include non-existent files as a compile time
+consistency check:
+\begin{verbatim}
+        #ifndef PLOTS
+        #include "must_define_PLOTS"       /* bogus include */
+        #endif
+\end{verbatim}
+This program warns about include files it can't find, but
+not if there is a ``bogus'' on the same line.
+
+See the comments at the top of \code{sfmakedepend} for up-to-date
+information on the options.  I may someday get inspired to use a
+newer version of the \code{getopt} routine and rename the options
+to have names like \code{-SGI} and \code{-Cray}.

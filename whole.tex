@@ -1,0 +1,93 @@
+%\includeonly{eq, num, time}
+
+\input{startup}
+\pagestyle{empty}
+\centerline{\hfill OCS Study MMS 2008-???}
+\vspace {2 cm}
+\begin{center}
+  {\LARGE DRAFT Technical Manual for a Coupled Sea-Ice/Ocean \\ Circulation
+   Model (Version 3)  }
+\end{center}
+\vspace {2 cm}
+\begin{center}
+  Katherine S. Hedstr\"{o}m \\ Arctic Region Supercomputing Center
+  \\ University of Alaska Fairbanks
+\end{center}
+\vspace {2 cm}
+\begin{center}
+  U.S.\ Department of the Interior \\ Minerals Management Service \\
+  Anchorage, Alaska \\ \mbox{} \\ Contract No.\ ???
+\end{center}
+\newpage
+\centerline{\hfill OCS Study MMS 2008-???}
+\vspace {2 cm}
+\begin{center}
+  {\LARGE DRAFT Technical Manual for a Coupled Sea-Ice/Ocean \\ Circulation
+   Model (Version 3)  }
+\end{center}
+\vspace {2 cm}
+\begin{center}
+  Katherine S. Hedstr\"{o}m \\ Arctic Region Supercomputing Center
+  \\ University of Alaska Fairbanks
+\end{center}
+\vspace {2 cm}
+\centerline{Oct 2008}
+\vfill
+
+This study was funded by the Alaska Outer Continental Shelf Region
+of the Minerals Management Service, U.S.\ Department of the
+Interior, Anchorage, Alaska, through Contract
+{\bf ???} with Rutgers University, Institute of Marine
+and Coastal Sciences.
+
+\vspace {1 cm}
+The opinions, findings, conclusions, or recommendations expressed in
+this report or product are those of the authors and do not
+necessarily reflect the views of the U.S.\ Department of the
+Interior, nor does mention of trade names or commercial products
+constitute endorsement or recommendation for use by the Federal
+Government.
+\include{ak}
+%\newpage
+\pagestyle{fancyplain}
+\setcounter{page}{1}
+%\pagenumbering{roman}
+\tableofcontents
+\newpage
+%\setcounter{page}{5}
+\listoffigures
+%\newpage
+\listoftables
+\bibliographystyle{plain}
+%\pagenumbering{arabic}
+\include{intro}
+\include{eq}
+\include{num}
+%\include{code}
+%\include{wave}
+%%%%\include{progs}
+%\include{floats}
+%\include{plothist}
+\include{eqice}
+%\include{userice}
+%\addtocontents{toc}{\contentsline {chapter}{Appendices}{63}}
+%\include{relax}
+%\addtocontents{toc}{\contentsline {chapter}{Appendices}{63}}
+\appendix
+\include{time}
+\include{scoord}
+\include{curve}
+\include{nu}
+\include{shortwave}
+\include{cpp}
+%\include{patch}
+%\newpage
+%\mbox{}
+\include{build}
+\include{makefile}
+\include{sfmakedepend}
+\include{svn}
+%\newpage
+%\mbox{}
+\bibliography{ocean,arctic}
+\end{document}

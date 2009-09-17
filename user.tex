@@ -1,0 +1,182 @@
+\section{User Part of the Code}
+\label{User}
+
+
+\subsection{Functionals}
+\label{My_funs}
+
+The directory \code{ROMS/Functionals} contains the source file
+\code{analytical.F} as well as a number of files of the form
+\code{ana_xxx.h} Each of these include files contains the analytic
+expressions for its respective functionality. For instance, a simple
+box grid can be represented analytically internal to the model more
+easily than preparing a grid file with some outside program. Those
+expressions can be found inside \code{ana_grid.h}. The version of
+\code{ana_grid.h} found in the \code{ROMS/Functionals} directory contains
+everything for the example problems distributed with ROMS (unless
+it requires an external grid file). If you choose to build analytic
+grids for your own applications, it is recommended that you use that
+in \code{User/Functionals} instead, or provide a version in some third
+location pointed to by \code{MY_ANALYTICAL_DIR} (see \S\ref{make_var}.
+
+
+The list of these files is here:
+\begin{klist}
+\kitem{ana_biology.h}
+For providing analytic initial conditions for the biological tracers.
+\code{cpp} flag = \code{ANA_BIOLOGY}
+
+\kitem{ana_bmflux.h}
+For providing spacially varying roughness (z0) for bottom momentum
+stresses.
+\code{cpp} flag = \code{ANA_BMFLUX} 
+
+\kitem{ana_btflux.h}
+For providing analytic bottom flux on tracers (usually zero).
+\code{cpp} flags = \code{ANA_BTFLUX}, \code{SEDIMENT}
+
+\kitem{ana_cloud.h}
+For providing analytic atmospheric cloud fraction.
+\code{cpp} flags = \code{ANA_CLOUD}, \code{CLOUDS}
+
+\kitem{ana_diag.h}
+For providing specialized diagnostics during runtime.
+\code{cpp} flag = \code{ANA_DIAG}
+
+\kitem{ana_fsobc.h}
+For providing analytic free surface boundary conditions.
+\code{cpp} flag = \code{ANA_FSOBC}
+
+\kitem{ana_grid.h}
+For providing analytic grid information.
+\code{cpp} flag = \code{ANA_GRID}
+
+\kitem{ana_hmixcoef.h}
+For providing analytic atmospheric cloud fraction.
+\code{cpp} flags = \code{VISC_GRID}, \code{DIFF_GRID}, \code{SPONGE}
+
+\kitem{ana_humid.h}
+For providing analytic atmospheric humidity.
+\code{cpp} flag = \code{ANA_HUMID}
+
+\kitem{ana_initial.h}
+For providing analytic initial conditions.
+\code{cpp} flag = \code{ANA_INITIAL}
+
+\kitem{ana_m2clima.h}
+For providing analytic 2-D momentum climatology.
+\code{cpp} flags = \code{ANA_m2CLIMA}, \code{M2CLIMATOLOGY}
+
+\kitem{ana_m2obc.h}
+For providing analytic 2-D momentum open boundary conditions.
+\code{cpp} flag = \code{ANA_M2OBC}
+
+\kitem{ana_m3clima.h}
+For providing analytic 3-D momentum climatology.
+\code{cpp} flag = \code{ANA_M3CLIMA}
+
+\kitem{ana_m3obc.h}
+For providing analytic 3-D momentum open boundary conditions.
+\code{cpp} flag = \code{ANA_M3OBC}
+
+\kitem{ana_mask.h}
+For providing analytic land masks.
+\code{cpp} flags = \code{ANA_GRID},
+\code{MASKING}
+
+\kitem{ana_nudgcoef.h}
+For providing analytic atmospheric humidity.
+\code{cpp} flag = \code{NUDGING_COFF}
+
+\kitem{ana_pair.h}
+For providing analytic atmospheric pressure.
+\code{cpp} flag = \code{ANA_PAIR}
+
+\kitem{ana_passive.h}
+For providing analytic passive tracer initial conditions.
+\code{cpp} flags = \code{ANA_PASSIVE}, \code{T_PASSIVE}
+
+\kitem{ana_perturb.h}
+For providing perturbations to the initial conditions.
+\code{cpp} flag = \code{ANA_PERTURB}
+
+\kitem{ana_psource.h}
+For providing analytic atmospheric humidity.
+\code{cpp} flags = \code{ANA_PSOURCE}, \code{TS_PSOURCE}, \code{UV_PSOURCE}
+
+\kitem{ana_rain.h}
+For providing analytic atmospheric rainfall rates.
+\code{cpp} flag = \code{ANA_RAIN}
+
+\kitem{ana_scope.h}
+For providing analytic adjoint sensitivity spatial scope masking
+arrays.
+\code{cpp} flag = \code{ANA_GRID}
+
+\kitem{ana_sediment.h}
+For providing analytic initial conditions for the sediments and bed
+conditions.
+\code{cpp} flag = \code{ANA_SEDIMENT}
+
+\kitem{ana_smflux.h}
+For providing analytic surface momentum flux (wind stress).
+\code{cpp} flag = \code{ANA_SMFLUX}
+
+\kitem{ana_specir.h}
+For providing analytic calculation of spectral downwelling
+irradiance.
+\code{cpp} flag = \code{ECOSIM}
+
+\kitem{ana_spinning.h}
+For providing analytic time variable rotation forces.
+\code{cpp} flag = \code{ANA_SPINNING}
+
+\kitem{ana_srflux.h}
+For providing analytic incoming shortwave radiation.
+\code{cpp} flags = \code{ANA_SRFLUX}, \code{DIURNAL_SRFLUX}
+
+\kitem{ana_ssh.h}
+For providing analytic sea surface height climatology.
+\code{cpp} flags = \code{ANA_SSH},
+\code{ZCLIMATOLOGY}
+
+\kitem{ana_sss.h}
+For providing analytic sea surface salinity.
+\code{cpp} flags = \code{ANA_SSS}, \code{SALINITY}, \code{SCORRECTION},
+\code{SRELAXATION}
+
+\kitem{ana_sst.h}
+For providing analytic atmospheric rainfall rates.
+\code{cpp} flags = \code{ANA_SST},
+\code{QCORRECTION}
+
+\kitem{ana_stflux.h}
+For providing analytic surface tracer fluxes.
+\code{cpp} flags = \code{ANA_STFLUX}, \code{ANA_SSFLUX},
+\code{ANA_SPFLUX}
+
+\kitem{ana_tair.h}
+For providing analytic air temperatures.
+\code{cpp} flag = \code{ANA_TAIR}
+
+\kitem{ana_tclima.h}
+For providing analytic atmospheric rainfall rates.
+\code{cpp} flags = \code{ANA_TCLIMA}, \code{TCLIMATOLOGY}
+
+\kitem{ana_tobc.h}
+For providing analytic tracer open boundary conditions.
+\code{cpp} flag = \code{ANA_TOBC}
+
+\kitem{ana_vmix.h}
+For providing analytic vertical mixing coefficients.
+\code{cpp} flag = \code{ANA_VMIX}
+
+\kitem{ana_winds.h}
+For providing analytic atmospheric winds.
+\code{cpp} flag = \code{ANA_WINDS}
+
+\kitem{ana_wwave.h}
+For providing analytic wind-induced surface waves (amplitude,
+direction, and period).
+\code{cpp} flag = \code{ANA_WWAVE}
+\end{klist}

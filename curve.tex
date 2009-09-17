@@ -1,0 +1,51 @@
+\section{Horizontal curvilinear coordinates}
+\label{Curve}
+The requirement for a boundary-following coordinate system and for a
+laterally variable grid resolution can both be met (for suitably
+smooth domains) by introducing an appropriate orthogonal coordinate
+transformation in the horizontal.  Let the new coordinates be
+$\xi(x,y)$ and $\eta(x,y)$ where the relationship of horizontal arc
+length to the differential distance is given by:
+\begin{equation}
+   (ds)_{\xi} = \left( {1 \over m} \right) d \xi
+\end{equation}
+\begin{equation}
+   (ds)_{\eta} = \left( {1 \over n} \right) d \eta
+\end{equation}
+Here, $m(\xi,\eta)$ and $n(\xi,\eta)$ are the scale factors which
+relate the differential distances $(\Delta \xi,\Delta \eta)$ to the
+actual (physical) arc lengths.
+
+It is helpful to write the equations in vector notation and to use
+the formulas for div, grad, and curl in curvilinear coordinates (see
+Batchelor, Appendix 2, \cite{Batchelor}):
+\begin{equation}
+   \nabla \phi = \hat{\xi} m {\partial \phi \over \partial \xi} +
+                 \hat{\eta} n {\partial \phi \over \partial \eta}
+\end{equation}
+\begin{equation}
+   \nabla \cdot \vec{a} = mn \left[
+   {\partial \over \partial \xi} \!\! \left( {a \over n} \right) +
+   {\partial \over \partial \eta} \!\! \left( {b \over m} \right)
+   \right]
+\end{equation}
+\begin{equation}
+   \nabla \times \vec{a} = mn \left| \begin{array}{ccc}
+   \vspace{1 mm}
+   {\hat{\xi}_1 \over m} & {\hat{\xi}_2 \over n} & \hat{k} \\
+   \vspace{1 mm}
+   {\partial \over \partial \xi} &
+   {\partial \over \partial \eta} &
+   {\partial \over \partial z} \\
+   {a \over m} & {b \over n} & c
+   \end{array} \right|
+\end{equation}
+\begin{equation}
+   \nabla^2 \phi = \nabla \cdot \nabla \phi = mn \left[ 
+   {\partial \over \partial \xi} \!\! \left( {m \over n} 
+   {\partial \phi \over \partial \xi} \right) +
+   {\partial \over \partial \eta} \!\! \left( {n \over m} 
+   {\partial \phi \over \partial \eta} \right) \right]
+\end{equation}
+where $\phi$ is a scalar and $\vec{a}$ is a vector with components
+$a$, $b$, and $c$.

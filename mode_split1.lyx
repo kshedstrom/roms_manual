@@ -1,0 +1,104 @@
+#LyX 1.5.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 276
+\begin_document
+\begin_header
+\textclass article
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize default
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+Mode-splitting error
+\end_layout
+
+\begin_layout Standard
+In the split-explicit method, the shallow water equations (SWE) are advanced
+ in time, using the smaller CFL-limited time step, to obtain the depth-integrate
+d mode, 
+\emph on
+e.g.
+\emph default
+,
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\frac{\partial\overline{U}}{\partial t}+\ldots=-gD\nabla_{x}\zeta+\{gD\nabla_{x}\zeta+f\}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Here, 
+\begin_inset Formula $g$
+\end_inset
+
+ is the acceleration of gravity; 
+\begin_inset Formula $D=h+\zeta$
+\end_inset
+
+is total depth; 
+\begin_inset Formula $\overline{U}\equiv D\overline{u}$
+\end_inset
+
+ is the depth-integrated velocity (barotropic mass flux); 
+\begin_inset Formula $\nabla_{x}\zeta$
+\end_inset
+
+ is a shorthand for 
+\begin_inset Formula $\partial\zeta/\partial x$
+\end_inset
+
+; and
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $f=-\frac{1}{\rho_{0}}\int_{-h}^{\\zeta}\frac{\partial P}{\partial x}dz$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+is the vertically integrated pressure gradient.
+ The latter is a functional of the topography, free-surface gradient, and
+ the free surface itself, as well as the vertical distribution of density
+ and its gradient,
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\end_body
+\end_document

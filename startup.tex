@@ -1,0 +1,54 @@
+\documentclass[11pt,twoside,letterpaper]{article}
+\usepackage{latexsym,fancyheadings}
+%\usepackage[pdftex]{graphicx}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{hyperref}
+%\usepackage{draftcopy}
+%\documentstyle[12pt]{report}
+%\flushbottom
+\setlength{\oddsidemargin}{.0 in}
+\setlength{\evensidemargin}{.0 in}
+\setlength{\headheight}{0pt}
+\setlength{\topmargin}{-.5 in}
+\setlength{\headsep}{0pt}
+\setlength{\textheight}{9.5 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\headrulewidth}{0pt}
+%\cfoot{\rm II-\thepage} % page number
+\cfoot{\rm \thepage} % page number
+\lhead{}
+\rhead{}
+%\setlength{\oddsidemargin}{0pt}
+%\setlength{\headheight}{0pt}
+%\setlength{\topmargin}{0pt}
+%\setlength{\headsep}{0pt}
+%\setlength{\textheight}{9in}
+%\setlength{\textwidth}{6.5in}
+%\setlength{\oddsidemargin}{0pt}
+%\setlength{\oddsidemargin}{0pt}
+\newenvironment{klist}{\begin{list}{}{%
+    \setlength{\labelwidth}{1.4cm}%
+    \addtolength{\leftmargin}{.65cm}%
+    \setlength{\itemindent}{.0cm}}}{\end{list}}
+\newenvironment{khlist}{\begin{list}{}{%
+    \setlength{\itemsep}{0cm}%
+    \setlength{\parsep}{0cm}%
+    \setlength{\labelsep}{.7cm}%
+    \setlength{\labelwidth}{.5cm}%
+    \setlength{\leftmargin}{1.3cm}%
+    \setlength{\itemindent}{1cm}}}{\end{list}}
+\newcommand{\code}[1]{\mbox{\bf#1}}
+\newcommand{\kitem}[1]{\item[\bf#1\hfill]}
+\def\CC{{C\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
+%\usepackage[pdftex,
+%   pdftitle={Technical Manual for a Coupled Sea-Ice/Ocean
+%   Cirulation Model (Version 3)},
+%   pdfauthor={Katherine S. Hedstr\"om},
+%   pdfkeywords={ROMS, ocean, model},
+%   plainpages=false
+% ]{hyperref}
+\begin{document}

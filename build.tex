@@ -1,0 +1,159 @@
+\section{Building ROMS}
+
+\subsection{Environment Variables for \code{make}}
+\label{make_var}
+
+ROMS has a growing list of choices the user must make about the
+compilation before starting the compile process,
+set in user-defined variables. Since we now use \code{gnu make}, it is
+possible to set the value of these variables in the Unix environment,
+rather than necessarily inside the \code{Makefile} (see \S\ref{Gmake}).
+The user-definable variables understood by the ROMS \code{makefile} are:
+\begin{klist}
+
+\kitem{ROMS\_APPLICATION} Set the \code{cpp} option defining the particular
+application. This is used for setting up options inside the code
+specific to this application and also determines the name of the
+\code{.h} header file for it. This can be either a predefined
+case, such as \code{BENCHMARK}, or one of your own, such as \code{NEP5}.
+
+\kitem{MY\_HEADER\_DIR} Sets the path to the user's header file, if
+any. It can be left empty for the standard cases, where \code{benchmark.h}
+and the like are found in \code{ROMS/Include}, which is already in
+the search path. In the case of \code{NEP5}, this is set to
+\code{Apps/NEP} where \code{nep5.h} resides.
+
+\kitem{MY\_ANALYTICAL\_DIR} Sets the path to the user's analytic files
+described in \S\ref{My_funs}, if any. This can be \code{User/Functionals}
+or some other location. I tend to place both the header file and the
+functionals in the same directory, one directory per application.
+
+\kitem{MY\_CPP\_FLAGS} Set tunable \code{cpp} options. Sometimes it is desirable
+to activate one or more \code{cpp} options to run different variants of the
+same application without modifying its header file. If this is the
+case, specify each option here using the \code{-D} syntax. Notice that
+you need to use the shell's quoting syntax (either single or double
+quotes) to enclose the definition if you are using one of the build
+scripts below.
+
+\kitem{NestedGrids} Integer number of grids in the setup, usually 1.
+
+\kitem{Compiler-specific Options} These flags are used by the files
+inside the \code{Compilers} directory.
+\begin{klist}
+  \kitem{USE\_DEBUG} Set this to \code{on} to turn off optimization
+and turn on the \code{-g} flag for debugging.
+
+  \kitem{USE\_MPI} Set this if running an MPI parallel job.
+  \kitem{USE\_OpenMP} Set this if running an OpenMP parallel job.
+  \kitem{USE\_MPIF90} I'm frankly not sure about this one. I suppose
+  if you have both mpich and some other MPI for a given
+  compiler/system pair, this could be used to switch between them.
+  \kitem{USE\_LARGE}  Some systems support both 32-bit and 64-bit
+  options. Select this to get 64-bit addressing, usually used for
+  programs need more than 2 GB of memory.
+  \kitem{NETCDF\_INCDIR} The location of the \code{netcdf.mod} and
+  \code{typesizes.mod} files.
+  \kitem{NETCDF\_LIBDIR} The location of the NetCDF library.
+  \kitem{USE\_NETCDF4} Set this if linking against the NetCDF4
+  library, which needs the HDF5 library and therefore:
+  \kitem{HDF5\_LIBDIR} The location of the HDF5 library.
+\end{klist}
+
+\kitem{FORT} A shorthand name for the compiler to be used when
+selecting which system-compiler file is to be included from the
+\code{Compilers} directory. See section \S\ref{Inc_fort} and
+\S\ref{make_env}.
+
+\kitem{BINDIR} Directory in which to place the binary executable.
+The default is ``\code{.}'', the current (top) directory.
+
+\kitem{SCRATCH\_DIR} Put the \code{.f90} and the temporary binary files
+in a build directory to avoid clutter. The default is \code{Build}
+under the top directory. It can also point to differing places if you want
+to keep these files for multiple projects at the same time, each in
+their own directory.
+\end{klist}
+
+\subsection{Providing the Environment}
+\label{make_env}
+
+Before compiling, you will need to find out some background information:
+\begin{itemize}
+ \item What is the name of your compiler?
+ \item What is returned by \code{uname -s} on your system?
+ \item Is there a working NetCDF library?
+ \item Where is it?
+ \item Was it built with the above compiler?
+ \item Do you have access to MPI or OpenMP?
+\end{itemize}
+As described more fully in \S\ref{Inc_fort}, the \code{makefile} will be
+looking for a file in the \code{Compilers} directory with the
+combination of your operating system and your compiler. For
+instance, using Linux and the Pathscale compiler, the file would be
+called \code{Linux-path.mk}. Is the corresponding file for your
+system and compiler in the \code{Compilers} directory? If not, you
+will have to create it following the existing examples there.
+
+Next, there are two ways to provide the location for the NetCDF
+files (and optional HDF5 library). One is by editing the corresponding
+lines in your system-compiler file. Another way is through the
+Unix environment variables. If you are always going to be using
+the same compiler on each system, you can edit your \code{.profile}
+or \code{.login} files to globally set them. Here is an example for
+\code{tcsh}:
+\begin{verbatim}
+setenv NETCDF_INCDIR /usr/local/netcdf4/include
+setenv NETCDF_LIBDIR /usr/local/netcdf4/lib
+setenv HDF5_LIBDIR /usr/local/hdf5/lib
+\end{verbatim}
+The \code{ksh/bash} equivalent is:
+\begin{verbatim}
+export NETCDF_INCDIR=/usr/local/netcdf4/include
+export NETCDF_LIBDIR=/usr/local/netcdf4/lib
+export HDF5_LIBDIR=/usr/local/hdf5/lib
+\end{verbatim}
+
+\subsubsection{Build scripts}
+
+If you have more than one application (or more than one compiler),
+you will get tired of editing the \code{makefile}.
+One option is to have a \code{makefile} for each configuration, then
+type:
+\begin{verbatim}
+    make -f makefile.circle_pgi
+\end{verbatim}
+for instance. If that's too
+cumbersome, there's also an option of keeping track of the user-defined
+choices in a build script. There are now two of these scripts in the
+\code{ROMS/Bin} directory: \code{build.sh} (which is surprisingly
+a \code{csh} script) and \code{build.bash}.  The build scripts use
+environment variables to provide values for the list above, overwriting
+those found in the ROMS \code{makefile}. Just as in the multiple
+\code{makefile} option, you will need as many copies of the build script
+as you have applications. The scope of these variables is local to the
+build script, allowing you to compile different applications at the
+same time from the same sources as long as each \code{\$(SCRATCH\_DIR)}
+is unique.
+
+Both scripts have the same options:
+\begin{klist}
+  \kitem{-j \code{[N]}} Compile in parallel using \code{N} cpus,
+  omit argument for all available CPUs.
+  \kitem{-noclean}    Do not clean already compiled objects.
+\end{klist}
+Note that the default is to compile serially and to issue a
+``\code{make clean}'' before compiling. It is left as an exercise
+for the user if they prefer different default behavior.
+
+There are also a few variables which are not recognized by the ROMS
+\code{makefile}, but are used locally inside the build script. These
+are:
+\begin{klist}
+\kitem{MY\_PROJECT\_DIR} This is used in setting
+\code{\$(SCRATCH\_DIR)} and \code{\$(BINDIR)}.
+
+\kitem{MY\_ROMS\_SRC} Set the path to the user's local current ROMS source
+code. This is used so that the script can be run from any directory,
+not necessarily only from the top ROMS directory.
+\end{klist}

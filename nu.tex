@@ -1,0 +1,49 @@
+\section{Viscosity and Diffusion}
+\label{Nu}
+
+\subsection{Horizontal viscosity}
+The horizontal viscosity and diffusion coefficients are scalars which
+are read in from \code{ocean.in}.  Several
+factors to consider when choosing these values are:
+\begin{klist}
+   \kitem{spindown time}  The spindown time on wavenumber $k$ is ${1
+   \over k^2 \nu_2}$ for the Laplacian operator and ${1 \over k^4
+   \nu_4}$ for the biharmonic operator.  The smallest wavenumber
+   corresponds to the length $2 \Delta x$ and is $k = {\pi \over
+   \Delta x}$, leading to
+\begin{equation}
+    \Delta t < t_{damp} = {\Delta x^2 \over \pi^2 \nu_2}
+    \mbox{\quad or \quad} {\Delta x^4 \over \pi^4 \nu_4}
+\end{equation}
+This time should be short enough to damp out the numerical noise
+which is being generated but long enough on the larger scales to
+retain the features you are interested in.  This time should also be
+resolved by the model timestep.
+   \kitem{boundary layer thickness} The western boundary layer has a
+   thickness proportional to 
+\begin{equation}
+    \Delta x < L_{BL} = \left( {\nu_2 \over \beta} \right)^{1 \over 3}
+    \mbox{\quad and \quad}
+    \left( {\nu_4 \over \beta} \right)^{1 \over 5}
+\end{equation}
+for the Laplacian and biharmonic viscosity, respectively.  We have
+found that the model typically requires the boundary layer to be
+resolved with at least one grid cell.  This leads to coarse grids
+requiring large values of $\nu$.
+\end{klist}
+
+\subsection{Horizontal Diffusion}
+We have chosen anything from zero to the value of the horizontal
+viscosity for the horizontal diffusion coefficient.  One common choice
+is an order of magnitude smaller than the viscosity.
+
+\subsection{Vertical Viscosity and Diffusion}
+ROMS stores the vertical mixing coefficients in arrays with three
+spatial dimensions called
+\code{Akv} and \code{Akt}.  \code{Akt} also has a fourth dimension
+specifying which tracer, so
+that temperature and salt can have differing values.  Both \code{Akt}
+and \code{Akv} are stored at $w$-points in the model;
+horizontal averaging is done to obtain \code{Akv} at the horizontal $u$
+and $v$-points.  The values for these coefficients can be set in a
+number of ways, as described in \S\ref{Vmix}.

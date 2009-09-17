@@ -1,0 +1,143 @@
+\section{Plotting Programs for Postprocessing}
+\label{Plothist}
+Hernan Arango has provided SCRUM with some programs for creating plots
+from the NetCDF history and restart files. Some example plots are shown
+in \S\ref{Wave}. There are four plotting programs:
+\begin{klist}
+   \kitem{cnt} creates black-and-white plots of the horizontal fields,
+including constant depth plots of the 3-D fields.
+   \kitem{ccnt} creates color plots of the horizontal fields,
+including constant depth plots of the 3-D fields.
+   \kitem{sec} creates black-and-white plots of vertical slices through
+the 3-D fields.  It includes on option of finding equal-spaced points
+along a straight line through the curvilinear grid.
+   \kitem{csec} creates color plots of vertical slices through
+the 3-D fields.  It includes on option of finding equal-spaced points
+along a straight line through the curvilinear grid.
+\end{klist}
+All of these program come with example input files.  For instance, the
+input file for \code{ccnt} is called \code{ccnt.in} and is as follows:
+\begin{verbatim}
+1996 -1  :  year and starting year-day (use yearday<0, for no time label)
+SCRUM 3.0
+Coarse Arctic ocean with Budgell ice dynamics
+ice thermodynamics
+
+8     NFIELDS: number of fields to plot. Line below, field(s) types:
+42,45,46,47,48,49,50,121,122,123,124  field identification:
+FLDID(1:NFIELDS)
+1     NLEVELS: number of levels and/or depths to plot (0 for all levels)
+20           levels (>0) or depths (<0) to plot: FLDLEV(1:NLEVELS)
+2     NFIELDS: number of fields to plot. Line below, field(s) types:
+1,2            field identification: FLDID(1:NFIELDS)
+1     NLEVELS: number of levels and/or depths to plot (0 for all levels)
+1,2,3,4,5      levels (>0) or depths (<0) to plot: FLDLEV(1:NLEVELS)
+0     FRSTD  : first day to plot
+0     LASTD  : last day to plot
+0     DSKIP  : plot every other DSKIP days (0.0 plot at its own time frequency)
+0     VINTRP : vertical interpolation scheme: 0=linear, 1:cubic splines
+0.0   PMIN   : field minimum value for color palette (0.0 for default)
+0.0   PMAX   : field maximum value for color palette (0.0 for default)
+1     ICNT   : draw contours between color bands: 0=no, 1=yes
+0.0   ISOVAL : iso-surface value to process (see below)
+1.2   VLWD   : vector line width (1.0 for default)
+2.0   VLSCL  : vector length scale (1.0 for default)
+1     IVINC  : vector grid sampling in the X-direction (1 for default)
+1     JVINC  : vector grid sampling in the Y-direction (1 for default)
+0     IREF   : secondary or reference field option (see below)
+25    IDOVER : overlay field identification (for IREF=1,2 only)
+1     LEVOVER: level of the overlay field (set to 0 if same as current FLDLEV)
+0.0   RMIN   : overlay field minimum value to consider (0.0 for default)
+0.0   RMAX   : overlay field maximum value to consider (0.0 for default)
+10.0   LGRID : Desired longitude/latitude grid spacing (degrees)
+4     IPROJ  : map projection (see below).
+-60.0   PLON : projection Pole longitude (west values are negative).
+90.0   PLAT  : projection Pole latitude (south values are negative).
+0.0   ROTA   : projection rotation angle (clockwise; degrees).
+0     LMSK   : flag to color mask land: [0] no, [1] yes
+-1     NPAGE : number of plots per page (currently 1, 2, or 4)  
+T     READGRD: logical switch to read in positions from grid NetCDF file.
+F     PLTLOGO: logical switch draw Logo.
+T     WRTHDR : logical switch to write out the plot header titles.
+T     WRTBLAB: logical switch to write out the plot bottom title.
+T     WRTRANG: logical switch to write out data range values and CI.
+
+T     WRTFNAM: logical switch to write out input primary filename.
+T     WRTDATE: logical switch to write out current date.
+T     CST    : logical switch to read and plot coastlines and islands.
+50.0 50.0    : bottom and top map latitudes (south values are negative).
+-110.0 80.0  : left and right map longitudes (west values are negative).
+/d2/kate/plot/varid.dat
+/d1/arango/scrum3.0/plot/Palettes/gs1.pal
+/d2/kate/plot/default.cnt
+ice_rst.nc
+scrum_rst_1.nc
+/d2/kate/arctic/gridpak/arctic_grid_2.nc
+/u1/coasts/coast.dat
+
+
+c
+c=======================================================================
+c  Copyright (c) 1996 Rutgers University                             ===
+c=======================================================================
+c
+
+ *** Above FILENAMES:
+
+            1st line: input; variables ID file.
+            2nd line: input; color palette file.
+            3rd line: input; contour parameters.
+            4th line: input; primary NetCDF file.
+            5th line: input; secondary NetCDF file.
+            6th line: input; grid NetCDF file.
+            7th line: input; coastlines file.
+
+ *** IREF:  Secondary or reference field option:
+           -1   Overlay horizontal grid
+            0   no secondary or reference field to plot
+            1   plot field overlay from primary file
+            2   plot field overlay from secondary file
+            3   primary - secondary file (field subtraction)
+            4   Day0 - DayN (field subtraction)
+
+ *** IPROJ: Map Projections option.  Some of the values for the
+            projection Pole and rotation angle are suggested.
+            Check the NCAR manual for details.
+
+           [1] Cylindrical equidistant: PLON=0, PLAT=0, ROTA=0
+           [2] Mercator: PLON=?, PLAT=0, ROTA=0
+           [3] Lambert conformal conic: PLON=?, PLAT=?, ROTA=?
+           [4] Stereographic azimuthal:  PLON=?, PLAT=90 or -90, ROTA=0
+
+ *** IVINC, JVINC: vector grid sampling.  If either value is negative,
+                   the velocity vectors at drawn at PSI-points.  Otherwise,
+                   if both values are positive, the vectors are drawn at
+                   interior RHO-points.
+
+ *** LGRID: Longitude/latitude grid spacing.  The grid is drawn at
+            LGRID spacing starting from specified map lower corner.
+            If LGRID is negative, the latitude labels in the map are
+            rotated 90 degrees to avoid label congestion, if any.
+
+ *** NPAGE: Number of plots per page.  Set this parameter to a negative
+            value (-1, -2, or -4) to activate preservation of the plot
+            aspect ratio.
+
+
+  Plotting Fields classification: (* derived fields)
+
+ [  1]  IDUTOT  total velocity component in the XI-direction (cm/s).
+ [  2]  IDVTOT  total velocity component in the ETA-direction (cm/s).
+*[  3]  IDTVEC  total velocity vectors (cm/s).
+*[  4]  IDTMAG  total velocity vector magnitude (cm/s).
+                 :
+                 :
+\end{verbatim}
+As you can see, there are comments describing what needs to be
+done.  Please see the variable ID file for the complete list of fields
+which can be plotted---this list changes as Hernan adds the ability to
+plot new fields. Also, check your default.cnt file for other vector and
+contour parameters. The palette file includes two number systems, one
+in the scale from 0 to 255 and the other from 0 to 1.
+The SCRUM plotting uses the first while the SEOM plotting uses the
+second.

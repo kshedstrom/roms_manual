@@ -1,0 +1,632 @@
+\section{Horizontal and Vertical Mixing}
+
+\subsection{Horizontal friction and diffusion}
+\label{Smooth}
+
+In Chapter \ref{Phys}, the diffusive terms were written simply as
+${\cal D}_u, {\cal D}_v, {\cal D}_T,$ and ${\cal D}_S$.  The vertical
+component of these terms was described in \S\ref{Vfric}.  Here we
+describe SCRUM's options for representing the horizontal
+component of these terms.
+
+\subsubsection{Laplacian}
+The Laplacian of a scalar $\psi$ in curvilinear coordinates is (see
+Appendix \ref{Curve}):
+\begin{equation}
+   \nabla^2 \psi = \nabla \cdot \nabla \psi = mn \left[ 
+   {\partial \over \partial \xi} \!\! \left( {m \over n} 
+   {\partial \psi \over \partial \xi} \right) +
+   {\partial \over \partial \eta} \!\! \left( {n \over m} 
+   {\partial \psi \over \partial \eta} \right) \right]
+\end{equation}
+This term in SCRUM is multiplied by ${\nu_2 H_z \over mn}$ and becomes
+\begin{equation}
+   \left[ 
+   {\partial \over \partial \xi} \!\! \left( {\nu_2 H_zm \over n} 
+   {\partial \psi \over \partial \xi} \right) +
+   {\partial \over \partial \eta} \!\! \left( {\nu_2 H_zn \over m} 
+   {\partial \psi \over \partial \eta} \right) \right]
+\end{equation}
+where $\psi$ is any of $u$, $v$, $T$, and $S$.  This form guarantees
+that the term does not contribute to the volume-integrated equations,
+except when using no-slip boundaries in the momentum equations.
+
+\subsubsection{Biharmonic}
+The biharmonic operator is $\nabla^4 = \nabla^2 \nabla^2$; the
+corresponding term is computed using a temporary variable $Y$:
+\begin{equation}
+   Y =
+   {mn \over H_z} \left[ 
+   {\partial \over \partial \xi} \!\! \left( {\nu_4 H_zm \over n} 
+   {\partial \psi \over \partial \xi} \right) +
+   {\partial \over \partial \eta} \!\! \left( {\nu_4 H_zn \over m} 
+   {\partial \psi \over \partial \eta} \right) \right]
+\end{equation}
+and is
+\begin{equation}
+   - \left[ 
+   {\partial \over \partial \xi} \!\! \left( {H_zm \over n} 
+   {\partial Y \over \partial \xi} \right) +
+   {\partial \over \partial \eta} \!\! \left( {H_zn \over m} 
+   {\partial Y \over \partial \eta} \right) \right]
+\end{equation}
+where $\psi$ is once again any of $u$, $v$, $T$, and $S$.  Note that
+$u$ and $v$ are treated as independent scalar quantities rather than as
+a vector.  The complete Laplacian operator on a vector quantity
+$\vec{u}$ contains additional terms, including $v$ terms in the $u$
+equation and vice versa.  These extra terms were found to be small in a
+test problem and have been left out of the model.
+
+\subsubsection{Rotated mixing tensors}
+Both the Laplacian and biharmonic terms above operate on surfaces of
+constant $s$ and can contribute substantially to the vertical mixing.
+However, the oceans are thought
+to mix along constant density surfaces so this is not entirely
+satisfactory.  Therefore, the option of using rotated mixing tensors
+for the Laplacian and biharmonic operators has been added.  Options
+exist to diffuse on constant $z$ surfaces (\code{MIX\_GP\_UV},
+\code{MIX\_GP\_TS}), constant {\sl in situ} density surfaces
+(\code{MIX\_EPI\_UV}, \code{MIX\_EPI\_TS}), and constant potential
+density surfaces ((\code{MIX\_ISO\_UV}, \code{MIX\_ISO\_TS})
+
+The horizontal Laplacian diffusion operator is computed by finding the
+three components of the flux of the quantity $\psi$.  The $\xi$ and
+$\eta$ components are locally horizontal, rather than along the
+$s$ surface. Here, \code{MIX\_EPI} represents both the epineutral and
+isopycnal options. The diffusive fluxes are:
+\begin{align}
+   F^\xi & = \nu_2 \left[ m
+   {\partial \psi \over \partial \xi} -
+   \underbrace{ \left( m {\partial z \over \partial \xi}
+   \underbrace{+ S_x }_{\mbox{\tt MIX\_EPI}} \right)
+   {\partial \psi \over \partial z} }_{\mbox{\tt MIX\_GP}} \right]
+\label{fluxx}
+\\
+   F^\eta & = \nu_2 \left[ n
+   {\partial \psi \over \partial \eta} -
+   \underbrace{ \left[ n {\partial z \over \partial \eta}
+   \underbrace{+ S_y }_{\mbox{\tt MIX\_EPI}} \right)
+   {\partial \psi \over \partial z} }_{\mbox{\tt MIX\_GP}} \right]
+\label{fluxy}
+\\
+   F^s & =
+   - \underbrace{ {1 \over H_z} \left( m
+   {\partial z \over \partial \xi}
+   \underbrace{+ S_x }_{\mbox{\tt MIX\_EPI}} \right)
+   F^\xi }_{\mbox{\tt MIX\_GP}}
+   - \underbrace{ {1 \over H_z} \left( n
+   {\partial z \over \partial \eta}
+   \underbrace{+ S_y }_{\mbox{\tt MIX\_EPI}} \right)
+   F^\eta }_{\mbox{\tt MIX\_GP}}
+\label{fluxs}
+\end{align}
+where
+\begin{align*}
+  S_x & = { { \partial \rho \over \partial x} \over
+    { \partial \rho \over \partial z} } =
+    { \left[ m {\partial \rho \over \partial \xi} -
+    {m \over H_z} {\partial z \over \partial \xi}
+    { \partial \rho \over \partial s} \right] \over
+    {1 \over H_z} {\partial \rho \over \partial s} }
+\\
+  S_y & = { { \partial \rho \over \partial y} \over
+    { \partial \rho \over \partial z} } =
+    { \left[ n {\partial \rho \over \partial \eta} -
+    {n \over H_z} {\partial z \over \partial \eta}
+    { \partial \rho \over \partial s} \right] \over
+    {1 \over H_z} {\partial \rho \over \partial s} }
+\end{align*}
+No flux boundary conditions are easily imposed by setting
+\begin{eqnarray*}
+  F^\xi = 0    && \mbox{ at $\xi$ walls} \\
+  F^\eta = 0   && \mbox{ at $\eta$ walls} \\
+  F^s = 0 && \mbox{ at $s = -1,0$}
+\end{eqnarray*}
+
+Finally, the flux divergence is calculated and is added to the
+right-hand-side term for the field being computed:
+\begin{equation}
+  {\partial \over \partial \xi} \left( { H_z F^\xi \over n} \right) +
+  {\partial \over \partial \eta} \left( { H_z F^\eta \over m} \right) +
+  {\partial \over \partial s}
+  \left( { H_z F^s \over mn} \right)
+\label{rot1}
+\end{equation}
+
+The biharmonic rotated mixing tensors are computed much as the
+non-rotated biharmonic mixing.  We define a temporary variable $Y$
+based on equation (\ref{rot1}):
+\begin{equation}
+  Y = {mn \over H_z} \left[
+  {\partial \over \partial \xi} \left( { H_z F^\xi \over n} \right) +
+  {\partial \over \partial \eta} \left( { H_z F^\eta \over m} \right) +
+  {\partial \over \partial s}
+  \left( { H_z F^s \over mn} \right)
+  \right] .
+\end{equation}
+We then build up fluxes of $Y$ as in equations
+(\ref{fluxx})--(\ref{fluxs}).  We then apply equation (\ref{rot1})
+to these $Y$ fluxes to obtain the biharmonic mixing tensors.
+
+\subsection{Vertical mixing schemes}
+\label{Vmix}
+SCRUM contains a variety of methods for setting the vertical viscous and
+diffusive coefficients. The choices range from simply choosing fixed
+values to the KPP and Mellor-Yamada turbulence closure schemes.
+See Large \cite{Large98} for a review of surface ocean mixing schemes.
+Many schemes have a background molecular value which is used when the
+turbulent processes are assumed to be small (such as in the interior).
+
+\subsubsection{Mellor-Yamada}
+One of the more popular closure schemes is that of Mellor and Yamada
+\cite{Mellor74}, \cite{Mellor82}. They actually present a hierarchy of
+closures of increasing complexity. SCRUM provides only the
+``Level 2.5'' closure with the Galperin et al.\ \cite{Galperin88}
+modifications as described in Allen et al.\ \cite{Allen95}.
+This closure scheme adds two prognostic equations, one
+for the turbulent kinetic energy (${1 \over 2} q^2$) and one for the
+turbulent kinetic energy times a length scale ($q^2l$).
+
+The turbulent kinetic energy equation is:
+\begin{equation}
+  {D \over Dt} \left( {q^2 \over 2} \right) -
+  {\partial \over \partial z} \left[ K_q {\partial \over \partial z} 
+  \left( {q^2 \over 2} \right) \right] = P_s + P_b - \xi_d
+\end{equation}
+where $P_s$ is the shear production, $P_b$ is the buoyant production
+and $\xi_d$ is the dissipation of turbulent kinetic energy. 
+These terms are given by
+\begin{align}
+   P_s &= K_m \left[ \left( {\partial u \over \partial z }\right)^2 +
+   \left( {\partial v \over \partial z} \right)^2 \right],  \\
+   P_b &= K_s N^2, \\
+   \xi_d &= {q^3 \over B_1 l}
+\end{align}
+where $B_1$ is a constant.
+One can also add a traditional horizontal Laplacian or biharmonic
+diffusion (${\cal D}_q$) to the turbulent kinetic energy equation.
+The form of this equation in the model coordinates becomes
+%{\samepage
+\begin{multline}
+  {\partial \over \partial t} \left( {H_z q^2 \over mn} \right) +
+  {\partial \over \partial \xi} \left( {H_z u q^2 \over n} \right) +
+  {\partial \over \partial \eta} \left( {H_z v q^2 \over m} \right) +
+  {\partial \over \partial s} \left( {H_z \Omega q^2 \over mn} \right) -
+  {\partial \over \partial s} \left( {K_q \over mnH_z}
+  {\partial q^2 \over \partial s} \right) =
+\\ \vspace{1mm}
+  {2H_z K_m \over mn} \left[ \left({\partial u \over \partial z}
+  \right)^2 + \left( {\partial v \over \partial z} \right)^2 \right] +
+  {2H_z K_s \over mn} N^2 - {2H_z q^3 \over mnB_1 l} +
+  {H_z \over mn} {\cal D}_q .
+\end{multline}
+%}
+The vertical boundary conditions are:
+\[
+\begin{array}{rl}
+  \mbox{top ($z = \zeta(x,y,t))$} \hspace{1cm}
+  & {H_z \Omega \over mn} = 0 \\ [1.5mm]
+  & {K_q \over mn H_z} \, \frac{\partial q^2}{\partial s}
+    = {B_1^{2/3} \over \rho_o} \left[ \left( \tau_s^\xi \right)^2
+    + \left( \tau_s^\eta \right)^2  \right] \\ [1.5mm]
+  & H_z K_m \left( {\partial u \over \partial z},
+    {\partial v \over \partial z} \right) = {1 \over \rho_o}
+    \left( \tau_s^\xi, \tau_s^\eta \right) \\ [1.5mm]
+  & H_z K_s N^2 = {Q \over \rho_o c_P} \\[2mm]
+  \mbox{and bottom ($z = -h(x,y)$)} \hspace{1cm} &
+    {H_z \Omega \over mn} = 0 \\[1.5mm]
+  & {K_q \over mnH_z} {\partial q^2 \over \partial s}
+    = {B_1^{2/3} \over \rho_o} \left[ \left( \tau_b^\xi \right)^2
+    + \left( \tau_b^\eta \right)^2  \right] \\ [1.5mm]
+  & H_z K_m \left( {\partial u \over \partial z},
+    {\partial v \over \partial z} \right) = {1 \over \rho_o}
+    \left( \tau_b^\xi, \tau_b^\eta \right) \\ [1.5mm]
+  & H_z K_s N^2 = 0
+\end{array}
+\]
+The equation is timestepped much like the model tracer equations,
+including an implicit solve for the vertical operations and an option
+for using the third-order upwind advection.
+
+There is also an equation for the turbulent length scale $l$:
+\begin{equation}
+  {D \over Dt} \left( {lq^2} \right) -
+  {\partial \over \partial z} \left[ K_l
+  {\partial lq^2 \over \partial z} 
+  \right] = lE_1 ( P_s + P_b ) - {q^3 \over B_1} \tilde{W}
+\end{equation}
+where $\tilde{W}$ is the wall proximity function:
+\begin{align}
+  \tilde{W} &= 1 + E_2 \left( {l \over kL} \right) ^2 \\
+  L^{-1} &= {1 \over \zeta -z} + {1 \over H+z}
+\end{align}
+The form of this equation in the model coordinates becomes
+%{\samepage
+\begin{multline}
+  {\partial \over \partial t} \left( {H_z q^2l \over mn} \right) +
+  {\partial \over \partial \xi} \left( {H_z u q^2l \over n} \right) +
+  {\partial \over \partial \eta} \left( {H_z v q^2l \over m} \right) +
+  {\partial \over \partial s} \left( {H_z \Omega q^2l \over mn} \right) -
+  {\partial \over \partial s} \left( {K_q \over mnH_z}
+  {\partial q^2l \over \partial s} \right) =
+\\ \vspace{1mm}
+  {H_z \over mn} lE_1 ( P_s + P_b) - 
+  {H_z q^3 \over mnB_1 } \tilde{W} +
+  {H_z \over mn} {\cal D}_{ql} .
+\end{multline}
+%}
+where ${\cal D}_{ql}$ is the horizontal diffusion of the quantity
+$q^2l$.
+
+Given these solutions for $q$ and $l$, the vertical viscosity and
+diffusivity coefficients are:
+\begin{align}
+  K_m &= qlS_m + K_{m_{\rm background}} \\
+  K_s &= qlS_h + K_{s_{\rm background}} \\
+  K_q &= qlS_q + K_{q_{\rm background}}
+\end{align}
+and the stability coefficients $S_m$, $S_h$ and $S_q$ are found by
+solving
+\begin{gather}
+  S_s \left[ 1 - (3A_2 B_2 + 18 A_1 A_2) G_h \right] =
+  A_2 \left[ 1 - 6A_1 B_1^{-1} \right]
+\\ \vspace{1mm}
+  S_m \left[ 1 - 9A_1 A_2 G_h \right] - S_s \left[ G_h ( 18 A_1^2 +
+  9A_1 A_2 ) G_h \right] =
+  A_1 \left[ 1 - 3C_1 - 6A_1 B_1^{-1} \right]
+\\ \vspace{1mm}
+  G_h = \min ( -{l^2N^2 \over q^2}, 0.028 ).
+\\ \vspace{1mm}
+  S_q = 0.41 S_m
+\end{gather}
+The constants are set to $(A_1, A_2, B_1, B_2, C_1, E_1, E_2) = 
+(0.92, 0.74, 16.6, 10.1, 0.08, 1.8, 1.33)$. The quantities $q^2$ and
+$q^2l$ are both constrained to be no smaller than $10^{-8}$ while $l$
+is set to be no larger than $0.53q/N$.
+    
+\subsubsection{The Large, McWilliams and Doney parameterization}
+\label{sec:origLMD}
+
+The vertical mixing parameterization introduced by Large, McWilliams
+and Doney \cite{Large94} is a versatile first order scheme which has
+been shown to perform well in open ocean settings.  Its design
+facilitates experimentation with additional or modified representations
+of specific turbulent processes.
+
+\paragraph{Surface boundary layer}
+The Large, McWilliams and Doney scheme (LMD)
+matches separate parameterizations for vertical mixing
+of the surface boundary layer and the ocean interior.  A formulation
+based on boundary layer similarity theory is applied in the water
+column above a calculated boundary layer depth $h_{sbl}$.  This
+parameterization is then matched at the interior with schemes to
+account for local shear, internal wave and double diffusive mixing
+effects.  
+
+Viscosity and diffusivities at model levels above a calculated
+surface boundary layer depth ($h_{sbl}$ ) are expressed as the product
+of the length scale $h_{sbl}$, a turbulent velocity scale $w_x$ and a
+non-dimensional shape function.
+\begin{equation}
+\nu_x = h_{sbl} w_x(\sigma)G_x(\sigma)
+\end{equation}
+where $\sigma$ is a non-dimensional coordinate ranging from 0 to 1
+indicating depth within the surface boundary layer. The $x$ subscript
+stands for one of momentum, temperature and salinity.
+
+\subparagraph{Surface Boundary layer depth}
+The boundary layer depth $h_{sbl}$ is calculated as the minimum of the
+Ekman depth, estimated as,
+\begin{equation}
+h_e=0.7u_*/f
+\end{equation}
+(where $u_*$ is the friction velocity $u_*=\sqrt{\tau_x^2+\tau_y^2}/\rho$ ),
+ the Monin-Obukhov depth:
+\begin{equation}
+L=u_*^3/(\kappa B_f)
+\end{equation}
+(where $\kappa = 0.4$ is von Karman's contant and $B_f$ is the surface
+buoyancy flux), and the shallowest depth at which a critical bulk
+Richardson number is reached. The critical bulk Richardson number
+($Ri_c$) is typically in the range 0.25--0.5. The bulk Richardson
+number ($Ri_b$) is calculated as:
+\begin{equation}
+Ri_b(z)=\frac{(B_r-B(d))d}{|\vec{V}_r-\vec{V}(d)|^2+{V_t}^2(d)}
+\end{equation}
+where $d$ is distance down from the surface, $B$ is the buoyancy,
+$B_r$ is the buoyancy at a near surface reference depth, $\vec{V}$ is
+the mean horizontal velocity, $\vec{V}_r$ the velocity at the near
+surface reference depth and $V_t$ is an estimate of the turbulent
+velocity contribution to velocity shear.
+
+The turbulent velocity shear term in this equation is given by LMD as,
+\begin{equation}
+  V_{t}^{2}(d)=\frac{C_v(-\beta_T)^{1/2}}{Ri_c
+  \kappa}(c_s\epsilon)^{-1/2}dNw_s
+  \label{eqtvs}
+\end{equation}
+where $C_v$ is the ratio of interior $N$ to $N$ at the entrainment
+depth, $\beta_T$ is ratio of entrainment flux to surface buoyancy flux,
+$c_s$ and $\epsilon$ are constants, and $w_s$ is the turbulent velocity
+scale for scalars.
+LMD derive (\ref{eqtvs}) based on the expected behavior in the pure
+convective limit.  The empirical rule of convection states that the
+ratio of the surface buoyancy flux to that at the entrainment depth be 
+a constant.  Thus the entrainment flux at the
+bottom of the boundary layer under such conditions should be
+independent of the stratification at that depth.  Without a turbulent
+shear term in the denominator of the bulk Richardson number
+calculation, the estimated boundary layer depth is too shallow and the
+diffusivity at the entrainment depth is too low to obtain the
+necessary entrainment flux.  Thus by adding a turbulent shear term
+proportional to the stratification in the denominator, the calculated
+boundary layer depth will be deeper and will lead to a high enough
+diffusivity to satisfy the empirical rule of convection.
+  
+\subparagraph{turbulent velocity scale}
+To estimate $w_x$ (where $x$ is $m$ - momentum {\em or} $s$
+- any scalar) throughout the boundary layer, surface layer similarity
+theory is utilized.  Following an argument by Troen and Mahrt
+\cite{TM86}, Large et al.\ estimate the velocity scale as
+\begin{equation}
+w_x=\frac{\kappa u_*}{\phi_x(\zeta)}
+\end{equation}
+where $\zeta$ is the surface layer stability parameter defined as
+$z/L$.  $\phi_x$ is a non-dimensional flux profile which varies based
+on the stability of the boundary layer forcing.  The stability
+parameter used in this equation is assumed to vary over the entire
+depth of the boundary layer in stable and neutral conditions.  In
+unstable conditions it is assumed only to vary through the surface
+layer which is defined as $ \epsilon h_{sbl} $ (where $\epsilon$ is
+set at 0.10) .  Beyond this depth $\zeta$
+is set equal to its value at $ \epsilon h_{sbl} $.
+
+The flux profiles are expressed as analytical fits to atmospheric
+surface boundary layer data.  In stable conditions they vary linearly
+with the stability parameter $\zeta$  as
+\begin{equation}
+\phi_x=1+5\zeta
+\end{equation}
+In near-neutral unstable conditions common Businger-Dyer forms are
+used which match with the formulation for stable conditions at
+$\zeta=0$.  Near neutral conditions are defined as 
+\begin{equation}
+-0.2 \leq \zeta < 0
+\end{equation}
+for momentum and,
+\begin{equation}
+-1.0 \leq \zeta < 0
+\end{equation}
+for scalars.  The non dimensional flux profiles in this regime are,
+\begin{align}
+\phi_m & =(1-16\zeta)^{1/4}
+\\ \vspace{1mm}
+\phi_s & =(1-16\zeta)^{1/2}
+\end{align}
+In more unstable conditions $\phi_x$ is chosen to match the
+Businger-Dyer forms and with the free convective limit.  Here the flux 
+profiles are 
+\begin{align}
+\phi_m & =(1.26-8.38\zeta)^{1/3}
+\\ \vspace{1mm}
+\phi_s & =(-28.86-98.96\zeta)^{1/3}
+\end{align}
+
+\subparagraph{The shape function}
+The non-dimensional shape function $G(\sigma)$ is a third order
+polynomial with coefficients chosen to match the interior viscosity at
+the bottom of the boundary layer and Monin-Obukhov
+similarity theory approaching the surface.  This function is defined
+as a 3rd order polynomial.
+\begin{equation}
+G(\sigma)=a_o+a_1\sigma+a_2\sigma^2+a_3\sigma^3
+\end{equation}
+with the coefficients specified to match surface boundary conditions
+and to smoothly blend with the interior,
+\begin{align}
+  a_o & =0
+\\ \vspace{1mm}
+  a_1 & =1
+\\ \vspace{1mm}
+  a_2 & =-2+3\frac{\nu_{x}(h_{sbl})}{hw_x(1)}+\frac{\partial_x
+  \nu_{x}(h)}{w_{x}(1)}+\frac{\nu_{x}(h)
+  \partial_{\sigma}w_x(1)}{hw_{x}^{2}(1)}
+\\ \vspace{1mm}
+  a_3 & =1-2\frac{\nu_{x}(h_{sbl})}{hw_x(1)}-\frac{\partial_x
+  \nu_{x}(h)}{w_{x}(1)}-\frac{\nu_{x}(h)
+  \partial_{\sigma}w_x(1)}{hw_{x}^{2}(1)}
+\end{align}
+where $\nu_{x}(h)$ is the viscosity calculated by the interior
+parameterization at the boundary layer depth.
+
+\paragraph{Countergradient flux term}
+The second term of the LMD scheme's surface boundary layer
+formulation is the non-local transport term $\gamma$ which can play a
+significant role in mixing during surface cooling events.  This is a
+redistribution term included in the tracer equation separate from the
+diffusion term and is written as 
+\begin{equation}
+-\frac{\partial}{\partial z}K\gamma.
+\end{equation}
+
+LMD base their formulation for non-local scalar transport on a
+parameterization for pure free convection from Mailh\^ot and
+Benoit \cite{Mailhot82}. They extend this parameterization to cover any
+unstable surface forcing conditions to give
+\begin{equation}
+  \gamma_{T}=C_s\frac{\overline{wT_0}+
+  \overline{wT_R}}{w_T(\sigma)h}
+\end{equation}
+for temperature and 
+\begin{equation}
+\gamma_S=C_s \frac{\overline{wS_0}}{w_S(\sigma)h}
+\end{equation}
+for salinity (other scalar quantities with surface fluxes can be
+treated similarly). LMD argue that although there is evidence of
+non-local transport of momentum as well, the form the term would take
+is unclear so they simply specify $\gamma_m=0$.
+
+\paragraph{The interior scheme}
+The interior scheme of Large, McWilliams and Doney estimates the
+viscosity coefficient by adding the effects of several generating
+mechanisms:  shear mixing, double-diffusive mixing and internal wave
+generated mixing.
+\begin{equation}
+\nu_{x}(d)=\nu_{x}^s+\nu_{x}^d+\nu_{x}^w
+\end{equation}
+
+\subparagraph{Shear generated mixing}
+The shear mixing term is calculated using a
+gradient Richardson number formulation,
+with viscosity estimated as: 
+\begin{equation}
+\nu^s_x=\begin{cases}
+\nu_0&   \text{$ Ri_g<0$}, \\
+\nu_0[1-(Ri_g/Ri_0)^2]^3&  \text{$0< Ri_g<Ri_0$},  \\
+0&   \text{$Ri_g>Ri_0$}.  
+\end{cases}
+\end{equation}
+where $\nu_0$ is $5.0 \times 10^{-3}$, $Ri_0 = 0.7$.  
+
+\subparagraph{Double diffusive processes}
+The second component of the interior mixing parameterization represents
+double diffusive mixing.  From limited sources of laboratory and field
+data LMD parameterize the salt fingering case ($R_{\rho}>1.0$)
+\begin{align}
+\nu_{s}^{d}(R_{\rho}) & =
+	\begin{cases}
+      1\times10^{-4}[1-(\frac{(R_{\rho}-1}{R_{\rho}^0-1})^2)^{3}&
+      \text{for $1.0<R_{\rho}<R_{\rho}^0=1.9$},\\
+           0& \text{otherwise}.
+        \end{cases}
+\\ \vspace{1mm}
+\nu_{\theta}^{d}(R_{\rho}) & =0.7\nu_{s}^{d}
+\end{align}
+
+For diffusive convection ($0<R_{\rho}<1.0$) LMD suggest several
+formulations from the literature and choose the one with the most
+significant impact on mixing (Fedorov \cite{Fedorov88}).
+\begin{equation}
+\nu_{\theta}^{d}=(1.5 \time 10^{-6})(0.909 \exp(4.6 \exp[-0.54(R_{\rho}^{-1}-1)])
+\end{equation}
+for temperature.  For other scalars,
+\begin{equation}
+   \nu_{s}^{d}=
+	\begin{cases}
+	     \nu_{\theta}^{d}(1.85-0.85R_{\rho}^{-1})R_{\rho}& \text{for $0.5<=R_{\rho}<1.0$},\\ 
+             \nu_{\theta}^{d}0.15R_{\rho}&  \text{otherwise}. \\
+        \end{cases}
+\end{equation}
+
+\subparagraph{Internal wave generated mixing}
+Internal wave generated mixing serves as the background mixing in the
+LMD scheme.  It is specified as a constant for both scalars and
+momentum.  Eddy diffusivity is estimated based on the data of Ledwell
+et al.\ \cite{LWL93}.  While Peters et al.\ \cite{Peters88} suggest
+eddy viscosity should be 7 to 10 times larger than diffusivity for
+gradient Richardson numbers below approximately 0.7.  Therefore LMD use
+\begin{align}
+\nu_{m}^w & =1.0 \times 10^{-4} m^2 s^{-1}
+\\ \vspace{1mm}
+\nu_{s}^w & =1.0 \times 10^{-5} m^2 s^{-1}
+\end{align}
+
+\subsection{Timestepping vertical viscosity and diffusion}
+\label{Vfric}
+The ${\cal D}_u$, ${\cal D}_v$, and ${\cal D}_C$ terms in
+equations (\ref{ufull})--(\ref{tfull}) represent both horizontal and
+vertical mixing processes.  The horizontal options will be covered in
+\S\ref{Smooth}. The model has several options for computing the
+vertical coefficients; these will be described in \S\ref{Vmix}.
+The vertical viscosity and diffusion terms have
+the form:
+\begin{equation}
+   {\partial \over \partial \sigma} \left( {K \over H_z mn} {\partial
+   \phi \over \partial \sigma} \right)
+\end{equation}
+where $\phi$ represents one of $u$, $v$, or $C$, and $K$ is the
+corresponding vertical viscous or diffusive coefficient. This is
+timestepped using a semi-implicit Crank-Nicholson scheme with a
+weighting of 0.5 on the old timestep and 0.5 on the new timestep.
+Specifically, the equation of motion for $\phi$
+can be written as:
+\begin{equation}
+  {\partial (H_z \phi) \over \partial t} = mnR_{\phi} +
+  {\partial \over \partial \sigma} \left( {K \over H_z}
+  {\partial \phi \over \partial \sigma} \right)
+\label{vdiff1}
+\end{equation}
+where $R_{\phi}$ represents all of the forcing terms other than the
+vertical viscosity or diffusion.  Since we want the diffusion term
+to be evaluated partly at the current timestep $n$ and partly at the
+next timestep $n+1$, we introduce the parameter $\lambda$ and rewrite
+equation (\ref{vdiff1}) as:
+\begin{equation}
+  {\partial (H_z \phi) \over \partial t} = mnR_{\phi} +
+  (1-\lambda) {\partial \over \partial \sigma} \left( {K \over H_z}
+  {\partial \phi^n \over \partial \sigma} \right) +
+  \lambda {\partial \over \partial \sigma} \left( {K \over H_z}
+  {\partial \phi^{n+1} \over \partial \sigma} \right) .
+\label{vdiff2}
+\end{equation}
+The discrete form of equation (\ref{vdiff2}) is:
+\begin{multline}
+   {H_{z_k}^{n+1} \phi_k^{n+1} - H_{z_k}^n \phi_k^n \over \Delta t} =
+   mn R_{\phi} + {(1-\lambda) \over \Delta s^2} \left[
+   {K_k \over H_{z_k}} (\phi_{k+1}^n - \phi_k^n) -
+   {K_{k-1} \over H_{z_{k-1}}} (\phi_k^n - \phi_{k-1}^n) \right]
+\\ \vspace{1mm}
+ \qquad \qquad \qquad  + {\lambda \over \Delta s^2} \left[
+   {K_k \over H_{z_k}} (\phi_{k+1}^{n+1} - \phi_k^{n+1}) -
+   {K_{k-1} \over H_{z_{k-1}}} (\phi_k^{n+1} - \phi_{k-1}^{n+1})
+   \right]
+\label{vdiff3}
+\end{multline}
+where $k$ is used as the vertical level index.
+This can be reorganized so that all the terms involving $\phi^{n+1}$
+are on the left and all the other terms are on the right.  The
+equation for $\phi_k^{n+1}$ will contain terms involving the
+neighbors above and below ($\phi_{k+1}^{n+1}$ and $\phi_{k+1}^{n-1}$)
+which leads to a set of coupled equations with boundary conditions
+for the top and bottom.  The general form of these equations is:
+\begin{equation}
+   A_k \phi_{k+1}^{n+1} + B_k \phi_k^{n+1} + C_k \phi_{k-1}^{n+1} = D_k
+\end{equation}
+where the boundary conditions are written into the coefficients
+for the end points.  In this case the coefficients become:
+\begin{eqnarray}
+   A(1) & = & 0 \\
+   A(2:{\bf N}) & = & - {\lambda \Delta t \, K_{k-1}
+   \over \Delta \sigma^2 H^{n+1}_{z_{k-1}} } \\
+   B(1) & = & H^{n+1}_{z_1} + {\lambda \Delta t \, K_1 \over
+   \Delta \sigma^2 H^{n+1}_{z_1} } \\
+   B(2:{\bf Nm}) & = & H_{z_k}^{n+1}
+   + {\lambda \Delta t \, K_k \over \Delta \sigma^2 H_{z_k}^{n+1} }
+   + {\lambda \Delta t \, K_{k-1} \over
+   \Delta \sigma^2 H^{n+1}_{z_{k-1}}}\\
+   B({\bf N}) & = & H^{n+1}_{z_{\bf N}}
+   + {\lambda \Delta t \, K_{\bf Nm} \over
+       \Delta \sigma^2 H^{n+1}_{z_{\bf Nm}} } \\
+   C(1:{\bf Nm}) & = & - {\lambda \Delta t \, K_k
+   \over \Delta \sigma^2 H_{z_k}^{n+1} } \\
+   C({\bf N}) & = & 0 \\
+   D(1) & = & H^n_{z_1} \phi_1^n + \Delta t \, mn R_{{\phi}_1}
+   + {\Delta t (1-\lambda) \over \Delta \sigma^2 }{ K_1 \over H^n_{z_1}}
+   (\phi_2^n - \phi_1^n) - {\Delta t \over \Delta \sigma} \tau_b \\
+   D(2:{\bf Nm}) & = & H^n_{z_k} \phi_k^n + \Delta t \, mn R_{{\phi}_k}
+   + \\
+   && {\Delta t (1-\lambda) \over \Delta \sigma^2 } \left[
+   { K_k \over H^n_{z_k}} (\phi_{k+1}^n - \phi_k^n) -
+   { K_{k-1} \over H^n_{z_{k-1}}} (\phi_k^n - \phi_{k-1}^n)
+   \right] \\
+   D({\bf N}) & = & H^n_{z_{\rm N}} \phi_{\rm N}^n +
+   \Delta t \, mn R_{{\phi}_{\rm N}}
+   - {\Delta t (1-\lambda) \over \Delta \sigma^2 }
+   { K_{\bf Nm} \over H^n_{z_{\bf Nm}}}
+   (\phi_{\rm N}^n - \phi_{\rm Nm}^n) + {\Delta t \over \Delta
+   \sigma} \tau_s
+\end{eqnarray}
+This is a standard tridiagonal system for which the solution
+procedure can be found in any standard reference, such as Press et
+al.\ \cite{PFTV}.
+

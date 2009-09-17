@@ -1,0 +1,76 @@
+\setlength{\unitlength}{3947sp}%
+%
+\begin{picture}(2724,10074)(3439,-10123)
+\thinlines
+\put(4201,-7111){\framebox(1200,300){}}
+\put(4201,-8311){\framebox(1200,300){}}
+\put(4201,-8911){\framebox(1200,300){}}
+\put(4801,-8311){\vector( 0,-1){300}}
+\put(4801,-8911){\vector( 0,-1){300}}
+\put(4801,-9511){\vector( 0,-1){300}}
+\put(4201,-7711){\framebox(1200,300){}}
+\put(4801,-7711){\vector( 0,-1){300}}
+\put(4801,-7111){\vector( 0,-1){300}}
+\put(4801,-6061){\line( 4, 3){600}}
+\put(5401,-5611){\line(-4, 3){600}}
+\put(4801,-5161){\line(-4,-3){600}}
+\put(4201,-5611){\line( 4,-3){600}}
+\put(4801,-4861){\vector( 0,-1){300}}
+\put(4201,-4861){\framebox(1200,300){}}
+\put(3451,-6511){\framebox(1200,300){}}
+\put(4951,-6511){\framebox(1200,300){}}
+\put(5326,-6511){\vector(-1,-1){300}}
+\put(4276,-6511){\vector( 1,-1){300}}
+\put(4576,-5911){\vector(-1,-1){300}}
+\put(5026,-5911){\vector( 1,-1){300}}
+\put(4201,-9511){\framebox(1200,300){}}
+\put(3901,-10111){\framebox(1800,300){}}
+\put(4801,-8236){\makebox(0,0)[b]{{omega}}}
+\put(4801,-8836){\makebox(0,0)[b]{{set\_vbc}}}
+\put(4801,-7636){\makebox(0,0)[b]{{depth3d}}}
+\put(4801,-7036){\makebox(0,0)[b]{{depth2d}}}
+\put(4801,-5686){\makebox(0,0)[b]{{initial file?}}}
+\put(4276,-5986){\makebox(0,0)[b]{{no}}}
+\put(5401,-5986){\makebox(0,0)[b]{{yes}}}
+\put(4801,-4786){\makebox(0,0)[b]{{set\_scoord}}}
+\put(5551,-6436){\makebox(0,0)[b]{{get\_initial}}}
+\put(4051,-6436){\makebox(0,0)[b]{{ana\_initial}}}
+\put(4801,-9436){\makebox(0,0)[b]{{rho\_eos}}}
+\put(4801,-10036){\makebox(0,0)[b]{{initialize output files}}}
+\put(4801,-1561){\line( 4, 3){600}}
+\put(5401,-1111){\line(-4, 3){600}}
+\put(4801,-661){\line(-4,-3){600}}
+\put(4201,-1111){\line( 4,-3){600}}
+\put(4801,-361){\vector( 0,-1){300}}
+\put(4201,-361){\framebox(1200,300){}}
+\put(4201,-2611){\framebox(1200,300){}}
+\put(4801,-2611){\vector( 0,-1){300}}
+\put(3451,-2011){\framebox(1200,300){}}
+\put(4951,-2011){\framebox(1200,300){}}
+\put(4276,-2011){\vector( 1,-1){300}}
+\put(5326,-2011){\vector(-1,-1){300}}
+\put(5026,-1411){\vector( 1,-1){300}}
+\put(4576,-1411){\vector(-1,-1){300}}
+\put(3451,-4261){\framebox(1200,300){}}
+\put(4951,-4261){\framebox(1200,300){}}
+\put(4276,-4261){\vector( 1,-1){300}}
+\put(4576,-3661){\vector(-1,-1){300}}
+\put(5326,-4261){\vector(-1,-1){300}}
+\put(5026,-3661){\vector( 1,-1){300}}
+\put(4779,-3795){\line( 4, 3){600}}
+\put(5379,-3345){\line(-4, 3){600}}
+\put(4779,-2895){\line(-4,-3){600}}
+\put(4179,-3345){\line( 4,-3){600}}
+\put(4801,-1186){\makebox(0,0)[b]{{grid file?}}}
+\put(5401,-1486){\makebox(0,0)[b]{{yes}}}
+\put(4276,-1486){\makebox(0,0)[b]{{no}}}
+\put(4801,-2536){\makebox(0,0)[b]{{metrics}}}
+\put(4051,-1936){\makebox(0,0)[b]{{ana\_grid}}}
+\put(5551,-1936){\makebox(0,0)[b]{{get\_grid}}}
+\put(4801,-286){\makebox(0,0)[b]{{zero\_arrays}}}
+\put(5551,-4186){\makebox(0,0)[b]{{get\_mask}}}
+\put(4051,-4186){\makebox(0,0)[b]{{ana\_mask}}}
+\put(4276,-3736){\makebox(0,0)[b]{{no}}}
+\put(5401,-3736){\makebox(0,0)[b]{{yes}}}
+\put(4801,-3436){\makebox(0,0)[b]{{mask file?}}}
+\end{picture}

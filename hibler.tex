@@ -1,0 +1,396 @@
+\chapter{Model Formulation}
+\label{Phys}
+\section {Equations of motion}
+The equations of motion for the ice model in Cartesian coordinates can
+be written (from Hibler \cite{Hibler79}):
+\begin{equation}
+  M {\partial u \over \partial t} + M \vec{v} \cdot \nabla u = Mfv
+  - Mg {\partial H \over \partial x} + \tau_a^x + \tau_w^x + {\cal F}_x
+\label{st1}
+\end{equation}
+\vspace{.2cm}
+\begin{equation}
+  M {\partial v \over \partial t} + M \vec{v} \cdot \nabla v = - Mfu
+  - Mg {\partial H \over \partial y} + \tau_a^y + \tau_w^y + {\cal F}_y
+\label{st2}
+\end{equation}
+\vspace{.2cm}
+\begin{equation}
+  \sigma_{ij} = 2 \eta \epsilon_{ij} + (\zeta - \eta) \epsilon_{kk}
+  \delta_{ij} - {P \over 2} \delta_{ij}
+\label{stress1}
+\end{equation}
+\vspace{.2cm}
+\begin{equation}
+   {\cal F}_x = {\partial \over \partial x} \left[ (\eta + \zeta)
+   {\partial u \over \partial x} + (\zeta - \eta)
+   {\partial v \over \partial y} - P/2 \right] +
+   {\partial \over \partial y} \left[ \eta \left( 
+   {\partial u \over \partial y} + {\partial v \over \partial x}
+   \right) \right]
+\label{fx1}
+\end{equation}
+\vspace{.2cm}
+\begin{equation}
+   {\cal F}_y = {\partial \over \partial y} \left[ (\eta + \zeta)
+   {\partial v \over \partial y} + (\zeta - \eta)
+   {\partial u \over \partial x} - P/2 \right] +
+   {\partial \over \partial x} \left[ \eta \left( 
+   {\partial u \over \partial y} + {\partial v \over \partial x}
+   \right) \right]
+\label{fy1}
+\end{equation}
+\vspace{.2cm}
+\begin{equation}
+  {\partial h \over \partial t} =
+  - {\partial (uh) \over \partial x} - {\partial (vh) \over \partial y}
+  + S_h + {\cal D}
+\label{st3a}
+\end{equation}
+\vspace{.2cm}
+\begin{equation}
+  {\partial A \over \partial t} =
+  - {\partial (uA) \over \partial x} - {\partial (vA) \over \partial y}
+  + S_A + {\cal D}
+\label{st3b}
+\end{equation}
+\vspace{.2cm}
+\begin{equation}
+   S_h = A \, G \! \left( {h \over A} \right) + (1-A)G(0)
+\end{equation}
+{\samepage
+\[
+   S_A = \left\{ \begin{array}{cl}
+       {G(0)(1-A) \over h_o},  &  \mbox{if \quad} G(0) > 0, \\
+       0,               &  \mbox{if \quad} G(0) < 0,
+       \end{array} \right.
+\]
+\begin{equation}
+   + \left\{ \begin{array}{cl}
+       0,               &  \mbox{if \quad} S_h > 0, \\
+       {S_h A \over 2h}  &  \mbox{if \quad} S_h < 0,
+       \end{array} \right.
+\end{equation}
+}
+where, in standard notation:
+\begin{center}
+  ($u,v$) = the ($x,y$) components of vector velocity $\vec{v}$ \\
+\vspace{1mm}
+  $h(x,y,t)$ = ice thickness \\
+\vspace{1mm}
+  $h_o$ = ice cutoff thickness \\
+\vspace{1mm}
+  $A(x,y,t)$ = ice concentration \\
+\vspace{1mm}
+  $M(x,y,t)$ = ice mass (density times thickness) \\
+\vspace{1mm}
+  $G(h)$ = growth rate of ice of thickness $h$ \\
+\vspace{1mm}
+  $H(x,y,t)$ = height of the ocean surface \\
+\vspace{1mm}
+  $\zeta(x,y,t)$ = nonlinear bulk viscosity \\
+\vspace{1mm}
+  $\eta(x,y,t)$ = nonlinear shear viscosity \\
+\vspace{1mm}
+  $f(x,y)$ = Coriolis parameter \\
+\vspace{1mm}
+  $g$ = acceleration of gravity \\
+\vspace{1mm}
+  $\sigma_{ij}(x,y,t)$ = stress tensor \\
+\vspace{1mm}
+  $\epsilon_{ij}(x,y,t)$ = strain rate tensor \\
+\vspace{1mm}
+  $P(x,y,t)$ = ice pressure or strength \\
+\vspace{1mm}
+  ($\tau_a, \tau_w$) = air and water stresses \\
+\vspace{1mm}
+  (${\cal F}_x, {\cal F}_y$) = viscous-plastic terms \\
+\vspace{1mm}
+  ($S_h, S_A$) = thermodynamic terms
+\end{center}
+and
+\begin{center}
+  (${\cal D}_h, {\cal D}_A$) = diffusive terms.
+\end{center}
+Equations (\ref{st1}) and (\ref{st2}) express the momentum balance in
+the $x$ and $y$ directions, respectively.  The time evolution of the
+thickness and concentration fields, $h(x,y,t)$ and $A(x,y,t)$, are
+governed by the advective-diffusive equations (\ref{st3a}) and
+(\ref{st3b}).  The viscous-plastic terms (\ref{fx1}) and (\ref{fy1})
+are found by taking the divergence of the stress tensor
+(\ref{stress1}).  For the moment, the effects of dissipation will be
+represented by the schematic terms ${\cal D}$, which are the sum of a
+Laplacian and biharmonic diffusion.
+
+%\section{Horizontal boundary conditions}
+%As distributed, the model configuration is that of a periodic channel.
+%If the variable \code{perchan} is set to \code{false} then the boundary
+%conditions are that of a closed basin.  For any other configuration it
+%is the responsibility of the user to provide the appropriate boundary
+%conditions on $u,v,T,S,$ and $\psi$, where $\psi$ is the transport
+%streamfunction.  At every time step the subroutines \code{bcs} and
+%\code{bcpsi} are called to fill in the necessary boundary values.
+
+%If the biharmonic friction is used, a
+%higher order boundary condition must also be provided.  The model
+%currently has this built into the code where the biharmonic terms are
+%calculated.  The high order boundary conditions used are
+%${\partial \over \partial x} \left( {h\nu \over mn} {\partial
+%^2 u \over \partial x^2} \right) = 0$
+%on the eastern and western boundaries and
+%${\partial \over \partial y} \left( {h\nu \over mn} {\partial
+%^2 u \over \partial y^2} \right) = 0$ on the northern
+%and southern boundaries.  The boundary conditions for $v,T,$ and $S$
+%are similar.  These boundary conditions were chosen because they
+%preserve the property of no gain or loss of momentum, temperature,
+%or salt across a closed boundary.
+
+\section{Horizontal curvilinear coordinates}
+In many applications of interest (e.g., flow adjacent to a coastal
+boundary), the fluid may be confined horizontally within an
+irregular region.  In such problems, a horizontal coordinate system
+which conforms to the irregular lateral boundaries is advantageous.
+It is often also true in many geophysical problems that the
+simulated flow fields have regions of enhanced structure (e.g.,
+boundary currents or fronts) which occupy a relatively small
+fraction of the physical /computational domain.  In these problems,
+added efficiency can be gained by placing more (computational)
+resolution in such regions.
+
+The requirement for a boundary-following coordinate system and for a
+laterally variable grid resolution can both be met (for suitably
+smooth domains) by introducing an appropriate orthogonal coordinate
+transformation in the horizontal.  Let the new coordinates be $\xi_1
+(x,y)$ and $\xi_2(x,y)$ where the relationship of horizontal arc
+length to the differential distance is given by:
+\begin{equation}
+   (ds)_{\xi_1} = \left( {1 \over m} \right) d \xi_1
+\end{equation}
+\begin{equation}
+   (ds)_{\xi_2} = \left( {1 \over n} \right) d \xi_2
+\end{equation}
+Here, $m(\xi_1,\xi_2)$ and $n(\xi_1,\xi_2)$ are the scale factors which
+relate the differential distances $(\Delta \xi_1,\Delta \xi_2)$ to the
+actual (physical) arc lengths.
+
+It is helpful to write the equations in vector notation and to use
+the formulas for div, grad, and curl in curvilinear coordinates (see
+Batchelor, Appendix 2, \cite{Batchelor}):
+\begin{equation}
+   \nabla \phi = \hat{\xi_1} m {\partial \phi \over \partial \xi_1} +
+                 \hat{\xi_2} n {\partial \phi \over \partial \xi_2}
+\end{equation}
+\begin{equation}
+   \nabla \cdot \vec{a} = mn \left[
+   {\partial \over \partial \xi_1} \!\! \left( {a \over n} \right) +
+   {\partial \over \partial \xi_2} \!\! \left( {b \over m} \right)
+   \right]
+\end{equation}
+\begin{equation}
+   \nabla \times \vec{a} = mn \left| \begin{array}{ccc}
+   \vspace{1 mm}
+   {\hat{\xi}_1 \over m} & {\hat{\xi}_2 \over n} & \hat{k} \\
+   \vspace{1 mm}
+   {\partial \over \partial \xi_1} &
+   {\partial \over \partial \xi_2} &
+   {\partial \over \partial \xi_3} \\
+   {a \over m} & {b \over n} & c
+   \end{array} \right|
+\end{equation}
+\begin{equation}
+   \nabla^2 \phi = \nabla \cdot \nabla \phi = mn \left[ 
+   {\partial \over \partial \xi_1} \!\! \left( {m \over n} 
+   {\partial \phi \over \partial \xi_1} \right) +
+   {\partial \over \partial \xi_2} \!\! \left( {n \over m} 
+   {\partial \phi \over \partial \xi_2} \right) \right]
+\end{equation}
+where $\phi$ is a scalar and $\vec{a}$ is a vector with components
+$a$, $b$, and $c$.
+
+Denoting the velocity components in the new coordinate system by
+\begin{equation}
+   \vec{v} \cdot \hat{\xi_1} = u
+\end{equation}
+and
+\begin{equation}
+   \vec{v} \cdot \hat{\xi_2} = v
+\end{equation}
+the equations of motion (\ref{st1})-(\ref{st3b}) can be re-written
+(see, e.g., Arakawa and Lamb \cite{AL}):
+{\samepage
+\[
+   {\partial u \over \partial t} +
+   m u {\partial u \over \partial \xi_1} +
+   n v {\partial u \over \partial \xi_2} =
+   \left\{f + mn \left[ v \frac{\partial}{\partial \xi_1}
+   \!\! \left( \frac{1}{n} \right) - u \frac{\partial}{\partial \xi_2}
+   \!\! \left( \frac{1}{m} \right) \right] \right\} v
+\]
+\begin{equation}
+   - gm {\partial H \over \partial \xi_1} +
+   {1 \over M} \left( \tau_a^{\xi_1} + \tau_w^{\xi_1} + {\cal F}_{\xi_1}
+   \right)
+\label{st13}
+\end{equation}
+}
+\vspace{.2cm}
+{\samepage
+\[
+   {\partial v \over \partial t} +
+   m u {\partial v \over \partial \xi_1} +
+   n v {\partial v \over \partial \xi_2} =
+   - \left\{f + mn \left[ v \frac{\partial}{\partial \xi_1}
+   \!\! \left( \frac{1}{n} \right) - u \frac{\partial}{\partial \xi_2}
+   \!\! \left( \frac{1}{m} \right) \right] \right\} u
+\]
+\begin{equation}
+   - gn {\partial H \over \partial \xi_2} +
+   {1 \over M} \left( \tau_a^{\xi_2} + \tau_w^{\xi_2} + {\cal F}_{\xi_2}
+   \right)
+\label{st14}
+\end{equation}
+}
+\vspace{.2cm}
+\begin{equation}
+   {\partial h \over \partial t} =
+   - mn \left[ {\partial \over \partial \xi_1} \!\! \left( {hu \over n}
+   \right ) + {\partial \over \partial \xi_2} \!\! \left( {hv \over m}
+   \right) \right] + S_h + {\cal D}_h
+\label{st15}
+\end{equation}
+\vspace{.2cm}
+\begin{equation}
+   {\partial A \over \partial t} =
+   - mn \left[ {\partial \over \partial \xi_1} \!\! \left( {Au \over n}
+   \right ) + {\partial \over \partial \xi_2} \!\! \left( {Av \over m}
+   \right) \right] + S_A + {\cal D}_A
+\label{st16}
+\end{equation}
+\vspace{.2cm}
+$S_h$ and $S_A$ remain unchanged.
+
+The viscous-plastic terms can be derived from equation
+(\ref{stress1}).  In curvilinear coordinates the strain rate tensor
+can be writen as:
+\begin{equation}
+   \epsilon_{11} = m {\partial u \over \partial \xi_1} +
+    vmn {\partial \over \partial \xi_2} \!\! \left( {1 \over m} \right)
+\end{equation}
+\begin{equation}
+   \epsilon_{12} = e_{21} = {1 \over 2} \left[
+   {m \over n} {\partial \left( nv \right) \over \partial \xi_1}
+   + {n \over m} {\partial \left( mu \right) \over \partial \xi_2}
+   \right]
+\end{equation}
+\begin{equation}
+   \epsilon_{22} = n {\partial v \over \partial \xi_2} +
+    umn {\partial \over \partial \xi_1} \!\! \left( {1 \over n} \right)
+\end{equation}
+In curvilinear coordinates the divergence of symmetric tensor {\bf T}
+is:
+\[
+    \nabla \cdot \mbox{\bf T} =
+    \hat{\xi_1} \left[ m
+    {\partial \mbox{\bf T}_{11} \over \partial \xi_1}
+    + n {\partial \mbox{\bf T}_{12} \over \partial \xi_2}
+    + \mbox{\bf T}_{11} mn {\partial \over \partial \xi_1} \!\!
+    \left( {1 \over n} \right) \right. \mbox{\hspace{2 cm}}
+\]
+\[
+    \mbox{\hspace{2 cm}} \left. + 2 \mbox{\bf T}_{12} mn
+    {\partial \over \partial \xi_2} \!\! \left( {1 \over m} \right)
+    - \mbox{\bf T}_{22} mn
+    {\partial \over \partial \xi_1} \!\! \left( {1 \over n} \right)
+    \right]
+\]
+\[
+    + \hat{\xi_2} \left[ m
+    {\partial \mbox{\bf T}_{12} \over \partial \xi_1}
+    + n {\partial \mbox{\bf T}_{22} \over \partial \xi_2}
+    - \mbox{\bf T}_{11} mn {\partial \over \partial \xi_2} \!\!
+    \left( {1 \over m} \right) \right. \mbox{\hspace{2 cm}}
+\]
+\begin{equation}
+    \mbox{\hspace{2 cm}} \left. + 2 \mbox{\bf T}_{12} mn
+    {\partial \over \partial \xi_1} \!\! \left( {1 \over n} \right)
+    + \mbox{\bf T}_{22} mn
+    {\partial \over \partial \xi_2} \!\! \left( {1 \over m} \right)
+    \right]
+\end{equation}
+A more general expression for derivatives of tensors is given by
+Aris \cite{Aris} in terms of Christoffel symbols.
+
+The viscous-plastic terms become:
+\[
+   {\cal F}_{\xi_1} = m {\partial \over \partial \xi_1} \left[
+   (\zeta - \eta ) mn {\partial \over \partial \xi_1} \!\! \left(
+   {u \over n} \right) \right] +
+   m {\partial \over \partial \xi_1} \left[
+   (\zeta - \eta ) mn {\partial \over \partial \xi_2} \!\! \left(
+   {v \over m} \right) \right] - {m \over 2}
+   {\partial P \over \partial \xi_1}
+\]
+\[
+   + 2 m {\partial \over \partial \xi_1} \left[ \eta m
+   {\partial u \over \partial \xi_1} + \eta v mn 
+   {\partial \over \partial \xi_2} \!\! \left( {1 \over m} \right)
+   \right]
+   + n {\partial \over \partial \xi_2} \left[ \eta {m \over n}
+   {\partial (nv) \over \partial \xi_1} + \eta {n \over m}
+   {\partial (mu) \over \partial \xi_2} \right]
+\]
+\[
+   + 2 \eta m^2 n {\partial u \over \partial \xi_1}
+   {\partial \over \partial \xi_1} \!\! \left( {1 \over n} \right)
+   + 2 \eta v m^2 n^2
+   {\partial \over \partial \xi_2} \!\! \left( {1 \over m} \right)
+   {\partial \over \partial \xi_1} \!\! \left( {1 \over n} \right)
+   + 2 \eta m^2 {\partial (nv) \over \partial \xi_1}
+   {\partial \over \partial \xi_2} \!\! \left( {1 \over m} \right)
+\]
+\begin{equation}
+   + 2 \eta n^2 {\partial (mu) \over \partial \xi_2}
+   {\partial \over \partial \xi_2} \!\! \left( {1 \over m} \right)
+   - 2 \eta m n^2 {\partial v \over \partial \xi_2}
+   {\partial \over \partial \xi_1} \!\! \left( {1 \over n} \right)
+   - 2 \eta u m^2 n^2 \left[
+   {\partial \over \partial \xi_1} \!\! \left( {1 \over n} \right)
+   \right]^2
+\end{equation}
+\vspace{2 mm}
+\[
+   {\cal F}_{\xi_2} = n {\partial \over \partial \xi_2} \left[
+   (\zeta - \eta ) mn {\partial \over \partial \xi_1} \!\! \left(
+   {u \over n} \right) \right] +
+   n {\partial \over \partial \xi_2} \left[
+   (\zeta - \eta ) mn {\partial \over \partial \xi_2} \!\! \left(
+   {v \over m} \right) \right] - {n \over 2}
+   {\partial P \over \partial \xi_2}
+\]
+\[
+   + m {\partial \over \partial \xi_1} \left[ \eta {m \over n}
+   {\partial (nv) \over \partial \xi_1} + \eta {n \over m}
+   {\partial (mu) \over \partial \xi_2} \right]
+   + 2n {\partial \over \partial \xi_2} \left[ \eta n
+   {\partial v \over \partial \xi_2} + \eta u mn 
+   {\partial \over \partial \xi_1} \!\! \left( {1 \over n} \right)
+   \right]
+\]
+\[
+   - 2 \eta m^2 n {\partial u \over \partial \xi_1}
+   {\partial \over \partial \xi_2} \!\! \left( {1 \over m} \right)
+   - 2 \eta v m^2 n^2 \left[
+   {\partial \over \partial \xi_2} \!\! \left( {1 \over m} \right)
+   \right]^2
+   + 2 \eta m^2 {\partial (nv) \over \partial \xi_1}
+   {\partial \over \partial \xi_1} \!\! \left( {1 \over n} \right)
+\]
+\begin{equation}
+   + 2 \eta n^2 {\partial (mu) \over \partial \xi_2}
+   {\partial \over \partial \xi_1} \!\! \left( {1 \over n} \right)
+   + 2 \eta m n^2 {\partial v \over \partial \xi_2}
+   {\partial \over \partial \xi_2} \!\! \left( {1 \over m} \right)
+   + 2 \eta u m^2 n^2
+   {\partial \over \partial \xi_2} \!\! \left( {1 \over m} \right)
+   {\partial \over \partial \xi_1} \!\! \left( {1 \over n} \right)
+\end{equation}

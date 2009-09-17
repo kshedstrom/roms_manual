@@ -1,0 +1,222 @@
+\section{The C preprocessor}
+\label{Cpp}
+
+The C preprocessor, \code{cpp}, is a standalone program which comes
+with most C compilers.  On many UNIX systems it is not in the default
+path, but in \code{/lib} or in \code{/usr/lib}.  If you do not have a C
+preprocessor then there are several versions available via anonymous
+ftp.  For instance, \code{ftp.uu.net} has two in the
+\code{/published/oreilly/nutshell/imake} directory---I have built and
+used the one from Der Mouse on a Cray.  I have put this one in
+pub/util/cpp.tar.gz on the ahab.rutgers.edu ftp site since it supports
+the \code{\#elif} construct.  One also comes with \code{gcc},
+the \code{gnu} C compiler.  If you build this compiler, \code{cpp} will
+have a path such as
+
+\begin{verbatim}
+       /usr/local/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/cpp
+\end{verbatim}
+where \code{sparc} is the architecture, \code{sun} is  the
+manufacturer, \code{solaris2.5} is the operating system and version,
+and \code{2.7.2} is \code{gcc}'s version number.
+
+This Appendix describes the C preprocessor as used in SCRUM with the
+Fortran language.  A more complete description is given by
+Kernighan and Ritchie \cite{K&R}.  More practical advice on using
+\code{cpp} is given by Hazard \cite{Hazard}.
+
+\subsection{File inclusion}
+Placing common blocks in smaller files, which are then included in each
+subroutine, is the easiest way to make sure that the common blocks are
+declared consistently.  Many Fortran compilers support an include
+statement where the compiler replaces the line
+\begin{verbatim}
+            include 'file.h'
+\end{verbatim}
+with the contents of \code{file.h}; \code{file.h} is assumed
+to be in the current directory.  The C preprocessor has an equivalent
+include statement:
+\begin{verbatim}
+      #include "file.h"
+\end{verbatim}
+We are using the C preprocessor style of include because many of the
+SCRUM include files are not pure Fortran and must be processed by
+\code{cpp}.
+
+\subsection{Macro substitution}
+A macro definition has the form
+\begin{verbatim}
+      #define    name           replacement text
+\end{verbatim}
+where \code{name} would be replaced with ``replacement text''
+throughout the rest of the file.  This is used in SCRUM as a
+reasonably portable way to get 64-bit precision:
+\begin{verbatim}
+      #define  BIGREAL     real*8
+\end{verbatim}
+It is customary to use uppercase for \code{cpp} macros---the C
+preprocessor is case sensitive.
+
+It is also possible to define macros with arguments, as in
+\begin{verbatim}
+      #define av2(a1,a2)        (.5 * ((a1) + (a2)))
+\end{verbatim}
+although this is riskier than the equivalent statement function
+\begin{verbatim}
+            av2(a1,a2) = .5 * (a1 + a2)
+\end{verbatim}
+The statement function is preferable because it allows the compiler
+to do type checking and because you don't have to be as careful
+about using enough parentheses.
+
+The third form of macro has no replacement text at all:
+\begin{verbatim}
+      #define  MASKING
+\end{verbatim}
+In this case, \code{MASKING} will evaluate to \code{true} in the
+conditional tests described below.
+
+\subsection{Conditional inclusion}
+It is possible to control which parts of the code are seen by the
+Fortran compiler by the use of \code{cpp}'s conditional inclusion.
+For example, the statements
+\begin{verbatim}
+      #ifdef MASKING
+      # include "mask.h"
+      #endif /* MASKING */
+              :
+      # ifdef MASKING
+      c
+      c  Apply Land/Sea mask: slipperiness.
+      c
+            do j=1,M
+              do i=2,Lm
+                Uflux(i,j)=Uflux(i,j)*pmask(i,j)
+              enddo
+            enddo
+      # endif /* MASKING */
+\end{verbatim}
+will not be in the Fortran source code if \code{MASKING} has not
+been defined.  Likewise,
+\code{\#ifndef} tests for a macro being undefined:
+\begin{verbatim}
+      #ifndef RMDOCINC
+      c  rmask       Mask at RHO-points (0=Land, 1=Sea).
+      c  pmask       Slipperiness mask at PSI-points (0=Land, 1=Sea,
+      c                                               1-gamma2=boundary).
+      c  umask       Mask at U-points (0=Land, 1=Sea).
+      c  vmask       Mask at V-points (0=Land, 1=Sea).
+      c
+      c=======================================================================
+      #endif
+\end{verbatim}
+
+There are also \code{\#else} and \code{\#elif} (else if) statements,
+although \code{\#elif} is newer and is not supported by all versions of
+\code{cpp}.  An example using \code{\#else} and \code{\#elif} is
+shown:
+\begin{verbatim}
+#if defined BASIN
+      parameter (L=181, M=141, N=12, NT=1)
+#elif defined CANYON_A
+      parameter (L=66, M=49, N=10, NT=1)
+#elif defined CANYON_B
+      parameter (L=66, M=49, N=15, NT=1)
+           :
+#elif defined UPWELLING
+      parameter (L=42, M=81, N=16, NT=2)
+#else
+      parameter (L=???, M=???, N=??, NT=?)
+#endif
+\end{verbatim}
+
+Actually, \code{\#ifdef} is a restricted version of the more general
+test
+\begin{verbatim}
+      #if     expression
+\end{verbatim}
+where ``expression'' is a constant integer value.  Zero evaluates
+to \code{false} and everything else is considered \code{true}.
+Compound expressions may be built using the C logical operators:
+\begin{verbatim}
+        &&           logical and
+        ||           logical or
+        !            logical not
+\end{verbatim}
+These symbols would be used as in the following example:
+\begin{verbatim}
+      #if defined CANYON_A || defined CANYON_B
+            do j=0,M
+              do i=0,L
+                yc=c32000-c16000*(sin(pi*xr(i,j)/xl))**24
+                h(i,j)=c20+p5*(hmax-c20)*(c1+tanh((yr(i,j)-yc)/c10000))
+              enddo
+            enddo
+      #endif
+\end{verbatim}
+
+\subsection{C comments}
+The C preprocessor will also delete C language comments starting
+with \code{/*} and ending with \code{*/} as in:
+\begin{verbatim}
+       #endif  /* MASKING */
+\end{verbatim}
+When mixed with Fortran code, it is safer to use a Fortran
+comment.
+
+\subsection{Potential problems}
+The use of the C preprocessor is not entirely free of problems, but
+many can be worked around or avoided by using the Der Mouse version of
+\code{cpp}.
+   \begin{enumerate}
+     \item Apostrophes in Fortran comments.  \code{cpp} does not
+     know that it is in a comment and some versions will complain about
+     unmatched apostrophes in the following:
+     \begin{verbatim}
+  c  Some useful comment about Green's functions.
+     \end{verbatim}
+     The \code{gnu} version of \code{cpp} (which comes with \code{gcc})
+     has a \code{-traditional} option which makes it more
+     appropriate for use with Fortran.
+     \item \CC\ comments.  Some of the newer versions of
+     \code{cpp} will remove \CC\ comments which go from '//' to
+     the end of the line.  Some perfectly reasonable Fortran lines
+     contain two consecutive slashes, such as:
+     \begin{verbatim}
+        common // var1, var2
+    44  format(//)
+     \end{verbatim}
+     and the new Fortran 90 string concatenation:
+     \begin{verbatim}
+        mystring = 'Hello, ' // 'World!'
+     \end{verbatim}
+     \item Macro replacement.  One feature of \code{cpp} is that you
+     can define macros and have it perform replacements.  The code:
+     \begin{verbatim}
+  #define REAL double precision
+        REAL really_long_variable, second_long_variable
+     \end{verbatim}
+     becomes
+     \begin{verbatim}
+        double precision really_long_variable, second_long_variable
+     \end{verbatim}
+     and you run the risk of creating lines which are longer than 72
+     characters in length.
+
+     Also, make sure that your macros will not be found anywhere else
+     in the code.  I used to use \code{\#define DOUBLE} for double
+     precision until it was pointed out to me that \code{DOUBLE 
+     PRECISION} is perfectly valid Fortran.  The macro processor would
+     turn this into \code{1 PRECISION} since something that is defined
+     has a value of 1.
+  \end{enumerate}
+
+\subsection{Modern Fortran}
+I started working on these ocean models before 1990, much less before
+Fortran 90 compilers were generally available.  Fortran 90's
+\code{kind} feature would be a better way to handle the \code{BIGREAL}
+type declarations.  On the other hand, Fortran 90 does not include
+conditional compilation.  However, it is deemed useful enough that the
+Fortran 2000 committee has a draft document describing how Fortran
+might support conditional compilation.  We {\em might} start using this
+in about ten years.

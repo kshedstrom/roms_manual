@@ -1,0 +1,155 @@
+\subsubsection{Smolarkiewicz}
+\label{Smolark}
+Smolarkiewicz has written a series of papers (\cite{Smolark83},
+\cite{Smolark84}, \cite{Smolark86} and \cite{Smolark90}) on an
+advection scheme known as MPDATA (Multidimensional
+Positive Definite Advection Transport Algorithm).
+MPDATA is meant to be applied to positive-definite tracer fields
+only. It uses a first-order upwind scheme to obtain a first
+estimate of the updated field, followed by one or more
+``antidiffusion'' passes to obtain the final updated field.
+Note that we add an offset to the temperature field before advecting
+with this scheme, since ocean temperatures can be negative (or we
+could use the Kelvin scale instead).
+
+Recall that the advection of a tracer $C$ has an equation of the form
+\begin{equation}
+  \frac{\partial}{\partial t} \frac{ H_z C}{mn} =
+  - \frac{\partial}{\partial \xi} F^\xi
+  - \frac{\partial}{\partial \eta} F^\eta
+  - \frac{\partial}{\partial \sigma} F^\sigma  .
+\end{equation}
+where we have introduced the advective fluxes:
+\begin{align}
+   F^\xi &= \frac{H_z u C}{n} \\
+   F^\eta &= \frac{H_z v C}{m} \\
+   F^\sigma &= \frac{H_z \Omega C}{mn} .
+\end{align}
+Rather than computing the centered average for these terms, 
+we use the ``upwind'' or ``donor cell'' value for $C$. For instance:
+\begin{equation}
+   F^\xi_{i,j,k} = \frac{\overline{H_z}^\xi}{\overline{n}^\xi}
+   \left[ \max(0,u_{i,j,k}) C_{i-1,j,k} +
+   \min(0,u_{i,j,k}) C_{i,j,k} \right] .
+\label{equp}
+\end{equation}
+This picks up the value of $C$ to the left if $u$ is positive,
+otherwise it picks up the value to the right ($F^\xi$ is located at a
+$u$ point on the grid).
+   
+Using these fluxes, we compute an upwind estimate of the new
+tracer:
+\begin{equation}
+   C^{\star} = C^n - \frac{\Delta t\, mn}{H_z} \left(
+   \frac{\partial F^\xi}{\partial \xi} +
+   \frac{\partial F^\eta}{\partial \eta} +
+   \frac{\partial F^\sigma}{\partial \sigma} \right)
+\end{equation}
+This estimate is used to create an ``antidiffusive'' velocity:
+\begin{align}
+   \tilde{u} &= \frac{1}{2}
+      \left( \frac{|u|}{m} - \Delta t u^2 \right)
+      \frac{m}{C^\star} \frac{\partial C^\star}{\partial \xi} -
+      \frac{1}{2} \Delta t u \left( v \frac{n}{C^\star} 
+      \frac{\partial C^\star}{\partial \eta} +
+      w \frac{1}{C^\star} \frac{\partial C^\star}{\partial z}
+      \right) \label{antiu} \\
+   \tilde{v} &= \frac{1}{2}
+      \left( \frac{|v|}{n} - \Delta t v^2 \right)
+      \frac{n}{C^\star} \frac{\partial C^\star}{\partial \eta} -
+      \frac{1}{2} \Delta t v \left( u \frac{m}{C^\star} 
+      \frac{\partial C^\star}{\partial \xi} +
+      w \frac{1}{C^\star} \frac{\partial C^\star}{\partial z}
+      \right) \label{antiv} \\
+   \tilde{w} &= \frac{1}{2}
+      \left( |w| \Delta z - \Delta t w^2 \right)
+      \frac{1}{C^\star} \frac{\partial C^\star}{\partial z} -
+      \frac{1}{2} \Delta t w \left( u \frac{m}{C^\star} 
+      \frac{\partial C^\star}{\partial \xi} +
+      v \frac{n}{C^\star} \frac{\partial C^\star}{\partial \eta}
+      \right) \label{antiw}
+\end{align}
+In SCRUM, these velocities are set to zero if the first term is smaller
+than the second term (there is no such check in the ice MPDATA code,
+nor is there mention of such a thing in the Smolarkiewicz papers).
+Using these velocities in another upwind iteration leads to a second
+estimate of the new tracer fields:
+\begin{equation}
+   C^{n+1} = C^\star - \frac{\Delta t\, mn}{H_z} \left(
+   \frac{\partial F^\xi(\tilde{u})}{\partial \xi} +
+   \frac{\partial F^\eta(\tilde{v})}{\partial \eta} +
+   \frac{\partial F^\sigma(\tilde{w})}{\partial \sigma} \right)
+\label{antidiff}
+\end{equation}
+In fact, this correction step can be repeated any number of times in
+order to improve the solution.
+
+Thus far, we have described the original MPDATA scheme which
+maintains the positive definite nature of the tracer.  However, it does
+not prevent under- and overshoots in a tracer such as salinity, in which
+the initial range would be say 34 to 36 PSU. An optional nonoscillatory
+modification to MPDATA is described in Smolarkiewicz \cite{Smolark90}.
+It uses ideas from the FCT (flux-corrected transport) scheme to limit
+the antidiffusive fluxes. This modification is based on multiplying the
+antidiffusive fluxes by a coefficient $C$ such that $0 \leq C \leq 1$
+and the resulting tracer value is bounded by $C^{\min} \leq
+C^{n+1} \leq C^{\max}$.
+  
+First, we need to define $C^{\min}$ and $C^{\max}$.
+\begin{align*}
+  C^{\min}_{i,j,k} = \min ( &C_{i,j,k}, C_{i-1,j,k},
+  C_{i+1,j,k},
+  C_{i,j-1,k}, C_{i,j+1,k}, C_{i,j,k-1}, C_{i,j,k+1}, \\ 
+  &C_{i,j,k}^\star, C_{i-1,j,k}^\star, C_{i+1,j,k}^\star,
+  C_{i,j-1,k}^\star, C_{i,j+1,k}^\star, C_{i,j,k-1}^\star,
+  C_{i,j,k+1}^\star ) \\
+  C^{\max}_{i,j,k} = \max ( &C_{i,j,k}, C_{i-1,j,k},
+  C_{i+1,j,k},
+  C_{i,j-1,k}, C_{i,j+1,k}, C_{i,j,k-1}, C_{i,j,k+1}, \\
+  &C_{i,j,k}^\star, C_{i-1,j,k}^\star, C_{i+1,j,k}^\star,
+  C_{i,j-1,k}^\star, C_{i,j+1,k}^\star, C_{i,j,k-1}^\star,
+  C_{i,j,k+1}^\star  )
+\end{align*}
+Then, we define the $\beta$-ratios:
+\begin{align*}
+  \left(\beta\! \uparrow \right)^{-1}
+  \left(C^{\max}_{i,j,k} - C^\star_{i,j,k} \right) &=
+  m \,\Delta t \left[ \max (0,\tilde{u}_{i,j,k}) C^\star_{i-1,j,k} - 
+         \min (0,\tilde{u}_{i+1,j,k}) C^\star_{i+1,j,k} \right]
+	 \\ &+
+  n \,\Delta t \left[ \max (0,\tilde{v}_{i,j,k}) C^\star_{i,j-1,k} - 
+         \min (0,\tilde{v}_{i,j+1,k}) C^\star_{i,j+1,k} \right]
+	 \\ &+
+  \frac{\Delta t}{\Delta z}
+	     \left[ \max (0,\tilde{w}_{i,j,k-1}) C^\star_{i,j,k-1} - 
+         \min (0,\tilde{w}_{i,j,k}) C^\star_{i,j,k+1} \right]  \\
+  \left(\beta\! \downarrow \right)^{-1}
+  \left(C^\star_{i,j,k} - C^{\min}_{i,j,k} \right) &=
+  m \,\Delta t \left[ \max (0,\tilde{u}_{i+1,j,k}) C^\star_{i,j,k} - 
+         \min (0,\tilde{u}_{i,j,k}) C^\star_{i,j,k} \right]
+	 \\ &+
+  n \,\Delta t \left[ \max (0,\tilde{v}_{i,j+1,k}) C^\star_{i,j,k} - 
+         \min (0,\tilde{v}_{i,j,k}) C^\star_{i,j,k} \right]
+	 \\ &+
+  \frac{\Delta t}{\Delta z}
+	     \left[ \max (0,\tilde{w}_{i,j,k}) C^\star_{i,j,k} - 
+         \min (0,\tilde{w}_{i,j,k-1}) C^\star_{i,j,k} \right] 
+\end{align*}
+Finally, the flux-limited form of the antidiffusion velocities is:
+\begin{align}
+  \tilde{u}' &= \min(1, \beta\! \downarrow_{i-1,j,k},
+      \beta\! \uparrow_{i,j,k}) \max(0, \tilde{u}) +
+                \min(1, \beta\! \uparrow_{i-1,j,k},
+		\beta\! \downarrow_{i,j,k}) \min(0, \tilde{u})  \\
+  \tilde{v}' &= \min(1, \beta\! \downarrow_{i,j-1,k},
+      \beta\! \uparrow_{i,j,k}) \max(0, \tilde{v}) +
+                \min(1, \beta\! \uparrow_{i,j-1,k},
+		\beta\! \downarrow_{i,j,k}) \min(0, \tilde{v})  \\
+  \tilde{w}' &= \min(1, \beta\! \downarrow_{i,j,k},
+      \beta\! \uparrow_{i,j,k+1}) \max(0, \tilde{w}) +
+                \min(1, \beta\! \uparrow_{i,j,k},
+		\beta\! \downarrow_{i,j,k+1}) \min(0, \tilde{w})
+\end{align}
+These velocities are used in equation (\ref{antidiff}) to produce the
+flux-limited estimate of $C^{n+1}$.
+

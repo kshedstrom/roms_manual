@@ -1,0 +1,166 @@
+\subsection{Model Variables}
+The model has the same array dimension parameters as the ocean model.
+The model variables include:
+\begin{klist}
+  \kitem{Main variables} Some of these variables have two time levels,
+specified by the third index.  A value of \code{linew} represents the
+current time and a value of \code{liold} represents the previous
+timestep.  The two time levels are averaged for the staggered
+timestepping, for instance, \code{uice} contains the average of
+the two time levels of \code{ui}.
+  \begin{klist}
+    \kitem{ui}         The $x$-component of the ice velocity.
+    \kitem{uice}       The $x$-component of the ice velocity.
+    \kitem{vi}         The $y$-component of the ice velocity.
+    \kitem{vice}       The $y$-component of the ice velocity.
+    \kitem{hi}         Mean ice thickness per unit area ($A h_i$).
+    \kitem{hice}       Mean ice thickness per unit area ($A h_i$).
+    \kitem{hsn}        Mean snow thickness per unit area ($A h_s$).
+    \kitem{hsnow}      Mean snow thickness per unit area ($A h_s$).
+    \kitem{ai}         Ice concentration, or fraction of area
+  covered by thick ice.
+    \kitem{aice}       Ice concentration, or fraction of area
+  covered by thick ice.
+  \end{klist}
+  \kitem{Momentum variables} \mbox{}
+  \begin{klist}
+    \kitem{pice}       The ice pressure or strength.
+    \kitem{zetai}      Nonlinear bulk viscosity.
+    \kitem{eta}        Nonlinear shear viscosity.
+    \kitem{uuij \ldots vvijn} Nonlinear terms for the ice momentum
+  solution procedure.
+    \kitem{rhsui}      Right-hand-side for the $x$-component of the ice
+  momentum equation.
+    \kitem{rhsvi}      Right-hand-side for the $y$-component of the ice
+  momentum equation.
+  \end{klist}
+  \kitem{Momentum parameters} \mbox{}
+  \begin{klist}
+    \kitem{cdai}   Non-linear drag coefficient between air and ice.
+    \kitem{cdiw}   Non-linear drag coefficient between ice and water.
+    \kitem{cdaw}   Non-linear drag coefficient between air and water.
+    \kitem{rhoice} Density of ice.
+    \kitem{rhowat} Density of water (not actually used).
+    \kitem{rhoair} Density of air.
+    \kitem{pstar}  Parameter $P^*$ in ice strength equation.
+    \kitem{zetamax} Maximum value of $\zeta$ in cavitating fluid and
+    Mohr-Coulomb rheologies.
+    \kitem{zetamin} Minimum value of $\zeta$ (not used).
+    \kitem{etamax} Maximum value of $\eta$ in Mohr-Coulomb rheology.
+    \kitem{etamin} Minimum value of $\eta$ (not used).
+    \kitem{astren} Parameter $C$ in ice strength equation.
+    \kitem{ellip}   The ellipticity of the yield curve in the ice
+  rheology.
+    \kitem{ellip\_sq}  The square of the ellipticity.
+    \kitem{alphai}  Angle parameter in Mohr-Coulomb rheology.
+    \kitem{tol}   A very small number.
+    \kitem{tola}  Minimum value for the ice concentration $A$.
+    \kitem{tolh}  Minimum value for the ice thickness $h_i$.
+    \kitem{one}   The number one.
+    \kitem{zero}  The number zero.
+    \kitem{rhosnow\_dry}  The density of dry (cold) snow.
+    \kitem{rhosnow\_wet}  The density of wet (warm) snow.
+    \kitem{rhosnow}  The density of snow.
+  \end{klist}
+  \kitem{Grid metrics} \mbox{}
+  \begin{klist}
+    \kitem{pom}   Grid metric in $x$-direction, $dx = 1 / m$
+    \kitem{pon}   Grid metric in $y$-direction, $dy = 1 / n$
+  \end{klist}
+  \kitem{Wind/water stress variables} \mbox{}
+  \begin{klist}
+    \kitem{uwater}     The surface (\code{N}) $x$-component of
+  the water velocity.
+    \kitem{vwater}     The surface (\code{N}) $y$-component of
+  the water velocity.
+    \kitem{spdiw}      The magnitude of the difference in ice and
+  water velocities.
+    \kitem{sealev}     The surface elevation $\zeta$ of the ocean.
+    \kitem{tauaiu}      The $x$-component of the wind stress.
+    \kitem{tauaiv}      The $y$-component of the wind stress.
+    \kitem{windu}      The $x$-component of the wind.
+    \kitem{windv}      The $y$-component of the wind.
+  \end{klist}
+  \kitem{Rheology flags} \mbox{}
+  \begin{klist}
+    \kitem{vplastfl}   Logical flag for viscous-plastic rheology.
+    \kitem{mohrclfl}   Logical flag for Mohr-Coulomb rheology.
+    \kitem{cavfldfl}   Logical flag for cavitating fluid rheology.
+    \kitem{freedrfl}   Logical flag for free drift rheology.
+  \end{klist}
+  \kitem{Ice mask variables} \mbox{}
+  \begin{klist}
+    \kitem{uflgi}      Logical equivalent of the SCRUM \code{umask}.
+    \kitem{vflgi}      Logical equivalent of the SCRUM \code{vmask}.
+    \kitem{hflgi}      Logical equivalent of the SCRUM \code{rmask}.
+    \kitem{slpice}     Free-slip / no-slip array for land masks.
+  \end{klist}
+  \kitem{Thermal parameters} \mbox{}
+  \begin{klist}
+    \kitem{w0 \ldots w3}   Parameters for the quasi-hermite time
+  interpolation.
+    \kitem{ocean\_albedo}     Shortwave albedo of the water.
+    \kitem{ice\_albedo}       Shortwave albedo of the ice.
+    \kitem{snow\_albedo}      Shortwave albedo of the snow.
+    \kitem{ocean\_emiss}      Longwave emissivity of the water.
+    \kitem{ice\_emiss}        Longwave emissivity of the water.
+    \kitem{snow\_emiss}       Longwave emissivity of the snow.
+    \kitem{gasconst}          Gas constant in ideal gas law.
+    \kitem{therm\_cond\_ice}  Thermal conductivity of the ice.
+    \kitem{tice\_m}           Melting temperature of ice.
+    \kitem{tsnw\_m}           Melting temperature of snow.
+    \kitem{epsmol}            Ratio of molecular weight of water to dry
+  air.
+    \kitem{sice}              Salinity of the ice.
+    \kitem{sublim\_latent\_heat} Latent heat of sublimation.
+    \kitem{vapor\_latent\_heat} Latent heat of vaporization.
+    \kitem{snow\_therm\_cond} Thermal conductivity of the snow.
+    \kitem{penet\_solrad}     Fraction of incoming shortwave radiation
+  which penetrates into the ice.
+    \kitem{heat\_fus\_ice}    Heat of fusion of ice.
+    \kitem{heat\_fus\_snow}   Heat of fusion of snow.
+    \kitem{spec\_heat\_air}   Specific heat of air.
+    \kitem{spec\_heat\_wat}   Specific heat of water.
+    \kitem{stefanb}           Stefan-Boltzmann constant $\sigma$.
+    \kitem{axice \ldots bxwater} Parameters in vapor pressure
+  computation.
+    \kitem{t0deg}             Degrees Kelvin which is 0$^\circ$ C.
+    \kitem{trans\_coeff}      Transfer coefficient for latent and
+  sensible heat.
+    \kitem{trans\_coeff\_w}   Transfer coefficient for ocean heat flux.
+    \kitem{solar\_const}      Solar constant $S$.
+    \kitem{days\_per\_year}   Number of days in a year for this
+  computation.
+  \end{klist}
+  \kitem{Temperatures in degrees Kelvin} \mbox{}
+  \begin{klist}
+    \kitem{air\_temp}      Air temperature.
+    \kitem{dew\_temp}      Dewpoint temperature of the air.
+    \kitem{freeze\_temp}   Freezing temperature of the water under the
+  ice at the surface salinity.
+    \kitem{ice\_temp}      Temperature of the upper ice surface.
+    \kitem{lead\_temp}     Temperature of the leads.
+    \kitem{ocean\_temp}    Temperature of the ocean.
+    \kitem{sfc\_temp}      Temperature of the surface.
+    \kitem{snow\_temp}     Temperature of the upper snow surface.
+  \end{klist}
+  \kitem{Thermodynamic variables} \mbox{}
+  \begin{klist}
+    \kitem{cloud\_frac}   Fraction of sky covered by clouds.
+    \kitem{ice\_thick}    Ice thickness of ice-covered fraction of the
+  gridbox.
+    \kitem{lh\_flux}      Latent heat flux over ice/snow.
+    \kitem{lh\_lead\_flux}Latent heat flux over leads.
+    \kitem{lw\_flux}      Incoming longwave radiation.
+    \kitem{ocean\_flux}   Heat flux from ocean into ice.
+    \kitem{salt\_flux}    Salt flux at ocean surface.
+    \kitem{sh\_flux}      Sensible heat flux over ice/snow.
+    \kitem{sh\_lead\_flux}Sensible heat flux over leads.
+    \kitem{slp}           Sea-level pressure.
+    \kitem{snow\_fall}    Amount of snow precipitation.
+    \kitem{snow\_thick}   Thickness of the snow layer.
+    \kitem{sw\_flux}      Incoming shortwave radiation.
+    \kitem{vol\_change}   Change in ice thickness per unit area.
+    \kitem{wind\_speed}   Magnitude of wind velocity.
+  \end{klist}
+\end{klist}

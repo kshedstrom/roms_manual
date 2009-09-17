@@ -1,0 +1,26 @@
+\section{The \code{patch} program}
+\label{Patch}
+We sometimes discover things in SCRUM which we would like to modify,
+either to fix bugs, or to add new features.
+Hernan Arango keeps track of these changes
+and periodically sends patches to the
+list of known SCRUM users so that they can update their versions.  By
+sending out these changes rather than the whole updated model, people
+can acquire bug fixes and still retain the changes they have made to
+SCRUM for their own applications.
+
+Larry Wall has written a program to take the output of \code{diff} and
+automatically apply it to the old version of a file to create the new
+version.  This program is called \code{patch} and is available from all
+the \code{gnu} archive sites.  If the output of \code{diff} has been
+saved in the file \code{scrum.patch.20} then \code{patch} would be used
+as follows:
+\begin{verbatim}
+        patch < scrum.patch.20
+\end{verbatim}
+As \code{patch} updates the files, it leaves the original of
+\code{file} in \code{file.orig}.  If it gets confused for some reason
+(if you modified the lines of code \code{patch} wants to change)
+it will create a \code{file.rej} file.  I
+often check to see if any \code{.rej} files get created---these can be
+used to patch \code{file} by hand and can then be deleted.

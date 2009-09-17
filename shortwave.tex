@@ -1,0 +1,117 @@
+\section{Radiant heat fluxes}
+\label{shortwave}
+
+As was seen in \S\ref{Growth}, the model thermodynamics requires
+fluxes of latent and sensible heat and longwave and shortwave
+radiation.  We follow the lead of Parkinson and Washington
+\cite{Parkinson} in computing these terms.
+
+\subsection{Shortwave radiation}
+
+The Zillman equation for radiation under cloudless skies is:
+\begin{equation}
+   Q_o = {S \cos^2 Z \over (\cos Z + 2.7) e \times 10^{-5} + 1.085
+   \cos Z + 0.10}
+\end{equation}
+where the variables are as in Table \ref{radvars}.  The cosine of the
+zenith angle is computed using the formula:
+\begin{equation}
+   \cos Z = \sin \phi \sin \delta + \cos \phi \cos \delta \cos H\!A .
+\end{equation}
+The declination is 
+\begin{equation}
+   \delta = 23.44^{\circ} \times \cos \left[ (172 - {\rm day \, of \, year})
+   \times 2 \pi / 365 \right]
+\end{equation}
+and the hour angle is
+\begin{equation}
+   H\!A = (12 \, {\rm hours - solar \, time}) \times \pi / 12 .
+\end{equation}
+The correction for cloudiness is given by
+\begin{equation}
+   SW\!\!\downarrow = Q_o ( 1 - 0.6 c^3) .
+\end{equation}
+An estimate of the cloud fraction $c$ will be provided by Jennifer
+Francis (\cite{Francis00}).
+
+\begin{table}[t]
+\hspace{11 mm}
+\vbox{
+\begin{tabular}{|c|c|l|} \hline
+Variable & Value & Description \\ \hline
+
+$(a,b)$ & (9.5, 7.66) & vapor pressure constants over ice \\
+$(a,b)$ & (7.5, 35.86) & vapor pressure constants over water \\
+$c$ && cloud cover fraction \\
+$C_E$ & $1.75 \times 10^{-3}$ & transfer coefficient for latent heat \\
+$C_H$ & $1.75 \times 10^{-3}$ & transfer coefficient for sensible heat\\
+$c_p$ & 1004 J kg$^{-1}$ K$^{-1}$ & specific heat of dry air \\
+$\delta$ && declination \\
+$e$ && vapor pressure in pascals \\
+$e_s$ && saturation vapor pressure \\
+$\epsilon$ & 0.622 & ratio of molecular weight of water to dry air \\
+$H\!A$ && hour angle \\
+$L$ & $2.5 \times 10^6$ J kg$^{-1}$ & latent heat of vaporization \\
+$L$ & $2.834 \times 10^6$ J kg$^{-1}$ & latent heat of sublimation \\
+$\phi$ && latitude \\
+$Q_o$ && incoming radiation for cloudless skies \\
+$q_s$ && surface specific humidity \\
+$q_{10 \rm m}$ && 10 meter specific humidity \\
+$\rho_a$ && air density \\
+$S$ & 1353 W m$^{-2}$ & solar constant \\
+$\sigma$ & $5.67 \times 10^{-8}$ W m$^{-2}$ K$^{-4}$ &
+Stefan-Boltzmann constant \\
+$T_a$ && air temperature \\
+$T_d$ && dew point temperature \\
+$T_{s\!f\!c}$ && surface temperature of the water/ice/snow \\
+$V_{wg}$ && geostrophic wind speed \\
+$Z$ && solar zenith angle \\
+
+\hline
+\end{tabular}
+}
+\caption{Variables used in computing the incoming radiation and latent
+and sensible heat}
+\label{radvars}
+\end{table}
+
+\subsection{Longwave radiation}
+
+The clear sky formula for incoming longwave radiation is given by:
+\begin{equation}
+   F\!\downarrow\, = \sigma T_a^4 \left\{1 - 0.261 \exp \left[ -7.77 \times 10^{-4}
+   (273 - T_a) ^2 \right] \right\}
+\end{equation}
+while the cloud correction is given by:
+\begin{equation}
+   LW\!\downarrow\, = (1 + 0.275 c)\, F\!\downarrow .
+\end{equation}
+
+\subsection{Sensible heat}
+
+The sensible heat is given by the standard aerodynamic formula:
+\begin{equation}
+   H\!\downarrow\, = \rho_a c_p C_H V_{wg} (T_a - T_{s\!f\!c}) .
+\end{equation}
+
+\subsection{Latent heat}
+
+The latent heat depends on the vapor pressure and the saturation vapor
+pressure given by:
+\begin{eqnarray}
+   e & = & 611 \times 10^{a(T_d - 273.16) / (T_d - b)} \\
+   e_s & = & 611 \times 10^{a(T_{s\!f\!c} - 273.16) / (T_{s\!f\!c} - b)}
+\end{eqnarray}
+The vapor pressures are used to compute specific humidities according
+to:
+\begin{eqnarray}
+   q_{10 \rm m} & = & {\epsilon e \over p - (1 - \epsilon) e} \\
+   q_s & = & {\epsilon e_s \over p - (1 - \epsilon) e_s}
+\end{eqnarray}
+The latent heat is also given by a standard aerodynamic formula:
+\begin{equation}
+   LE\!\downarrow\, = \rho_a L C_E V_{wg} (q_{10 \rm m} - q_s) .
+\end{equation}
+Note that these need to be computed independently for the ice-covered
+and ice-free portions of each gridbox since the empirical factors
+$a$ and $b$ and the factor $L$ differ depending on the surface type.

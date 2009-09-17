@@ -1,0 +1,294 @@
+1998 -1  :  year and starting year-day (use yearday<0, for no time label)
+ROMS 1.0
+North Atlantic Damee #4: Run 27
+LMD mixing, G-Scheme, nu(v,t)=(0,0), Theta=(5,0.4), N=20
+Sea surface elevation
+1     NFIELDS: number of fields to plot. Line below, field(s) types:
+18  field identification: FLDID(1:NFIELDS)
+1     NLEVELS: number of depths/levels/isopycnals to plot (0 for all levels)
+1              depths (<0), levels (>0) or isopycnals (>1000) to plot
+0     FRSTD  : first day (>0) or time record (<0) to plot
+0     LASTD  : last day (>0) or time record (<0) to plot
+0000 DSKIP  : plot every other DSKIP days (see below)
+0     VINTRP : vertical interpolation scheme: 0=linear, 1:cubic splines
+0.0   PMIN   : field minimum value for color palette (0.0 for default)
+0.0   PMAX   : field maximum value for color palette (0.0 for default)
+1     ICNT   : draw contours between color bands: 0=no, 1=yes
+0.0   ISOVAL : iso-surface value to process (see below)
+1.2   VLWD   : vector line width (1.0 for default)
+4.0   VLSCL  : vector length scale (1.0 for default)
+1     IVINC  : vector grid sampling in the X-direction (1 for default)
+1     JVINC  : vector grid sampling in the Y-direction (1 for default)
+0     IREF   : secondary or reference field option (see below)
+25    IDOVER : overlay field identification (for IREF=1,2 only)
+1     LEVOVER: level of the overlay field (set to 0 if same as current FLDLEV)
+0.0   RMIN   : overlay field minimum value to consider (0.0 for default)
+0.0   RMAX   : overlay field maximum value to consider (0.0 for default)
+10    LGRID  : Desired longitude/latitude grid spacing (degrees)
+2     IPROJ  : map projection (see below).
+-42.0 PLON   : projection Pole longitude (west values are negative).
+0.0   PLAT   : projection Pole latitude (south values are negative).
+0.0   ROTA   : projection rotation angle (clockwise; degrees).
+0     LMSK   : flag to color mask land: [0] no, [1] yes
+-1    NPAGE  : number of plots per page (currently 1, 2, or 4)  
+F     READGRD: logical switch to read in positions from grid NetCDF file.
+F     PLTLOGO: logical switch draw Logo.
+T     WRTHDR : logical switch to write out the plot header titles.
+T     WRTBLAB: logical switch to write out the plot bottom title.
+T     WRTRANG: logical switch to write out data range values and CI.
+F     WRTFNAM: logical switch to write out input primary filename.
+F     WRTDATE: logical switch to write out current date.
+T     CST    : logical switch to read and plot coastlines and islands.
+ -35.5  65.5 : bottom and top map latitudes (south values are negative).
+-100.5  15.5 : left and right map longitudes (west values are negative).
+/d1/arango/scrum3.0/plot/Data/varid.dat
+/d1/arango/scrum3.0/plot/Palettes/natlan1.pal
+/d2/kate/plot/default.cnt
+/cdrom/damee/floats/damee4_ann_27.nc
+/e2/arango/Damee/grid4/damee4_Lclm_a.nc
+/e2/arango/Damee/grid4/damee4_grid_a.nc
+/d1/arango/scrum3.0/plot/Data/coastdb.dat
+
+c
+c=======================================================================
+c  Copyright (c) 1996 Rutgers University                             ===
+c=======================================================================
+c
+
+ *** Above FILENAMES:
+
+            1st line: input; variables ID file.
+            2nd line: input; color palette file.
+            3rd line: input; internal plotting parameters.
+            4th line: input; primary NetCDF file.
+            5th line: input; secondary NetCDF file.
+            6th line: input; grid NetCDF file.
+            7th line: input; coastlines file.
+
+ *** DSKIP: Plotting frequency.
+
+            If zero, the data is plotted at their own time frequency.
+            Otherwise, if greater than zero, the data will be plotted
+            every other DSKIP days.
+
+ *** ISOVAL : iso-surface value to process.
+
+            It is only used when plotting the depths of requested field
+            isosurface: temperature, salinity, "in situ" density, sigma-t,
+            or potential density.  If plotting potential density
+            isosurfaces, provide the reference depth value "ZREF" in
+            internal plotting parameters file (3rd line input file).
+
+ *** IREF:  Secondary or reference field option:
+           -1   Overlay horizontal grid
+            0   no secondary or reference field to plot
+            1   plot field overlay from primary file
+            2   plot field overlay from secondary file
+            3   primary - secondary file (field subtraction)
+            4   Day0 - DayN (field subtraction)
+            5   primary +/- secondary (different field combination:
+                                       addition [+5] or subtraction [-5])
+            6   Mask OA fields by its maximum error variance tolerance
+                which is specified as fractional percentage in RMAX.
+                
+
+ *** IPROJ: Map Projections option.  Some of the values for the
+            projection Pole and rotation angle are suggested.
+            Check the NCAR manual for details.
+
+           [1] Cylindrical equidistant: PLON=0, PLAT=0, ROTA=0
+           [2] Mercator: PLON=?, PLAT=0, ROTA=0
+           [3] Lambert conformal conic: PLON=?, PLAT=?, ROTA=?
+           [4] Stereographic azimuthal:  PLON=?, PLAT=90 or -90, ROTA=0
+
+ *** LGRID: Longitude/latitude grid spacing.  The grid is drawn at
+            LGRID spacing starting from specified map lower corner.
+            If LGRID is negative, the latitude labels in the map are
+            rotated 90 degrees to avoid label congestion, if any.
+
+ *** NPAGE: Number of plots per page.  Set this parameter to a negative
+            value (-1, -2, or -4) to activate preservation of the plot
+            aspect ratio.
+
+
+  Plotting Fields classification: (* derived fields):
+
+ [  0]  ??????    Generic Field 
+ [001]  IDUTOT    Total U-velocity (cm/s)
+ [002]  IDVTOT    Total V-velocity (cm/s)
+*[003]  IDTVEC    Total Velocity Vectors (cm/s)
+*[004]  IDTMAG    Total Velocity Magnitude (cm/s)
+*[005]  IDTSTR    Total Velocity Streamlines
+ [006]  IDUCLI    Baroclinic U-velocity (cm/s)
+ [007]  IDVCLI    Baroclinic V-velocity (cm/s)
+*[008]  IDCVEC    Baroclinic Velocity Vectors (cm/s)
+*[009]  IDCMAG    Baroclinic Velocity Magnitude (cm/s)
+*[010]  IDCSTR    Baroclinic Velocity Streamlines
+ [011]  IDUBAR    Barotropic U-velocity (cm/s)
+ [012]  IDVBAR    Barotropic V-velocity (cm/s)
+*[013]  IDBVEC    Barotropic Velocity Vectors (cm/s)
+*[014]  IDBMAG    Barotropic Velocity Magnitude (cm/s)
+*[015]  IDBSTR    Barotropic Velocity Streamlines
+ [016]  IDWVEL    Vertical Velocity (cm/day)
+ [017]  IDOMEG    Omega Vertical Velocity (cm/day)
+ [018]  IDZETA    Free-Surface (m)
+ [019]  IDTPSI    Transport Stream function (Sv)
+ [020]  IDTEMP    Potential Temperature (C)
+ [021]  IDSALT    Salinity (PSU)
+ [022]  IDDANO    Density Anomaly (kg/m3)
+*[023]  IDCDEN    Density Anomaly form T,S (kg/m3)
+ [024]  IDDBAR    Mean Density Anomaly (kg/m3)
+*[025]  IDSIGT    Sigma-t (kg/m3)
+*[026]  IDISOT    Isothermal Depths (m)
+*[027]  IDISOH    Isohaline Depths (m)
+*[028]  IDISOR    Isopycnal Depths (m), in situ density
+*[029]  IDISOD    Isopycnal Depths (m), sigma-0
+*[030]  IDISOS    Isopycnal Depths (m), sigma-theta
+*[031]  IDDPRS    Dynamic Pressure (Pa)
+ [032]  IDDYHT    Dynamic Height (dyn m)
+*[033]  IDBVFQ    Brunt-Vaisala Frequency (1/s2)
+*[034]  IDSNDS    Sound speed (m/s)
+ [035]  IDPHBL    Depth of Planetary Boundary Layer (m)
+*[036]  IDRIGN    Gradient Richardson Number
+ [037]  IDAKVC    Vertical Viscosity (m2/s)
+ [038]  IDAKTC    Vertical T-Diffusion (m2/s)
+ [039]  IDAKSC    Vertical S-Diffusion (m2/s)
+ [040]  IDUICE    Ice U-velocity (cm/s)
+ [041]  IDVICE    Ice V-velocity (cm/s)
+*[042]  IDIVEC    Ice Velocity Vectors (cm/s)
+*[043]  IDIMAG    Ice Velocity Magnitude (cm/s)
+*[044]  IDISTR    Ice Velocity Streamlines
+ [045]  IDAICE    Fraction of Cell Covered by Ice
+ [046]  IDHICE    Depth of Ice Cover (m)
+*[047]  IDIHOA    Ice thickness (m)
+ [048]  IDSNOW    Depth of Snow Cover (m)
+*[049]  IDSHOA    Snow thickness (m)
+ [050]  IDTICE    Temperature of Ice Surface (K)
+ [051]  IDANGL    Angle between XI-axis and EAST (deg)
+ [052]  IDDELX    Grid-spacing in XI-direction (km)
+ [053]  IDDELX    Grid-spacing in ETA-direction (km)
+ [054]  IDBTHR    Bathymetry at RHO-points (m)
+*[055]  IDBTHP    Bathymetry at PSI-points (m)
+*[056]  IDMHSL    Bathymetry Slope
+*[057]  IDMHRF    Bathymetry r-factor
+ [058]  IDHRAW    Raw Bathymetry at RHO-points (m)
+*[059]  IDRHSL    Raw Bathymetry Slope
+*[060]  IDRHRF    Raw Bathymetry r-factor
+ [061]  IDCORP    Coriolis Parameter (1/s)
+*[062]  IDFOHR    Coriolis/Depth Ratio (1/ms)
+ [063]  IDSMFX    U-wind Stress (Pa)
+ [064]  IDSMFY    V-wind Stress (Pa)
+*[065]  IDSMFV    Wind Stress Vectors (Pa)
+*[066]  IDSMFM    Wind Stress Magnitude (Pa)
+*[067]  IDSMFS    Wind Stress Streamlines
+ [068]  IDSWSC    Wind Stress Curl (m/s2)
+ [069]  IDSUWD    Surface U-Wind (m/s)
+ [070]  IDSVWD    Surface V-Wind (m/s)
+*[071]  IDSWDV    Surface Wind Vectors (m/s)
+*[072]  IDSWDM    Surface Wind Magnitude (m/s)
+*[073]  IDSWDS    Surface Wind Streamlines
+ [074]  IDRELH    Relative Humidity (%)
+ [075]  IDCFRA    Cloud Fraction (%)
+ [076]  IDPAIR    Surface Air Pressure (Pa)
+ [077]  IDTAIR    Surface Air Temperature (K)
+ [078]  IDTDEW    Surface Dew-Point Temperature (K)
+ [079]  IDFSSH    Sea Surface Height (m)
+ [080]  IDFSST    Sea Surface Temperature (C)
+ [081]  IDDQDT    dQdT (Watts/m2/Celsius)
+ [082]  IDSHFX    Surface Net Heat Flux (W/m2)
+ [083]  IDSRAD    Shortwave Radiation Flux (W/m2)
+ [084]  IDLRAD    Longwave Radiation Flux (W/m2)
+ [085]  IDSWFX    Surface Freshwater Flux, E-P (m/day)
+*[086]  IDKENG    Kinetic Energy (Watts)
+*[087]  IDPENG    Potential Energy (Watts)
+*[088]  IDPVOR    Potential Vorticity (1/s/m)
+*[089]  IDERPV    Ertel Potential Vorticity (1/s/m)
+*[090]  IDTVRV    Relative Vorticity (m/s)
+*[091]  IDBVRV    Barotropic Relative Vorticity (m/s)
+*[092]  IDCVRV    Baroclinic Relative Vorticity (m/s)
+*[093]  IDSWRV    Surface Wind Relative Vorticity (m/s)
+*[094]  IDTVHD    Total Divergence (m/s)
+*[095]  IDBVHD    Barotropic divergence (m/s)
+*[096]  IDBVHD    Baroclinic divergence (m/s)
+*[097]  IDSWHD    Surface Wind divergence (m/s)
+*[098]  IDRHUJ    Raw U-JEBAR (m2/s2)
+*[099]  IDRHVJ    Raw V-JEBAR (m2/s2)
+*[100]  IDRHJV    Raw JEBAR Vectors (m2/s2)
+*[101]  IDRHJM    Raw JEBAR Vector Magnitude (m2/s2)
+*[102]  IDRHJS    Raw JEBAR Vector Streamlines
+*[103]  IDMHUJ    Model U-JEBAR (m2/s2)
+*[104]  IDMHVJ    Model V-JEBAR (m2/s2)
+*[105]  IDMHJV    Model JEBAR Vectors (m2/s2)
+*[106]  IDMHJM    Model JEBAR Vector Magnitude (m2/s2)
+*[107]  IDMHJS    Model JEBAR Vector Streamlines
+ [108]  IDUSUR    RADAR Surface U-velocity (cm/s)'
+ [109]  IDVSUR    RADAR Surface V-velocity (cm/s)
+*[110]  IDSVEC    RADAR Surface Velocity Vectors (cm/s)
+*[111]  IDSURM    RADAR Surface Velocity Magnitude (cm/s)
+*[112]  IDSURS    RADAR Surface Velocity Streamlines
+*[113]  IDNPYT    Entropy Transport (Sv)
+*[114]  IDUNPY    Entropy U-velocity (cm/s)
+*[115]  IDVNPY    Entropy V-velocity (cm/s)
+*[116]  IDNPYV    Entropy Velocity Vectors (cm/s)
+*[117]  IDNPYM    Entropy Velocity Magnitude (cm/s)
+*[118]  IDNPYS    Entropy Velocity Streamlines
+*[119]  IDBERN    Bernoulli Function (Pa)
+
+ [201]  IDTAVG    Potential Temperature (C) Mean
+ [202]  IDTVAR    Potential Temperature Variance
+ [203]  IDTEOF    Potential Temperature EOF
+ [204]  IDTERR    Potential Temperature Error
+ [205]  IDSAVG    Salinity (PSU) Mean
+ [206]  IDSVAR    Salinity Variance
+ [207]  IDSEOF    Salinity EOF
+ [208]  IDSERR    Salinity Error
+ [209]  IDZAVG    Free-surface (m) Mean
+ [210]  IDZVAR    Free-surface Variance
+ [211]  IDZEOF    Free-surface EOF
+ [212]  IDZERR    Free-surface Error
+ [213]  IDUAVG    Total U-velocity (m/s) Mean
+ [214]  IDUVAR    Total U-velocity Variance
+ [215]  IDUEOF    Total U-velocity EOF
+ [216]  IDUERR    Total U-velocity Error
+ [217]  IDVAVG    Total V-velocity (m/s) Mean
+ [218]  IDVVAR    Total V-velocity Variance
+ [219]  IDVEOF    Total V-velocity EOF
+ [220]  IDVERR    Total V-velocity Error
+ [221]  IDDYHM    Dynamic Height (dyn m) Mean
+ [222]  IDDYHE    Dynamic Height Error
+ [223]  IDSSHM    Sea Surface Height (m) Mean
+ [224]  IDSSHE    Sea Surface Height Error
+ [225]  IDSUSM    U-wind Stress (Pa) Mean
+ [226]  IDSUSE    U-wind Stress Error
+ [227]  IDSVSM    V-Wind Stress (Pa) Mean
+ [228]  IDSVSE    V-Wind Stress Error
+ [229]  IDSUWM    Surface U-Wind (m/s) Mean
+ [230]  IDSUWE    Surface U-Wind Error
+ [231]  IDSVWM    Surface V-Wind (m/s) Mean
+ [232]  IDSVWE    Surface V-Wind Error
+ [233]  IDRHUM    Relative Humidity (%) Mean
+ [234]  IDRHUE    Relative Humidity Error
+ [235]  IDCFRM    Cloud Fraction (%) Mean
+ [236]  IDCFRE    Cloud Fraction Error
+ [237]  IDSAPM    Surface Air Pressure (Pa) Mean
+ [238]  IDSAPE    Surface Air Pressure Error
+ [239]  IDTAIM    Surface Air Temperature (K) Mean
+ [240]  IDTAIE    Surface Air Temperature Error
+ [241]  IDTDPM    Surface Dew-Point Temperature (K) Mean
+ [242]  IDTDPE    Surface Dew-Point Temperature Error
+ [243]  IDTDPM    Surface Dew-Point Temperature (K) Mean
+ [244]  IDTDPE    Surface Dew-Point Temperature Error
+ [245]  IDSSTM    Sea Surface Temperature (C) Mean
+ [246]  IDSSTE    Sea Surface Temperature Error
+ [247]  IDQDTM    dQdT (Watts/m2/Celsius) Mean
+ [248]  IDQDTE    dQdT Error
+ [249]  IDSHFM    Surface Net Heat Flux (W/m2) Mean
+ [250]  IDSHFE    Surface Net Heat Flux Error
+ [251]  IDSWRM    Shortwave Radiation Flux (W/m2) Mean
+ [252]  IDSWRE    Shortwave Radiation Flux Error
+ [253]  IDLWRM    Longwave Radiation Flux (W/m2) Mean
+ [254]  IDLWRE    Longwave Radiation Flux Error
+ [255]  IDSFFM    Surface Freshwater Flux (m/day) Mean
+ [256]  IDSFFE    Surface Freshwater Flux Error
+ [257]  IDUSUM    Surface Velocity (cm/s) Mean
+ [258]  IDUSUE    Surface Velocity Error

@@ -1,0 +1,289 @@
+\section{Description of the Ice Model and the Coupling}
+\label{Userice}
+
+\subsection{Ice model structure}
+The flow of the main program for the ice model is shown in
+Fig.\ \ref{fiflow}.  The overall structure essentially consists of two
+components---the momentum equations and the ice continuity equations.
+The momentum balance includes air and water stresses, Coriolis force,
+internal ice stress, inertial forces and ocean tilt (equations
+(\ref{ist1}) and (\ref{ist2})).  There is a choice of rheologies (form
+of internal ice stress) including viscous-plastic (used here), free
+drift, Mohr-Coulomb, and cavitating fluid.  A semi-implicit timestep is
+done on the momentum equations which are solved by calling a solver
+from the \code{NSPCG} library.  The ice viscosities are non-linear
+functions of the velocity, so the solution is iterated several times,
+with the viscosities being recomputed each iteration.
+
+The ice continuity consists of advection (done in \code{ice\_mpdata} or
+\code{ice\_advect}), and thermodynamics (\code{run\_mk} and
+\code{ice\_mk}).
+%Paul Budgell found that he could leave out the
+%diffusivity of ice thickness and concentration if he used an advection
+%scheme that preserved minima and maxima and did not lead to ringing
+%(Smolarkiewicz and Grabowski \cite{Smolark90} and Smolarkiewicz and
+%Margolin \cite{Smolark93}).
+We have also added the diffusion of the ice tracer variables in
+order to obtain a smoother solution. This may be optional if the
+forcing fields are sufficiently smooth.
+
+\begin{figure}[p]
+\begin{center}
+\setlength{\unitlength}{3947sp}%
+%
+\begin{picture}(6399,9174)(1714,-9373)
+\thinlines
+\put(4814,-6608){\line(-5,-3){750}}
+\put(4064,-7058){\line( 5,-3){750}}
+\put(4814,-7508){\line( 5, 3){750}}
+\put(5564,-7058){\line(-5, 3){750}}
+\put(4814,-2258){\line(-5,-3){750}}
+\put(4064,-2708){\line( 5,-3){750}}
+\put(4814,-3158){\line( 5, 3){750}}
+\put(5564,-2708){\line(-5, 3){750}}
+\put(4201,-2011){\framebox(1200,450){}}
+\put(4201,-4711){\framebox(1200,450){}}
+\put(4801,-6436){\line( 1, 0){2925}}
+\put(7726,-6436){\line( 0, 1){3750}}
+\put(7726,-2686){\vector(-1, 0){2172}}
+\put(4801,-9061){\line( 0,-1){300}}
+\put(4801,-9361){\line( 1, 0){3300}}
+\put(8101,-9361){\line( 0, 1){8250}}
+\put(8101,-1111){\vector(-1, 0){3300}}
+\put(4801,-661){\vector( 0,-1){900}}
+\put(4801,-2011){\vector( 0,-1){249}}
+\put(4606,-3055){\vector(-3,-2){450}}
+\put(4993,-3055){\vector( 3,-2){450}}
+\put(6813,-3814){\vector(-4,-1){1784}}
+\put(5476,-3812){\vector(-4,-3){596}}
+\put(4367,-2898){\vector(-4,-1){1812}}
+\put(2527,-3803){\vector( 4,-1){1800}}
+\put(4801,-4711){\vector( 0,-1){300}}
+\put(4167,-3815){\vector( 1,-1){443}}
+\put(6376,-3812){\framebox(1200,450){}}
+\put(3076,-3811){\framebox(1650,450){}}
+\put(1726,-3811){\framebox(1200,450){}}
+\put(4201,-5461){\framebox(1200,450){}}
+\put(3901,-6211){\framebox(1800,450){}}
+\put(4801,-6211){\vector( 0,-1){375}}
+\put(4801,-5461){\vector( 0,-1){300}}
+\put(5994,-8153){\vector(-2,-1){900}}
+\put(3593,-8160){\vector( 2,-1){900}}
+\put(4876,-3811){\framebox(1350,450){}}
+\put(3001,-8161){\framebox(1200,450){}}
+\put(5401,-8161){\framebox(1200,450){}}
+\put(4469,-7307){\vector(-3,-2){591}}
+\put(5138,-7311){\vector( 3,-2){573}}
+\put(4201,-661){\framebox(1200,450){}}
+\put(4201,-9061){\framebox(1200,450){}}
+\put(5223,-2916){\vector( 4,-1){1720}}
+\put(4801,-511){\makebox(0,0)[b]{\code{ice\_init}}}
+\put(4801,-1861){\makebox(0,0)[b]{\code{ice\_forcing}}}
+\put(4801,-4561){\makebox(0,0)[b]{\code{ice\_gencoef}}}
+\put(4801,-2761){\makebox(0,0)[b]{{rheology?}}}
+\put(6751,-2611){\makebox(0,0)[b]{{iterate 3 times}}}
+\put(6976,-3661){\makebox(0,0)[b]{\code{ice\_freedrift}}}
+\put(5551,-3661){\makebox(0,0)[b]{\code{ice\_cavitating}}}
+\put(2326,-3661){\makebox(0,0)[b]{\code{ice\_viscplast}}}
+\put(3901,-3661){\makebox(0,0)[b]{\code{ice\_mohrcoulomb}}}
+\put(4801,-5311){\makebox(0,0)[b]{\code{ice\_rhs}}}
+\put(4801,-6061){\makebox(0,0)[b]{\code{ice\_solver\_NSPCG}}}
+\put(4801,-7036){\makebox(0,0)[b]{{advection}}}
+\put(4801,-7186){\makebox(0,0)[b]{{scheme?}}}
+\put(3601,-8011){\makebox(0,0)[b]{\code{ice\_mpdata}}}
+\put(4801,-8911){\makebox(0,0)[b]{\code{run\_mk}}}
+\put(6001,-8011){\makebox(0,0)[b]{\code{ice\_advect}}}
+\put(3736,-7471){\makebox(0,0)[b]{{MPDATA}}}
+\put(6091,-7456){\makebox(0,0)[b]{{3rd-order upwind}}}
+\end{picture}
+\end{center}
+\caption{Flow chart for the sea-ice model.}
+\label{fiflow}
+\end{figure}
+
+The main program calls \code{ice\_step}, which in turn calls:
+\begin{klist}
+  \kitem{ice\_advect}  Compute the ice advection according to a
+third-order upwind advection scheme. The ice ridging and ice diffusion
+also happen here if they are enabled.
+  \kitem{ice\_bctrans}  Boundary conditions for $A$, $h_i$ and $h_s$.
+  \kitem{ice\_bcuv}  Boundary conditions for ice $u$ and $v$.
+  \kitem{ice\_cavitating}  Compute the ice viscosities according to a
+cavitating fluid rheology.
+  \kitem{ice\_freedrift} Compute the ice parameters to model free
+drift (no internal ice stress contribution).
+  \kitem{ice\_gencoef}  Generate coefficients for the iterative
+solution to the ice momentum equations.
+  \kitem{ice\_mohrcoulomb}  Compute the ice viscosities according to a
+Mohr-Coulomb fluid rheology.
+  \kitem{ice\_mpdata}  Compute the advection of a scalar according to
+a Smolarkiewicz advection scheme.
+  \kitem{ice\_rhs}  Gather the right-hand-side terms for the ice
+momentum equations prior to using the solver.
+  \kitem{ice\_solver\_NSPCG}  Solve the implicit ice momentum equations
+using the \code{NSPCG} library.
+  \kitem{run\_mk}  Compute the changes in ice thickness and
+concentration due to the thermodynamics.  Also produce the surface heat
+and salt forcing for the ocean model.
+  \kitem{ice\_viscplast}  Compute the ice viscosities according to a
+viscous-plastic fluid rheology.
+\end{klist}
+
+\subsubsection{Thermodynamic subroutines}
+The thermodynamic subroutines used in the model are:
+\begin{klist}
+  \kitem{ice\_mk}  Compute the net energy budget and change of
+thickness for ice and snow.
+  \kitem{ice\_frazil}  Compute the frazil ice growth due to supercooled
+water in the ocean (called from \code{main3d} after the ocean timestep).
+  \kitem{rads}     Compute the heat flux budgets over the water.
+\end{klist}
+
+\subsubsection{Initialization}
+During initialization, the following routines are called:
+\begin{klist}
+  \kitem{def\_ice\_avg}  Create the netCDF ice averages file.
+  \kitem{def\_ice\_his}  Create the netCDF ice history file.
+  \kitem{def\_ice\_rst}  Create the netCDF ice restart file.
+  \kitem{freeze}    Make sure that no water temperatures are below
+freezing during initialization. It does not form frazil ice.
+  \kitem{get\_ice}  Read a record from the netCDF ice restart file.
+  \kitem{hakkblkdat}  Block data initializing some parameters for the
+ice thermodynamics.
+  \kitem{ice\_blkdat}  Block data initializing some parameters for the
+Smolarkiewicz advection routine.
+  \kitem{ice\_init} Initialize the ice model, either by reading a
+history file or by setting the initial values.
+  \kitem{ice\_user1}  Initialize some ice variables.
+  \kitem{init\_hakkis}  Initialize some ice thermodynamic variables.
+  \kitem{init\_ice}  Initialize some more ice variables.
+\end{klist}
+
+\subsubsection{Forcing fields} The ice model requires some extra
+forcing fields. These fields require their own routines for reading
+them from the netCDF forcing files:
+\begin{klist}
+     \kitem{get\_airp}  Reads surface air pressure
+   from the forcing NetCDF file, and then linearly
+   time-interpolates to current model time.
+     \kitem{get\_airt}  Reads surface air temperature
+   from the forcing NetCDF file, and then linearly
+   time-interpolates to current model time.
+     \kitem{get\_cloud}  Reads cloud fraction
+   from the forcing NetCDF file, and then linearly
+   time-interpolates to current model time.
+     \kitem{get\_dewt}  Reads surface dewpoint temperature
+   from the forcing NetCDF file, and then linearly
+   time-interpolates to current model time.
+     \kitem{get\_lrflux}  Reads incoming longwave radiation
+   from the forcing NetCDF file, and then linearly
+   time-interpolates to current model time.
+     \kitem{get\_precip}  Reads precipitation
+   from the forcing NetCDF file, and then linearly
+   time-interpolates to current model time.
+     \kitem{get\_wind}  Reads surface winds
+   from the forcing NetCDF file, and then linearly
+   time-interpolates to current model time.
+\end{klist}
+
+
+\subsubsection{Other subroutines}
+The other subroutines in the ice model include:
+\begin{klist}
+  \kitem{ice\_forcing}  Computes the forcing fields due to exchange of
+momentum by the ice and ocean.
+  \kitem{smooth} Smooths a field with a five-point Laplacian filter.
+  \kitem{wrt\_ice\_avg} Writes a record to the netCDF ice averages file.
+  \kitem{wrt\_ice\_his} Writes a record to the netCDF ice history file.
+  \kitem{wrt\_ice\_rst} Writes a record to the netCDF ice restart file.
+\end{klist}
+
+\subsection{Coupling strategy}
+\label{Coupled}
+The flow chart for the coupled ice-ocean model is shown in Fig.\
+\ref{fboth}.  The ice model is stepped first since it provides the
+surface heat and salt fluxes to the ocean model.  After the ocean model
+is timestepped, the ocean temperatures are checked for supercooled
+water---if any is found it is converted into frazil ice and the ocean
+temperature and salinity are adjusted to be at freezing.  The ocean
+equation of state is computed after this conversion.
+
+\begin{figure}[p]
+\begin{center}
+\setlength{\unitlength}{3947sp}%
+%
+\begin{picture}(2424,8424)(3889,-8923)
+\thinlines
+\put(4201,-5911){\framebox(1200,450){}}
+\put(4201,-6811){\framebox(1200,450){}}
+\put(4201,-7711){\framebox(1200,450){}}
+\put(4201,-8611){\framebox(1200,450){}}
+\put(4801,-5011){\vector( 0,-1){450}}
+\put(4801,-5911){\vector( 0,-1){450}}
+\put(4801,-6811){\vector( 0,-1){450}}
+\put(4801,-7711){\vector( 0,-1){450}}
+\put(4801,-4111){\vector( 0,-1){450}}
+\put(4801,-8611){\line( 0,-1){300}}
+\put(4801,-8911){\line( 1, 0){1500}}
+\put(6301,-8911){\line( 0, 1){6600}}
+\put(6301,-2311){\vector(-1, 0){1500}}
+\put(4201,-1861){\framebox(1200,450){}}
+\put(4201,-961){\framebox(1200,450){}}
+\put(4801,-1861){\vector( 0,-1){900}}
+\put(4801,-961){\vector( 0,-1){450}}
+\put(4201,-4111){\framebox(1200,450){}}
+\put(4801,-3211){\vector( 0,-1){450}}
+\put(4201,-3211){\framebox(1200,450){}}
+\put(3901,-5011){\framebox(1800,450){}}
+\put(4801,-811){\makebox(0,0)[b]{\code{initial}}}
+\put(4801,-1711){\makebox(0,0)[b]{\code{ice\_init}}}
+\put(4801,-3061){\makebox(0,0)[b]{\code{set\_vbc}}}
+\put(4801,-3961){\makebox(0,0)[b]{\code{ice\_step}}}
+\put(4801,-4861){\makebox(0,0)[b]{{3-D right-hand-sides}}}
+\put(4801,-5761){\makebox(0,0)[b]{{2-D loop}}}
+\put(4801,-6661){\makebox(0,0)[b]{\code{step3d}}}
+\put(4801,-7561){\makebox(0,0)[b]{\code{ice\_frazil}}}
+\put(4801,-8461){\makebox(0,0)[b]{\code{rho\_eos}}}
+\end{picture}
+\end{center}
+\caption{Flow chart for the coupled ice-ocean model.}
+\label{fboth}
+\end{figure}
+
+\subsection{C preprocessor variables}
+The ice model has two C preprocessor variables in \code{cppdefs.h}:
+\begin{klist}
+  \kitem{ICE} Define to use ice component of the model.
+  \kitem{ICE\_THERMO} Define for ice thermodynamics.
+\end{klist}
+
+The ice model requires new forcing fields to be read or computed:
+\begin{klist}
+  \kitem{ANA\_AIRT}   Define for an analytic air temperature.
+  \kitem{ANA\_CLOUD}  Define for an analytic cloud fraction.
+  \kitem{ANA\_DEWT}   Define for an analytic dew-point temperature.
+  \kitem{ANA\_LRFLUX} Define for an analytic incoming longwave
+radiation.
+  \kitem{ANA\_SNOW}   Define for an analytic snow fall rate.
+  \kitem{ANA\_SLP}    Define for an analytic sea-level pressure.
+  \kitem{ANA\_WIND}   Define for analytic wind fields.
+\end{klist}
+
+There are also some C preprocessor variables in \code{icedefs.h}:
+\begin{klist}
+   \kitem{NSPCG} Use the \code{nspcg} library for the implicit solver.
+Either this or \code{ESSL} must be turned on.
+   \kitem{ESSL} Use the \code{essl} library for the implicit solver.
+   \kitem{ANA\_ICE\_INIT} Initialize the ice fields analytically as
+opposed to reading them from a file.
+   \kitem{ICE\_MOMENTUM} Compute the ice momentum equations.
+   \kitem{ICE\_ADVECT} Advect the ice tracers.
+   \kitem{ice\_GSCHEME}  Use a third-order upwind advection scheme for
+the tracers. This must be defined for either of these to take effect:
+    \begin{klist}
+       \kitem{ICE\_DIFFUSION} Add a Laplacian diffusion on the ice
+     tracers.
+       \kitem{ICE\_RIDGING} Add an ice ridging scheme from Gray and
+     Killworth \cite{Gray95}.
+    \end{klist}
+\end{klist}

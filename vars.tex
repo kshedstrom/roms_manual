@@ -1,0 +1,544 @@
+
+\subsection{Include files and the variables within them}
+\label{Vars}
+SCRUM has a fair number of include files which contain common blocks.
+The common blocks contain all of the global variables in the model.
+All dimensional variables are given in MKS units.
+\begin{klist}
+  \kitem{ocean.h}    The main time-dependent model fields.
+    \begin{klist}
+      \kitem{time}     SCRUM time since initialization.
+      \kitem{u}        3-D velocity component in the $\xi$-direction.
+      \kitem{v}        3-D velocity component in the $\eta$-direction.
+      \kitem{w}        $H_z \Omega/mn$, scaled velocity component in
+the $\sigma$-direction.
+      \kitem{t}        tracer variables (usually potential
+   temperature and salinity).
+      \kitem{rho}      perturbation density $\rho$ (total density =
+$\rho_o + \rho$).
+      \kitem{rhobar}   horizontal average of density, must be a
+function of $z$ only (see \S\ref{PG}).
+      \kitem{phix}     $\xi$-component of the baroclinic
+pressure gradient.
+      \kitem{phie}     $\eta$-component of the baroclinic
+pressure gradient.
+      \kitem{zeta}     free surface $\zeta$
+   at the previous and current short time levels.
+      \kitem{ubar}     2-D velocity component in the $\xi$-direction
+   at the previous and current short time levels.
+      \kitem{vbar}     2-D velocity component in the $\eta$-direction
+   at the previous and current short time levels.
+      \kitem{ubaravg}     2-D velocity component in the $\xi$-direction
+   time-averaged over all short timesteps, at the previous, current, and
+   future long time levels.
+      \kitem{vbaravg}     2-D velocity component in the $\eta$-direction
+   time-averaged over all short timesteps, at the previous, current, and
+   future long time levels.
+      \kitem{zetaavg}     free surface $\zeta$
+   time-averaged over all short timesteps, at the previous, current, and
+   future long time levels.
+    \end{klist}
+This file also contains the time-averaged fields used for the
+monthly-mean computations:
+    \begin{klist}
+     \kitem{avgrho}      average potential density anomaly.
+     \kitem{avgt}        average tracer type variables (usually
+  potential temperature and salinity).
+     \kitem{avgtime}     average SCRUM time since initialization.
+     \kitem{avgu2d}      average 2-D velocity component in the
+  $\xi$-direction.
+     \kitem{avgu3d}      average 3-D velocity component in the
+  $\xi$-direction.
+     \kitem{avgv2d}      average 2-D velocity component in the
+  $\eta$-direction.
+     \kitem{avgv3d}      average 3-D velocity component in the
+  $\eta$-direction.
+     \kitem{avgw3d}      average $s$-coordinate ($\Omega H_z/mn$)
+vertical velocity.
+     \kitem{avgzeta}     average free surface elevation.
+    \end{klist}
+  \kitem{bblm.h}  Fields required by the bottom boundary layer of
+  Styles and Glenn \cite{Styles96}.  It computes the bottom stress and
+  the hydraulic roughness length $z_o$ due to the combined effects of
+  waves and currents.
+    \begin{klist}
+      \kitem{Ab}          wave bottom excursion amplitude.
+      \kitem{Awave}       wind induced wave amplitude at $\rho$-points.
+      \kitem{Cr}          non-dimensional function that determines the
+    relative importance of currents and wind induced waves on the bottom
+    stress at $\rho$-points.
+      \kitem{Dwave}       wind induced wave direction (radians) at
+    $\rho$-points.
+      \kitem{Pwave}       wind induced wave period at $\rho$-points.
+      \kitem{Sdens}       sediment grain density at $\rho$-points.
+      \kitem{Ssize}       sediment grain diameter at $\rho$-points.
+      \kitem{Ub}          maximum wave bottom horizontal velocity.
+      \kitem{UstarC}      time-averaged near-bottom friction current
+    magnitude at $\rho$-points.
+      \kitem{sg\_Kiter}    maximum number of iterations in the
+    computation of bottom wavenumber.
+      \kitem{sg\_Keps}     convergence criterion for the computation of
+   bottom wavenumber via the Newton-Raphson method.
+      \kitem{sg\_Siter}    maximum number of iterations in the
+   computation of stress due to bottom friction velocity.
+      \kitem{sg\_Seps}     convergence criterion for the computation
+   of the stress due to bottom friction velocity via the
+   Newton-Raphson method.
+      \kitem{sg\_alpha}    free parameter indicating the constant
+   stress region of the wave boundary layer.
+      \kitem{sg\_brlmin}   minimum allowed bottom roughness length.
+      \kitem{sg\_nu}       kinematic viscosity of seawater.
+    \end{klist}
+  \kitem{climat.h}  This file contains the climatology arrays.
+    \begin{klist}
+      \kitem{tclm}        tracer climatology at the current time-step.
+      \kitem{nudgcof}     time-scale (1/sec) coefficients for nudging
+    towards climatology.
+      \kitem{tclima}      work array containing two time levels of the
+    tracer climatology read from disk.
+      \kitem{ttclm}      time of the tracer climatology fields read from
+    disk.
+    \end{klist}
+  \kitem{forces.h}  This file contains the surface and bottom forcing
+  arrays.  It also contains work arrays used in time-averaging these
+  fields when they are read from a file.  The non-work arrays in this
+  file are:
+    \begin{klist}
+       \kitem{srflx}       kinematic surface shortwave solar radiation
+   flux at $\rho$-points.
+       \kitem{stflx}       kinematic surface flux of tracer type
+   variables at $\rho$-points.
+       \kitem{dqdt}        kinematic surface net heat flux sensitivity
+   to the sea surface temperature.
+       \kitem{sst}         sea surface temperature used when computing
+   $Q$, called $T_ref$ in \S\ref{vbc}.
+       \kitem{sustr}       kinematic surface momentum flux (wind
+   stress) in the $\xi$-direction at $u$-points.
+       \kitem{svstr}       kinematic surface momentum flux (wind
+   stress) in the $\eta$-direction at $v$-points.
+       \kitem{btflx}       kinematic bottom flux of tracer type
+   variables at $\rho$-points.
+       \kitem{bustr}       kinematic bottom momentum flux (bottom
+   stress) in the $\xi$-direction at $u$-points.
+       \kitem{bvstr}       kinematic bottom momentum flux (bottom
+   stress) in the $\eta$-direction at $v$-points.
+       \kitem{wwag}        wind induced wave amplitude gridded data.
+       \kitem{wwap}        wind induced wave amplitude point data.
+       \kitem{wwdg}        wind induced wave direction (radians)
+   gridded data.
+       \kitem{wwdp}        wind induced wave direction (radians)
+   point data.
+       \kitem{wwpg}        wind induced wave period gridded data.
+       \kitem{wwpp}        wind induced wave period point data.
+%      \kitem{tww}         time of wind induced waves.
+    \end{klist}
+  \kitem{grid.h}  This file contains the arrays for the vertical and
+  horizontal grid information.
+    \begin{klist}
+       \kitem{Cd\_r}   first derivative of the $C(s)$ curves
+    ($\partial C(s)/\partial s$) at vertical $\rho$-points.
+       \kitem{Cd\_w}   first derivative of the $C(s)$ curves
+    ($\partial C(s)/\partial s$) at vertical $w$-points.
+       \kitem{Cs\_r}   set of $s$-curves used to stretch the vertical
+    coordinate lines that follow the topography at vertical
+    $\rho$-points.
+       \kitem{Cs\_w}   set of $s$-curves used to stretch the vertical
+    coordinate lines that follow the topography at vertical
+    $w$-points.
+       \kitem{D}      total water column depth at $\rho$-points at
+    current and previous short time levels.
+       \kitem{Hz}     first $s$-derivative of the $z$-coordinate
+    ($\partial z/\partial s$) at $\rho$-points.
+       \kitem{Tcline} width of surface or bottom boundary layer in
+    which higher vertical resolution is required during
+       stretching.
+       \kitem{angler} angle (radians) between $\xi$-axis and East at
+    $\rho$-points.
+       \kitem{ds}     non-dimensional vertical grid spacing
+    (\code{ds}=1/\code{N}).
+       \kitem{el}     length of domain in the $\eta$-direction.
+       \kitem{h}      bottom depth at $\rho$-points.
+       \kitem{hc}     $s$-coordinate parameter,
+    \code{hc}=\code{min}(\code{hmin},\code{Tcline}).
+       \kitem{hmax}   maximum depth of bathymetry.
+       \kitem{hmin}   minimum depth of bathymetry.
+       \kitem{latr}   latitude (degrees North) at $\rho$-points.
+       \kitem{lonr}   longitude (degrees East) at $\rho$-points.
+       \kitem{ods}    reciprocal of vertical grid spacing
+    (\code{ods}=1/\code{ds}).
+       \kitem{sc\_r}   $s$-coordinate independent variable,
+    $[-1 < s < 0]$ at vertical $\rho$-points
+       \kitem{sc\_w}   $s$-coordinate independent variable,
+    $[-1 < s < 0]$ at vertical $w$-points.
+       \kitem{spherical}   logical switch indicating spherical grid
+    configuration.
+       \kitem{theta\_s} $s$-coordinate surface control parameter
+    $\theta$, $[0 < \theta < 20]$.
+       \kitem{theta\_b} $s$-coordinate bottom control parameter $b$,
+    $[0 < b < 1]$.
+       \kitem{z\_r}   actual depths at horizontal $\rho$-points and
+    vertical $\rho$-points.
+       \kitem{z\_w}   actual depths at horizontal $\rho$-points and
+    vertical $w$-points.
+       \kitem{xl}     length of domain in the $\xi$-direction.
+       \kitem{xp}     $x$-coordinates at $\psi$-points.
+       \kitem{xr}     $x$-coordinates at $\rho$-points.
+       \kitem{yp}     $y$-coordinates at $\psi$-points.
+       \kitem{yr}     $y$-coordinates at $\rho$-points.
+    \end{klist}
+  \kitem{iounits.h} I/O filenames and flags for writing fields to
+  history files.
+    \begin{klist}
+      \kitem{Nlev}        number of levels to write out in history file.
+      \kitem{Lev}         levels to write out in history file.
+      \kitem{aparnam}     input assimilation parameters file name.
+      \kitem{assname}     input assimilation file name.
+      \kitem{avgname}     output averages file name.
+      \kitem{clmname}     input climatology file name.
+      \kitem{fltname}     output floats file name.
+      \kitem{fposnam}     input initial floats positions file name.
+      \kitem{frcname}     input forcing fields file name.
+      \kitem{grdname}     input grid file name.
+      \kitem{hisname}     output history file name.
+      \kitem{iavgname}    output ice averages file name.
+      \kitem{ininame}     input initial conditions file name.
+      \kitem{irstname}    output ice restart file name.
+      \kitem{ispos}       $i$-index for station positions.
+      \kitem{jspos}       $j$-index for station positions.
+      \kitem{nstation}    number of output stations.
+      \kitem{rstname}     output restart file name.
+      \kitem{sposnam}     input station positions file name.
+      \kitem{staname}     output station data file name.
+      \kitem{stdinp}      unit number for standard input (often 5).
+      \kitem{stdout}      unit number for standard output (often 6).
+      \kitem{usrout}      unit number for generic user output.
+      \kitem{usrname}     user input/output generic file name.
+      \kitem{wrtAKS}      switch to write out vertical diffusion
+    coefficient for salinity.
+      \kitem{wrtAKT}      switch to write out vertical diffusion
+    coefficient for potential temperature.
+      \kitem{wrtAKV}      switch to write out vertical viscosity
+    coefficient.
+      \kitem{wrtHBL}      switch to write out depth of mixed layer.
+      \kitem{wrtO}        switch to write out $\Omega$ vertical
+    velocity.
+      \kitem{wrtU}        switch to write out 3-D $u$-momentum
+    component.
+      \kitem{wrtT}        switch to write out tracer type variables.
+      \kitem{wrtUBAR}     switch to write out 2-D $u$-momentum
+    component.
+      \kitem{wrtV}        switch to write out 3-D $v$-momentum
+    component.
+      \kitem{wrtVBAR}     switch to write out 2-D $v$-momentum
+    component.
+      \kitem{wrtW}        switch to write out $w$-momentum component.
+      \kitem{wrtZ}        switch to write out free surface elevation.
+    \end{klist}
+  \kitem{mask.h} The 2-D mask arrays.
+    \begin{klist}
+      \kitem{rmask}       mask at $\rho$-points (0=Land, 1=Sea).
+      \kitem{pmask}       slipperiness mask at $\psi$-points
+   (0=Land, 1=Sea, 1-gamma2=boundary).
+      \kitem{umask}       mask at $u$-points (0=Land, 1=Sea).
+      \kitem{vmask}       mask at $v$-points (0=Land, 1=Sea).
+    \end{klist}
+  \kitem{metrics.h}  Horizontal grid metrics and their combinations.
+    \begin{klist}
+      \kitem{Dmon\_p}      compound term, $Dm/n$ at $\psi$-points at
+    current and previous short time levels.
+      \kitem{Dnom\_p}      compound term, $Dm/n$ at $\psi$-points at
+    current and previous short time levels.
+      \kitem{Duon\_u}      compound term, $D\overline{u}/n$ at
+    $u$-points at current and previous short time levels.
+      \kitem{Dvom\_v}      compound term, $D\overline{v}/m$ at
+    $v$-points at current and previous short time levels.
+      \kitem{Huon\_u}      compound term, $H_zu/n$ at $u$-points.
+      \kitem{Hvom\_v}      compound term, $H_zv/m$ at $v$-points.
+      \kitem{Hzmon\_p}     compound term, $H_zm/n$ at $\psi$-points.
+      \kitem{Hznom\_p}     compound term, $H_zn/m$ at $\psi$-points.
+      \kitem{dmde}        $\eta$-derivative of inverse metric factor
+    $m$, ${\partial \over \partial\eta}({1 \over m})$.
+      \kitem{dndx}        $\xi$-derivative  of inverse metric factor
+    $n$, ${\partial \over \partial\xi}({1 \over n})$.
+      \kitem{f}           Coriolis parameter.
+      \kitem{fomn}        compound term, $f/(mn)$ at $\rho$-points.
+      \kitem{pm}          coordinate transformation metric $m$
+    associated with differential distances in $\xi$.
+      \kitem{pmon\_p}      compound term, $m/n$ at $\psi$-points.
+      \kitem{pmon\_r}      compound term, $m/n$ at $\rho$-points.
+      \kitem{pmon\_u}      compound term, $m/n$ at $u$-points.
+      \kitem{pn}          coordinate transformation metric $n$
+    associated with differential distances in $\eta$.
+      \kitem{pnom\_p}      compound term, $n/m$ at $\psi$-points.
+      \kitem{pnom\_r}      compound term, $n/m$ at $\rho$-points.
+      \kitem{pnom\_v}      compound term, $n/m$ at $v$-points.
+    \end{klist}
+  \kitem{mixing.h} The horizontal and vertical viscosity/diffusion
+  coefficients.  Some of the vertical mixing schemes have additional
+  variables for their internal use.
+    \begin{klist}
+%     \kitem{Akq\_bak}     background vertical mixing coefficient for
+%   turbulent energy.
+      \kitem{Akt}         spatially variable vertical mixing
+    coefficient for tracers.
+      \kitem{Akt\_bak}     background vertical mixing coefficient for
+    tracers.
+      \kitem{Akv}         spatially variable vertical mixing
+    coefficient for momentum.
+      \kitem{Akv\_bak}     background vertical mixing coefficient for
+   momentum.
+%      \kitem{Cp}          specific heat of seawater.
+      \kitem{at1}         time weight for current time level vertical
+    mixing coefficients to avoid instability of the implicit scheme.
+      \kitem{at2}         time weight for previous time level vertical
+    mixing coefficients to avoid instability of the implicit scheme.
+%      \kitem{q2nu2}       lateral Laplacian constant mixing coefficient
+%    for turbulent energy.
+%     \kitem{q2nu4}       lateral biharmonic constant mixing coefficient
+%    for turbulent energy.
+      \kitem{rinavfl}     logical switch to activate the spatial
+    averaging of gradient Richardson number.
+      \kitem{tnu2}        lateral Laplacian constant mixing coefficient
+    for tracer type variables.
+      \kitem{tnu4}        lateral biharmonic constant mixing coefficient
+    for tracer type variables.
+      \kitem{uvnu2}       lateral Laplacian constant mixing coefficient
+    for momentum.
+      \kitem{uvnu4}       lateral biharmonic constant mixing coefficient
+    for momentum.
+%      \kitem{vonKar}      von Karman constant.
+    \end{klist}
+  \kitem{ncscrum.h}  A plethora of variables referring to objects in the
+  various I/O NetCDF files.
+  \kitem{obc.h} Arrays used in the open boundary conditions.
+    \begin{klist}
+      \kitem{tebry}       eastern boundary condition data for tracer
+   type variables.
+      \kitem{tnbry}       northern boundary condition data for tracer
+   type variables.
+      \kitem{tsbry}       southern boundary condition data for tracer
+   type variables.
+      \kitem{tsbry}       western boundary condition data for tracer
+   type variables.
+      \kitem{uebry}       eastern boundary condition data for 3-D
+   velocity component in the $\xi$-direction.
+      \kitem{unbry}       northern boundary condition data for 3-D
+   velocity component in the $\xi$-direction.
+      \kitem{usbry}       southern boundary condition data for 3-D
+   velocity component in the $\xi$-direction.
+      \kitem{usbry}       western boundary condition data for 3-D
+   velocity component in the $\xi$-direction.
+      \kitem{vebry}       eastern boundary condition data for 3-D
+   velocity component in the $\eta$-direction.
+      \kitem{vnbry}       northern boundary condition data for 3-D
+   velocity component in the $\eta$-direction.
+      \kitem{vsbry}       southern boundary condition data for 3-D
+   velocity component in the $\eta$-direction.
+      \kitem{vsbry}       western boundary condition data for 3-D
+   velocity component in the $\eta$-direction.
+    \end{klist}
+  \kitem{rhs.h} The  right-hand-side arrays.
+    \begin{klist}
+      \kitem{rt}         right-hand-side of the tracer equations.
+      \kitem{rtold}      right-hand-side of the tracer equations at
+   previous two time levels.
+      \kitem{ru}         right-hand-side of the 3-D $u$-momentum
+   equation.
+      \kitem{rubar}      right-hand-side of the 2-D $u$-momentum
+   equation.
+      \kitem{rufrc}      right-hand-side forcing term for the 2-D
+   $u$-momentum equation.
+      \kitem{ruold}      right-hand-side of the 3-D $u$-momentum
+   equation at previous two long time levels.
+      \kitem{rustr}      surface and bottom $u$-momentum stresses.
+      \kitem{rv}         right-hand-side of the 3-D $v$-momentum
+   equation.
+      \kitem{rvbar}      right-hand-side of the 2-D $v$-momentum
+   equation.
+      \kitem{rvfrc}      right-hand-side forcing term for the 2-D
+   $v$-momentum equation.
+      \kitem{rvold}      right-hand-side of the 3-D $v$-momentum
+   equation at previous two long time levels.
+      \kitem{rvstr}      surface and bottom $v$-momentum stresses.
+      \kitem{rzeta}      right-hand-side of the free surface equation.
+    \end{klist}
+  \kitem{scalars.h}  A large number of scalars of all sorts.
+    \begin{klist}
+      \kitem{R0}      background constant density anomaly used
+    in linear equation of state.
+      \kitem{Scoef}   saline contraction coefficient in linear equation
+    of state.
+      \kitem{S0}      background salinity value used in analytic
+    fields.
+      \kitem{Tcoef}   thermal expansion coefficient in linear equation
+    of state.
+      \kitem{T0}      background potential temperature value
+    used in analytic fields.
+      \kitem{abc1}    constant factor (\code{abc1}=23/12) used in the
+    3rd-order Adams-Bashforth time stepping.
+      \kitem{abc2}    constant factor (\code{abc2}=16/12) used in the
+    3rd-order Adams-Bashforth time stepping.
+      \kitem{abc3}    constant factor (\code{abc3}=5/12)  used in the
+    3rd-order Adams-Bashforth time stepping.
+      \kitem{adv\_ord} number of iterations or passes through advection
+    operator in the Smolarkiewicz scheme.
+      \kitem{dstart}  time stamp assigned to model initialization
+    (usually a Calendar day, such as modified Julian Day).
+      \kitem{dt}      size of 3-D primitive equations timestep.
+      \kitem{dtfast}  size of 2-D primitive equations timestep.
+      \kitem{dtods}   timestep factor, \code{dtods}=\code{dt}/\code{ds}.
+      \kitem{dtods2}  timestep factor,
+   \code{dtods2}=\code{dt}/(\code{ds}*\code{ds}).
+      \kitem{dtsfast} size of 2-D primitive equations timestep
+    between consecutive steps.
+      \kitem{dummy1}  scalar dummy variable.
+      \kitem{dummy2}  scalar dummy variable.
+      \kitem{dummy3}  scalar dummy variable.
+      \kitem{fracdt}  timestep factor, \code{fracdt}=2/\code{dt}.
+      \kitem{g}       acceleration due to gravity.
+      \kitem{gorho0}  gravity divided by mean density,
+    \code{gorho0}=$g/\rho_o$.
+      \kitem{gamma2}  slipperiness variable, either 1.0 (free slip) or
+    $-1.0$ (no slip).
+      \kitem{ibcLapQ} switch associated with boundary conditions for the
+    Laplacian of Mellor-Yamada turbulent energy variables.
+      \kitem{ibcLapT} switch associated with boundary conditions for the
+    Laplacian of tracer type variables.
+      \kitem{ibcLapU} switch associated with boundary conditions for the
+    Laplacian of the velocity component in the $\xi$-direction.
+      \kitem{ibcLapV} switch associated with boundary conditions for the
+    Laplacian of the velocity component in the $\eta$-direction.
+      \kitem{ibcQ}    switch associated with boundary conditions for the
+    Mellor-Yamada turbulent energy variables.
+      \kitem{ibcT}    switch associated with boundary conditions for the
+    tracer type variables.
+      \kitem{ibcTa}   switch associated with boundary conditions for the
+    tracer type variables in Smolarkiewicz advection scheme.
+      \kitem{ibcU}    switch associated with boundary conditions for the
+    velocity component in the $\xi$-direction.
+      \kitem{ibcUa}   switch associated with boundary conditions for the
+    anti-diffusion velocity in the $\xi$-direction.
+      \kitem{ibcUavg} switch associated with boundary conditions for the
+    time-averaged velocity component in the $\xi$-direction.
+      \kitem{ibcV}    switch associated with boundary conditions for the
+    velocity component in the $\eta$-direction.
+      \kitem{ibcVa}   switch associated with boundary conditions for the
+    anti-diffusion velocity in the $\eta$-direction.
+      \kitem{ibcVavg} switch associated with boundary conditions for the
+    time-averaged velocity component in the $\eta$-direction.
+      \kitem{ibcW}    switch associated with boundary conditions for the
+    velocity component in the $s$-direction.
+      \kitem{ibcWa}   switch associated with boundary conditions for the
+    anti-diffusion velocity in the $s$-direction.
+      \kitem{ibcZ}    switch associated with boundary conditions for the
+    free surface elevation.
+      \kitem{ibcZavg} switch associated with boundary conditions for the
+    time-averaged free surface elevation.
+      \kitem{icavg}   current number of time-records accumulated in
+    output time-averaged arrays.
+      \kitem{iic}     timestep counter for 3-D primitive equations.
+      \kitem{iif}     timestep counter for 2-D primitive equations.
+      \kitem{jjf}     timestep counter component (1 or 2) used in the
+    trapezoidal timestep correction of the 2-D primitive equations.
+      \kitem{knew}    pointer to current short time level for variables
+    associated with 2-D primitive equations.
+      \kitem{kold}    pointer to previous short time level for variables
+    associated with 2-D primitive equations.
+      \kitem{krhs}    pointer to the time level used to calculate the
+    right-hand term in the 2-D primitive equations.
+      \kitem{kstp}    pointer to the time level to which the current
+    changes are added in the 2-D primitive equations.
+      \kitem{lambda}  Crank-Nicolson scheme weight for upper and lower
+    time levels (usually, \code{lambda}=0.5).
+      \kitem{lcycle}  logical switch used to recycle time records in
+    output restart file. If \code{.true.}, only the latest two restart
+    time records are maintained.  If \code{.false.}, all restart
+    field are saved every \code{nrst} timesteps without recycling.
+      \kitem{ldefhis} logical switch used to create the history file.
+    If \code{.true.}, a new history file is created. If \code{.false.},
+    data is appended to an existing history file.
+      \kitem{levbfrc} shallowest level to apply bottom momentum stress
+    as a bodyforce.
+      \kitem{levsfrc} deepest level to apply surface momentum stress as
+    a bodyforce.
+      \kitem{lnew}    pointer to future $(n+1)$ long time level for
+    variables associated with the time averaging.
+      \kitem{lnow}    pointer to current $(n)$ long time level for
+    variables associated with the time averaging.
+      \kitem{lold}    pointer to previous $(n-1)$ long time level for
+    variables associated with the time averaging.
+      \kitem{lwrthis} logical switch to activate the writing of fields
+    to the SCRUM history file.   
+      \kitem{mnew}    pointer to current long time level for variables
+    associated with turbulent energy equations.
+      \kitem{mold}    pointer to previous long time level for variables
+    associated with turbulent energy equations.
+      \kitem{mrhs}    pointer to the time level used to calculate the
+    right-hand term in the turbulent energy equations.
+      \kitem{mstp}    pointer to the time level to which the current
+    changes are added in the turbulent energy equations.
+      \kitem{navg}    number of timesteps between storage of
+    time-averaged fields.
+      \kitem{ndtfast} number of timesteps for 2-D equations between each
+    \code{dt}.
+      \kitem{ninfo}   number of timesteps between print of single line
+    information to standard output.
+      \kitem{nmix\_en} number of timesteps between computations of
+    isopycnal slopes used in the rotated mixing tensor.
+%     \kitem{nplt}    number of timesteps between calls to plotting
+%   routines.
+      \kitem{nrecavg} number of time records written in averages file.
+      \kitem{nrechis} number of time records written in history file.
+      \kitem{nreciavg}number of time records written in ice averages
+    file.
+      \kitem{nrecirst}number of time records written in ice restart
+    file.
+      \kitem{nrecrst} number of time records written in restart file.
+      \kitem{nrecsta} number of time records written in stations file.
+      \kitem{nrrec}   number of restart time records to read from disk,
+    the last is used as the initial conditions.
+      \kitem{nrst}    number of timesteps between storage of restart
+    fields.
+      \kitem{nsta}    number of timesteps between storage of station
+    data.
+      \kitem{ntimes}  ending timesteps in evolving the 3-D primitive
+    equations in the current run.
+      \kitem{ntsavg}  starting timestep for accumulation of output
+    time-averaged fields.
+      \kitem{ntstart} starting timestep in evolving the 3-D primitive
+    equations; usually 1, if not a restart run.
+      \kitem{nwrt}    number of timesteps between writing of fields into
+    output history file.
+      \kitem{qdtfac}  timestep factor for turbulent energy equations.
+      \kitem{rdrg}    linear bottom drag coefficient.
+      \kitem{rdrg2}   quadratic bottom drag coefficient.
+      \kitem{rho0}    mean density $\rho_o$.
+      \kitem{rnudg}   inverse time scale (days) of the nudging towards
+    climatology.
+      \kitem{rstflag} logical switch which indicates whether or not the
+    model is being restarted.
+      \kitem{tdays}   SCRUM time since initialization (days).
+      \kitem{tfacfast}time stepping variable for the leap-frog
+    trapezoidal correction of the 2-D primitive equations.
+      \kitem{trapfast}logical switch activated during the leap-frog
+    trapezoidal timestep correction of the 2-D primitive equations.
+      \kitem{wall1}   logical switch for side 1 $(i=1)$,
+    \code{.true.} if it is a wall, \code{.false.} if it is open.
+      \kitem{wall2}   logical switch for side 2 $(j=1)$,
+    \code{.true.} if it is a wall, \code{.false.} if it is open.
+      \kitem{wall3}   logical switch for side 3 $(i=\code{L})$,
+    \code{.true.} if it is a wall, \code{.false.} if it is open.
+      \kitem{wall4}   logical switch for side 4 $(j=\code{M})$,
+    \code{.true.} if it is a wall, \code{.false.} if it is open.
+    \end{klist}
+  \kitem{strings.h}  \mbox{}
+    \begin{klist}
+      \kitem{Coptions}    activated C-preprocessing options.
+      \kitem{title}       title of model run.
+    \end{klist}
+  \kitem{work.h}  Work arrays.
+    \begin{klist}
+      \kitem{a2d -- h2d}   utility 2-D arrays used as temporary storage.
+      \kitem{a3d -- h3d}   utility 3-D arrays used as temporary storage.
+    \end{klist}
+\end{klist}

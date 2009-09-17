@@ -1,0 +1,152 @@
+\setcounter{page}{1}
+\section{Introduction}
+This user's manual for the Regional Ocean Modeling System (ROMS)
+describes the model equations and algorithms, as well as
+additional user configurations necessary for specific applications.
+This manual also describes the sea-ice model
+that we are using (Budgell \cite{Budgell05}).
+
+The principle attributes of the model are as follows:
+\begin{klist}
+\kitem{General} \mbox{}
+\begin{itemize}
+  \item Primitive equations with potential temperature, salinity, and an
+equation of state.
+  \item Hydrostatic and Boussinesq approximations.
+  \item Optional third-order upwind advection scheme.
+  \item Optional Smolarkiewicz advection scheme for tracers
+    (potential temperature, salinity, etc.).
+% \item Second-moment conservation.
+  \item Optional Lagrangian floats.
+  \item Option for point sources and sinks.
+\end {itemize}
+\kitem{Horizontal} \mbox{}
+\begin{itemize}
+  \item Orthogonal-curvilinear coordinates.
+  \item Arakawa C grid.
+  \item Closed basin, periodic, prescribed, radiation, and
+    gradient open boundary conditions.
+  \item Masking of land areas.
+\end {itemize}
+\kitem{Vertical} \mbox{}
+\begin{itemize}
+  \item $\sigma$ (terrain-following) coordinate.
+  \item Free surface.
+  \item Tridiagonal solve with implicit treatment of vertical
+    viscosity and diffusivity.
+\end {itemize}
+\kitem{Ice} \mbox{}
+\begin{itemize}
+  \item Hunke and Dukowicz elastic-viscous-plastic dynamics.
+  \item Mellor-Kantha thermodynamics.
+  \item Orthogonal-curvilinear coordinates.
+  \item Arakawa C grid.
+  \item Smolarkiewicz or third-order upwind advection of tracers.
+%  \item Optional ridging scheme.
+\end{itemize}
+\kitem{Mixing options} \mbox{}
+\begin{itemize}
+  \item Horizontal Laplacian and biharmonic
+    diffusion along constant $s$, $z$ or density
+    surfaces.
+  \item Horizontal Laplacian and biharmonic viscosity
+    along constant $s$ or $z$ surfaces.
+  \item Optional Smagorinsky horizontal viscosity and diffusion (but
+  not recommended for diffusion).
+%  \item Optional Gent and McWilliams \cite{Gent90}, \cite{Gent95} 
+%    eddy-induced horizontal mixing.
+  \item Horizontal free-slip or no-slip boundaries.
+  \item Vertical harmonic viscosity and diffusion with a spatially
+    variable coefficient, with options to compute the coefficients
+    with Large et al.\ \cite{Large94}, Mellor-Yamada \cite{Mellor74},
+    or generic length scale (GLS) \cite{Umlauf2001} mixing schemes.
+\end{itemize}
+\kitem{Implementation} \mbox{}
+\begin{itemize}
+  \item Dimensional in meter, kilogram, second (MKS) units.
+  \item Fortran 90.
+  \item Runs under UNIX, requires the C preprocessor, gnu make, and
+  Perl.
+  \item All input and output is done in NetCDF \cite{netCDF} (Network
+    Common Data Format), requires the NetCDF library.
+  \item Options include serial, parallel with MPI, and parallel with
+  OpenMP.
+%  \item Pre- and post-processing graphics package available which
+%    uses the NCAR (National Center for Atmospheric Research)
+%    graphics libraries.
+\end{itemize}
+\end{klist}
+These lists haven't changed so very much in the past ten to fifteen
+years, but many of the numerical details have changed a great deal.
+Examples include consistent temporal averaging of the barotropic
+mode to guarantee both exact conservation and constancy preservation
+properties for tracers; redefined barotropic pressure-gradient terms
+to account for local variations in the density field; vertical
+interpolation performed using conservative parabolic splines; and
+higher-order, quasi-monotone advection algorithms.
+
+ROMS now comes with a full suite of advanced data assimilation
+routines; these options are beyond the scope of this document.
+
+Chapters \ref{Phys} and \ref{Num} describe the model physics and
+numerical techniques and contain information from Haidvogel et al.\
+\cite{Haidvogel07} and blah.
+Chapter \ref{Code} lists the model subroutines and functions.
+%Chapter \ref{Progs} describes
+%the support programs which are needed to provide ROMS with data files.
+As distributed, ROMS is ready to run with a number of example problems.
+The process of configuring ROMS for a particular application and
+running it is
+described in Chapter \ref{Wave}, including a discussion of a few example
+applications.
+%Chapter \ref{Floats} describes the Lagrangian floats and
+%how to use them, including the plotting postprocessor \code{fltplt}.
+Chapter \ref{Plothist} describes Hernan Arango's plotting
+programs \code{cnt}, \code{ccnt}, \code{sec}, and \code{csec}.
+Chapter \ref{Iphys} describes the ice equations while chapter
+\ref{Userice} describes the ice subroutines and the coupling procedure.
+
+\subsection{Acquiring the ROMS code}
+\label{Svn}
+The version of the model described in this document is a merger between
+ROMS 3.1 and a sea-ice model. The main ROMS code is available for
+download via \code{svn} once you have a login on the ROMS site. The sea ice
+code is a branch off of that and requires special access - contact
+Dave Robertson (robertson@marine.rutgers.edu) for more information.
+
+\subsection{The ROMS forum}
+We maintain an electronic home for ROMS users at www.myroms.org.
+The code lives here on a subversion server, there is a discussion
+forum for all things ROMS, from jobs to debugging help. There's a
+bug tracking system, and a wiki too. The wiki is given parts of
+this manual as they are created, but the nature of wikis is that
+they can be more fluid, with more authors, than a static document such
+as this. Again, Dave Robertson is the one to talk to.
+
+\subsection{Warnings and bugs}
+ROMS is not a large program by some standards, but it is still complex
+enough to require some effort to use effectively.  Section \ref{User}
+attempts to describe what the user is responsible for---please read
+it carefully.
+
+More specific things to be wary of include:
+\begin{itemize}
+  \item It is recommended that you use 64 bits of precision rather
+than 32 bits.
+  \item The code must be run through the C preprocessor before it
+is compiled.  This can occasionally be dangerous, especially with
+the newer ANSI C versions of \code{cpp}.  Potential problems are listed
+in Appendix \ref{Cpp}. The gnu \code{cpp} with the \code{-traditional} flag
+is known to work well.
+  \item The vertical $\sigma$ coordinate was chosen as being a sensible
+way to handle variations in the water depth.  It has been used with
+success when the maximum and minimum depths differ by a factor of
+twenty or less, and the value of the stretching parameter,
+\code{THETA\_S}, is between zero and five.  It is also desirable to
+have the depth variations be well resolved by the
+horizontal grid.  For realistic problems we often fail to resolve the
+bathymetric slopes and we then resort to bathymetric smoothing.
+This in turn changes the shape of the basin and leads to its own set of
+problems, such as altered sill depths. Also, the currents will react to
+the change in shelf slope---you are now solving a different problem.
+\end{itemize}

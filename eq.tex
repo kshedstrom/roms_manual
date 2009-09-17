@@ -1,0 +1,437 @@
+\section{Ocean Model Formulation}
+\label{Phys}
+\subsection {Equations of motion}
+ROMS is a member of a general class of three-dimensional,
+free-surface, terrain-following numerical models that solve the
+Reynolds-averaged Navier-Stokes equations using the hydrostatic and
+Boussinesq assumptions.
+The governing equations in Cartesian coordinates can be written:
+\begin{equation}
+   \frac{\partial u}{\partial t} + \vec{v} \cdot \nabla u - fv =
+   - \frac{\partial \phi}{\partial x}
+   - \frac{\partial} {\partial z}
+   \left( \overline{u'w'} - \nu \frac{\partial u}{\partial z} \right)
+   + {\cal F}_u + {\cal D}_u
+\label{st1}
+\end{equation}
+\begin{equation}
+   \frac{\partial v}{\partial t} + \vec{v} \cdot \nabla v + fu =
+   - \frac{\partial \phi}{\partial y}
+   - \frac{\partial}{\partial z} \left( \overline{v'w'} -
+   \nu \frac{\partial v}{\partial z} \right) 
+    + {\cal F}_v + {\cal D}_v
+\label{st2}
+\end{equation}
+\begin{equation}
+ \frac{\partial \phi}{\partial z} = \frac{-\rho g}{\rho_o}
+\label{st4}
+\end{equation}
+with the continuity equation:
+\begin{equation}
+  \frac{\partial u}{\partial x} +
+  \frac{\partial v}{\partial y} + \frac{\partial w}{\partial z} = 0.
+\label{st5}
+\end{equation}
+and scalar transport given by:
+\begin{equation}
+  \frac {\partial C}{\partial t} + \vec{v} \cdot \nabla C
+  = - \frac{\partial}{\partial z} \left( \overline{C'w'} -
+  \nu_\theta \frac{\partial C}{\partial z} \right) +
+  {\cal F}_C + {\cal D}_C.
+\label{st3a}
+\end{equation}
+An equation of state is also required:
+\begin{equation}
+   \rho = \rho(T,S,P)
+\label{st3c}
+\end{equation}
+The variables are shown in Table \ref{ovars}.
+An overbar represents a time average and a prime represents a
+fluctuation about the mean. These equations are closed by
+parameterizing the Reynolds stresses and turbulent tracer fluxes as:
+\begin{equation}
+  \overline{u'w'} = -K_M \frac{\partial u}{\partial z};\qquad
+  \overline{v'w'} = -K_M \frac{\partial v}{\partial z};\qquad
+  \overline{C'w'} = -K_C \frac{\partial C}{\partial z}.
+\end{equation}
+\begin{table}[thb]
+\centerline{
+\begin{tabular}{|c|l|} \hline
+Variable & Description \\ \hline
+  $C(x,y,z,t)$ & scalar quantity, i.e. temperature, salinity,
+  nutrient concentration \\
+  ${\cal D}_u, {\cal D}_v, {\cal D}_C$ & optional horizontal diffusive terms \\
+  ${\cal F}_u, {\cal F}_v, {\cal F}_C$ & forcing/source terms \\
+  $f(x,y)$ & Coriolis parameter \\
+  $g$ & acceleration of gravity \\
+  $h(x,y)$ & depth of sea floor below mean sea level \\
+  $H_z(x,y,z)$ & vertical grid spacing \\
+  $\nu, \nu_\theta$ & molecular viscosity and diffusivity \\
+  $K_M, K_C$ & vertical eddy viscosity and diffusivity \\
+  $P$ & total pressure $P \approx -\rho_o gz$ \\
+  $\phi(x,y,z,t)$ & dynamic pressure $\phi = \left(P/\rho_o \right)$ \\
+%  $p$ & pressure \\
+%  $\rho(x,y,z,t), \rho_o$ & total and reference densities \\
+  $\rho_o + \rho(x,y,z,t)$ & total {\sl in situ} density \\
+  $S(x,y,z,t)$ & salinity \\
+  $t$ & time \\
+  $T(x,y,z,t)$ & potential temperature \\
+  $u,v,w$ & the ($x,y,z$) components of vector velocity $\vec{v}$ \\
+  % $u,v,\Omega$ & the ($x,y,z$) components of vector velocity $\vec{v}$ \\
+  $x,y$ & horizontal coordinates \\
+  $z$ & vertical coordinate \\
+  $\zeta(x,y,t)$ & the surface elevation \\
+  \hline
+\end{tabular}
+}
+\label{ovars}
+\caption{The variables used in the description of the ocean model}
+\end{table}
+
+Equations (\ref{st1}) and (\ref{st2}) express the momentum balance in
+the $x$- and $y$-directions, respectively.  The time evolution of
+all scalar concentration fields, including those for $T(x,y,z,t)$ and
+$S(x,y,z,t)$, are governed by the advective-diffusive equation
+(\ref{st3a}). The equation of state is given by
+equation (\ref{st3c}).  In the Boussinesq approximation, density
+variations are neglected in the momentum equations except in their
+contribution to the buoyancy force in the vertical momentum equation
+(\ref{st4}).  Under the hydrostatic approximation, it is further
+assumed that the vertical pressure gradient balances the buoyancy
+force.  Lastly, equation (\ref{st5}) expresses the continuity equation
+for an incompressible fluid.  For the moment, the effects of forcing
+and horizontal dissipation will be represented by the schematic terms
+${\cal F}$ and ${\cal D}$, respectively.  The horizontal and vertical
+mixing will be described more fully in \S\ref{Smooth}.
+
+\subsection{Vertical boundary conditions}
+\label{vbc}
+The vertical boundary conditions can be prescribed as follows:
+\[
+\begin{array}{rl}
+  \mbox{top ($z = \zeta(x,y,t))$} \hspace{1cm}
+  & K_m \, \frac{\partial u}{\partial z}
+    = \tau^x_s (x,y,t) \\ [1.5mm]
+  & K_m \, \frac{\partial v}{\partial z} = \tau_s^y(x,y,t) \\[1.5mm]
+  & K_C \, \frac{\partial C}{\partial z} = \frac{Q_C}{\rho_o c_P}
+    \\[1.5mm]
+  & w = \frac{\partial \zeta}{\partial t} \\[2mm]
+  \mbox{and bottom ($z = -h(x,y)$)} \hspace{1cm} &
+  K_m \, \frac{\partial u}{\partial z} = \tau_b^x (x,y,t) \\[1.5mm]
+  & K_m \, \frac{\partial v}{\partial z} = \tau_b^y (x,y,t) \\[1.5mm]
+  & K_C \, \frac{\partial C}{\partial z} = 0\\[1.5mm]
+  & - w + \vec{v} \cdot \nabla h = 0.
+\end{array}
+\]
+
+\begin{table}[h]
+\centerline{
+\begin{tabular}{|c|l|} \hline
+Variable & Description \\ \hline
+%  $E-P$ & evaporation minus precipitation \\
+%   $\gamma_1, \gamma_2$ & linear and quadratic bottom stress
+%   coefficients \\
+  $Q_C$ & surface concentration flux \\
+  $\tau_s^x , \tau_s^y$ & surface wind stress \\
+  $\tau_b^x , \tau_b^y$ & bottom stress \\
+  \hline
+\end{tabular}
+}
+\label{vbcvars}
+\caption{The variables used in the vertical boundary conditions for the
+ocean model}
+\end{table}
+
+The surface boundary condition variables are defined in Table
+\ref{vbcvars}.  Since $Q_T$ is a strong function of the surface
+temperature, we usually choose to compute $Q_T$ using the surface
+temperature and the atmospheric fields in an atmospheric bulk flux
+parameterization. This bulk flux routine also computes the wind
+stress from the winds.
+
+On the variable bottom,
+$z = -h(x,y)$, the horizontal velocity has
+a prescribed bottom stress which is a choice between linear,
+quadratic, or logarithmic terms.
+% \begin{align*}
+%   \tau_b^x & = (\gamma_1 + \gamma_2 \sqrt{u^2 + v^2} ) u + z_o blah \\
+%   \tau_b^y & = (\gamma_1 + \gamma_2 \sqrt{u^2 + v^2} ) v + z_o blah
+% \end{align*}
+The vertical concentration flux may also be prescribed at the bottom,
+although it is usually set to zero.
+
+\subsection{Horizontal boundary conditions}
+As distributed, the model can easily be configured for a periodic
+channel, a doubly periodic domain, or a closed basin.  Code is also
+included for open boundaries which may or may not work for your
+particular application. Appropriate boundary conditions are
+provided for $u,v,T,S,$ and $\zeta$.
+
+The model domain is logically rectangular, but it is possible to
+mask out land areas on the boundary and in the interior. Boundary
+conditions on these masked regions are straightforward,
+with a choice of no-slip or free-slip walls.
+
+If biharmonic friction is used, a higher order boundary condition
+must also be provided.  The model currently has this built into the
+code where the biharmonic terms are calculated.  The high order
+boundary conditions used for $u$ are $\frac{\partial}{\partial x} \left(
+{\nu} \frac{\partial ^2 u}{\partial x^2} \right) = 0$ on the
+eastern and western boundaries and $\frac{\partial}{\partial y} \left(
+{\nu} \frac{\partial ^2 u}{\partial y^2} \right) = 0\,$ on the
+northern and southern boundaries.  The boundary conditions for $v$
+and $C$ are similar.  These boundary conditions were chosen because
+they preserve the property of no gain or loss of volume-integrated
+momentum or scalar concentration.
+
+\subsection{Terrain-following coordinate system}
+From the point of view of the computational model, it is highly
+convenient to introduce a stretched vertical coordinate system which
+essentially ``flattens out'' the variable bottom at $z = -h(x,y)$.
+Such ``$\sigma$'' coordinate systems have long been used, with slight
+appropriate modification, in both meteorology and oceanography
+(e.g., Phillips \cite{Phil} and Freeman et al.\ \cite{FHD}).
+To proceed, we make the coordinate transformation:
+\[\begin{array}{c}
+  \hat{x} = x \\
+  \hat{y} = y \\[1mm]
+  \sigma = \sigma(x,y,z) \\[1mm]
+  z = z(x,y,\sigma)
+\end{array}\]
+and
+\[
+  \hat{t} = t.
+\]
+See Appendix \ref{Scoord} for the form of $\sigma$ used here.
+Also, see Shchepetkin and McWilliams, 2005 \cite{SS2005} for a
+discussion about the nature of this form of $\sigma$ and how it
+differs from that used in SCRUM.
+
+In the stretched system, the vertical coordinate $\sigma$ spans the
+range \mbox{$-1 \leq \sigma \leq 0$;} we are therefore left with
+level upper ($\sigma = 0$) and lower ($\sigma = -1$) bounding
+surfaces.  The chain rules for this transformation are:
+\begin{gather*}
+  \left( \frac{ \partial}{\partial x } \right)_z =
+  \left( \frac{ \partial}{\partial x } \right)_\sigma -
+  \left( \frac{ 1}{H_z } \right)
+  \left( \frac{ \partial z}{\partial x } \right)_\sigma
+  \frac{ \partial}{\partial \sigma}
+\\
+  \left( \frac{ \partial}{\partial y } \right)_z =
+  \left( \frac{ \partial}{\partial y } \right)_\sigma -
+  \left( \frac{ 1}{H_z } \right)
+  \left( \frac{ \partial z}{\partial y } \right)_\sigma
+  \frac{ \partial}{\partial \sigma}
+\\
+  \frac{ \partial}{\partial z } =
+  \left( \frac{ \partial s}{\partial z } \right)
+  \frac{ \partial}{\partial \sigma} =
+  \frac{ 1}{H_z } \frac{ \partial}{\partial \sigma }
+\end{gather*}
+where
+\[
+  H_z \equiv \frac{ \partial z}{\partial \sigma }
+\]
+As a trade-off for this geometric
+simplification, the dynamic equations become somewhat more
+complicated.  The resulting dynamic equations are, after dropping the
+carats:
+\begin{equation}
+  \frac{\partial u}{\partial t} - fv + \vec{v} \cdot \nabla u = - 
+  \frac{\partial \phi}{\partial x} - \left( \frac{g\rho}
+  {\rho_o} \right) \frac{\partial z}{\partial x} -
+  g \frac{\partial \zeta}{\partial x} +
+  \frac{ 1}{H_z } \frac{\partial}{\partial \sigma}
+  \left[ \frac{K_m}{H_z} \frac{\partial u}{\partial \sigma} \right] +
+  {\cal F}_u + {\cal D}_u
+\label{st6}
+\end{equation}
+\begin{equation}
+  \frac{\partial v}{\partial t} + fu + \vec{v} \cdot \nabla v = - 
+  \frac{\partial \phi}{\partial y} - \left( \frac{g\rho}
+  {\rho_o} \right) \frac{\partial z}{\partial y} -
+  g \frac{\partial \zeta}{\partial y} +
+  \frac{ 1}{H_z } \frac{\partial}{\partial \sigma}
+  \left[ \frac{K_m}{H_z} \frac{\partial v}{\partial \sigma} \right] +
+  {\cal F}_v + {\cal D}_v
+\end{equation}
+\begin{equation}
+  \frac{\partial C}{\partial t} + \vec{v} \cdot \nabla C
+  = \frac{ 1}{H_z } \frac{\partial}{\partial \sigma}
+  \left[ \frac{K_C}{H_z} \frac{\partial C}{\partial \sigma} \right] +
+  {\cal F}_{T} + {\cal D}_{T}
+\end{equation}
+\begin{equation}
+  \rho = \rho(T,S,P)
+\end{equation}
+\begin{equation}
+  \frac{\partial \phi}{\partial \sigma} = \left( \frac{-gH_z\rho}
+  {\rho_o} \right)
+\label{st9}
+\end{equation}
+\begin{equation}
+  \frac{\partial H_z}{\partial t} +
+  \frac{\partial (H_zu)}{\partial x} +
+  \frac{\partial (H_zv)}{\partial y} +
+  \frac{\partial (H_z \Omega)}{\partial \sigma} = 0
+\label{st10}
+\end{equation}
+where
+\[
+  \vec{v} = (u,v,\Omega)
+\]
+\[
+  \vec{v} \cdot \nabla = u \frac{\partial}{\partial x} + v
+  \frac{\partial}{\partial y} + \Omega \frac{\partial}{\partial
+  \sigma}.
+\]
+The vertical velocity in $\sigma$ coordinates is
+\[
+  \Omega (x,y,\sigma,t) = \frac{1}{H_z}
+  \left[ w - \left(\frac{z+h}{\zeta+h} \right) 
+  \frac{\partial \zeta}{\partial t} - u \frac{\partial z}{\partial x}
+  - v \frac{\partial z}{\partial y} \right]
+\]
+and
+\[
+  w = \frac{\partial z}{\partial t} + u \frac{\partial z}{\partial x}
+  + v \frac{\partial z}{\partial y} + \Omega H_z.
+\]
+In the stretched coordinate system, the vertical boundary conditions
+become:
+\[\begin{array}{rl}
+  \mbox{top ($\sigma$= 0)} \hspace{1cm} & \left(\frac{K_m}{H_z}\right)
+  \frac{\partial u}{\partial \sigma} = \tau^x_s (x,y,t) \\ [1.5mm]
+  & \left(\frac{K_m}{H_z}\right) \frac{\partial v}{\partial \sigma}
+  = \tau^y_s(x,y,t) \\[1.5mm]
+  & \left(\frac{K_C}{H_z}\right) \frac{\partial C}{\partial \sigma}
+  = \frac{Q_C}{\rho_o c_P}
+  \\[1.5mm]
+  & \Omega = 0 \\[2mm]
+  \mbox{and bottom ($\sigma = -1$)} \hspace{1cm} &
+  \left(\frac{K_m}{H_z}\right) \frac{\partial u}{\partial \sigma}
+  = \tau^x_b (x,y,t) \\[1.5mm]
+  & \left(\frac{K_m}{H_z}\right) \frac{\partial v}{\partial \sigma}
+  = \tau^y_b (x,y,t) \\[1.5mm]
+  & \left(\frac{K_C}{H_z}\right) \frac{\partial C}{\partial s}
+  = 0 \\[1.5mm]
+  & \Omega = 0.
+\end{array}\]
+Note the simplification of the boundary conditions on vertical
+velocity that arises from the $\sigma$ coordinate transformation.
+
+\subsection{Horizontal curvilinear coordinates}
+\label{Ocurve}
+In many applications of interest (e.g., flow adjacent to a coastal
+boundary), the fluid may be confined horizontally within an
+irregular region.  In such problems, a horizontal coordinate system
+which conforms to the irregular lateral boundaries is advantageous.
+It is often also true in many geophysical problems that the
+simulated flow fields have regions of enhanced structure (e.g.,
+boundary currents or fronts) which occupy a relatively small
+fraction of the physical/computational domain.  In these problems,
+added efficiency can be gained by placing more computational
+resolution in such regions.
+
+The requirement for a boundary-following coordinate system and for a
+laterally variable grid resolution can both be met, for suitably
+smooth domains, by introducing an appropriate orthogonal coordinate
+transformation in the horizontal.  Let the new coordinates be $\xi
+(x,y)$ and $\eta(x,y)$, where the relationship of horizontal arc
+length to the differential distance is given by:
+\begin{equation}
+   (ds)_\xi = \left( \frac{1}{m} \right) d \xi
+\end{equation}
+\begin{equation}
+   (ds)_\eta = \left( \frac{1}{n} \right) d \eta
+\end{equation}
+Here, $m(\xi,\eta)$ and $n(\xi,\eta)$ are the scale factors which
+relate the differential distances $(\Delta \xi,\Delta \eta)$ to the
+actual (physical) arc lengths.  Appendix \ref{Curve} contains the
+curvilinear version of several common vector quantities.
+
+Denoting the velocity components in the new coordinate system by
+\begin{equation}
+   \vec{v} \cdot \hat{\xi} = u
+\end{equation}
+and
+\begin{equation}
+   \vec{v} \cdot \hat{\eta} = v
+\end{equation}
+the equations of motion (\ref{st6})-(\ref{st10}) can be re-written
+(see, e.g., Arakawa and Lamb \cite{AL}) as:
+{\samepage
+\begin{multline}
+   \frac{\partial}{\partial t} \left( \frac{H_z u}{mn} \right) + \frac
+   {\partial}{\partial \xi} \left( \frac{H_z u^2}{n} \right ) + \frac
+   {\partial}{\partial \eta} \left( \frac{H_z uv}{m} \right) + \frac
+   {\partial}{\partial \sigma} \left( \frac{H_z u\Omega}{mn} \right)
+\\
+   - \left\{\left(\frac{f}{mn} \right) + v \frac{\partial}{\partial \xi}
+   \left( \frac{1}{n} \right) - u \frac{\partial}{\partial \eta} \left(
+   \frac{1}{m} \right) \right\} H_z v =
+\\
+   -\left( \frac{H_z }{n} \right )
+   \left( \frac{\partial \phi}{\partial \xi} +
+   \frac{g \rho}{\rho_o} \frac{\partial z}{\partial \xi} +
+   g \frac{\partial \zeta}{\partial \xi} \right) +
+   \frac{ 1}{mn} \frac{\partial}{\partial \sigma}
+   \left[ \frac{K_m}{H_z} \frac{\partial u}{\partial \sigma} \right] +
+   \frac{ H_z}{mn}
+   \left( {\cal F}_u + {\cal D}_u \right)
+\label{st13}
+\end{multline}
+}
+{\samepage
+\begin{multline}
+   \frac{\partial}{\partial t} \left( \frac{H_z v}{mn} \right) + \frac
+   {\partial}{\partial \xi} \left( \frac{H_z uv}{n} \right ) + \frac
+   {\partial}{\partial \eta} \left( \frac{H_z v^2}{m} \right) + \frac
+   {\partial}{\partial \sigma} \left( \frac{H_z v\Omega}{mn} \right)
+\\
+   + \left\{\left(\frac{f}{mn} \right) + v \frac{\partial}{\partial \xi}
+   \left( \frac{1}{n} \right) - u \frac{\partial}{\partial \eta} \left(
+   \frac{1}{m} \right) \right\} H_z u =
+\\
+   -\left( \frac{H_z }{m} \right )
+   \left( \frac{\partial \phi}{\partial \eta} +
+   \frac{g \rho}{\rho_o} \frac{\partial z}{\partial \eta} +
+   g \frac{\partial \zeta}{\partial \eta} \right) +
+   \frac{ 1}{mn} \frac{\partial}{\partial \sigma}
+   \left[ \frac{K_m}{H_z} {\partial v}{\partial \sigma} \right] +
+   \frac{ H_z}{mn}
+   \left( {\cal F}_v + {\cal D}_v \right)
+\label{st14}
+\end{multline}
+}
+\begin{multline}
+   \frac{\partial}{\partial t} \left( \frac{H_z C}{mn} \right) +
+   \frac {\partial}{\partial \xi} \left( \frac{H_z uC}{n} \right ) +
+   \frac {\partial}{\partial \eta} \left( \frac{H_z vC}{m} \right) +
+   \frac {\partial}{\partial \sigma}
+   \left( \frac{H_z \Omega C}{mn} \right) =
+\\
+   \frac{ 1}{mn} \frac{\partial}{\partial s}
+   \left[ \frac{K_C}{H_z} \frac{\partial C}{\partial \sigma} \right] +
+   \frac{ H_z}{mn}
+   \left( {\cal F}_{C} + {\cal D}_{C} \right)
+\label{st15}
+\end{multline}
+\begin{equation}
+  \rho = \rho(T,S,P)
+\end{equation}
+\begin{equation}
+   \frac{\partial \phi}{\partial \sigma} = -\left( \frac{gH_z \rho}
+   {\rho_o} \right)
+\label{st16}
+\end{equation}
+\begin{equation}
+   \frac{\partial}{\partial t} \left( \frac{H_z}{mn} \right) +
+   \frac{\partial}{\partial \xi} \left( \frac{H_z u}{n} \right) +
+   \frac{\partial}{\partial \eta} \left( \frac{H_z v}{m} \right) +
+   \frac{\partial}{\partial \sigma}\left( \frac{H_z \Omega}{mn} \right)
+   = 0.
+\label{st17}
+\end{equation}
+All boundary conditions remain unchanged.

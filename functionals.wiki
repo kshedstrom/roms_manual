@@ -1,0 +1,205 @@
+<div class="title">Functionals</div>
+
+The directory '''ROMS/Functionals''' contains the source file [[Sourc#analytical.F | analytical.F]] as well as a number of files of the form '''ana_xxx.h'''. Each of these include files contains the analytic expressions for its respective functionality. For instance, a simple box grid can be represented analytically internal to the model more easily than preparing a grid file with some outside program. Those expressions will be found inside [[Functionals#ana_grid.h | ana_grid.h]]. The version of [[Functionals#ana_grid.h | ana_grid.h]] found in the '''ROMS/Functionals''' directory contains everything for the example problems distributed with ROMS (unless it requires an external grid file). If you choose to build analytic grids for your own applications, it is recommended that you use that in '''User/Functionals''' instead, or provide a version in some third location pointed to by [[MY_ANALYTICAL_DIR]].
+
+==
+
+<section begin=ana_biology.h />;<span id="ana_biology.h"></span>[[ana_biology.h]]
+:For providing analytic initial conditions for the biological tracers.
+:'''cpp flag = '''[[Options#ANA_BIOLOGY | ANA_BIOLOGY]]  <section end=ana_biology.h />
+
+<section begin=ana_bmflux.h />;<span id="ana_bmflux.h"></span>[[ana_bmflux.h]]
+:For providing spacially varying roughness (z0) for bottom momentum stresses.
+:'''cpp flag = '''[[Options#ANA_BMFLUX | ANA_BMFLUX]]  <section end=ana_bmflux.h />
+
+<section begin=ana_btflux.h />;<span id="ana_btflux.h"></span>[[ana_btflux.h]]
+:For providing analytic bottom flux on tracers (usually zero).
+:'''cpp flag = '''[[Options#ANA_BTFLUX | ANA_BTFLUX]]
+:'''cpp flag = '''[[Options#SEDIMENT | SEDIMENT]] <section end=ana_btflux.h />
+
+<section begin=ana_cloud.h />;<span id="ana_cloud.h"></span>[[ana_cloud.h]]
+:For providing analytic atmospheric cloud fraction.
+:'''cpp flag = '''[[Options#ANA_CLOUD | ANA_CLOUD]]
+:'''cpp flag = '''[[Options#CLOUDS | CLOUDS]]  <section end=ana_cloud.h />
+
+<section begin=ana_diag.h />;<span id="ana_diag.h"></span>[[ana_diag.h]]
+:For providing specialized diagnostics during runtime.
+:'''cpp flag = '''[[Options#ANA_DIAG | ANA_DIAG]]  <section end=ana_diag.h />
+
+<section begin=ana_fsobc.h />;<span id="ana_fsobc.h"></span>[[ana_fsobc.h]]
+:For providing analytic free surface boundary conditions.
+:'''cpp flag = '''[[Options#ANA_FSOBC | ANA_FSOBC]]  <section end=ana_fsobc.h />
+
+<section begin=ana_grid.h />;<span id="ana_grid.h"></span>[[ana_grid.h]]
+:For providing analytic grid information.
+:'''cpp flag = '''[[Options#ANA_GRID | ANA_GRID]]  <section end=ana_grid.h />
+
+<section begin=ana_hmixcoef.h />;<span id="ana_hmixcoef.h"></span>[[ana_hmixcoef.h]]
+:For providing analytic atmospheric cloud fraction.
+:'''cpp flag = '''[[Options#VISC_GRID | VISC_GRID]]
+:'''cpp flag = '''[[Options#DIFF_GRID | DIFF_GRID]]
+:'''cpp flag = '''[[Options#SPONGE | SPONGE]] <section end=ana_hmixcoef.h />
+
+<section begin=ana_humid.h />;<span id="ana_humid.h"></span>[[ana_humid.h]]
+:For providing analytic atmospheric humidity.
+:'''cpp flag = '''[[Options#ANA_HUMID | ANA_HUMID]]  <section end=ana_humid.h />
+
+<section begin=ana_initial.h />;<span id="ana_initial.h"></span>[[ana_initial.h]]
+:For providing analytic initial conditions.
+:'''cpp flag = '''[[Options#ANA_INITIAL | ANA_INITIAL]]  <section end=ana_initial.h />
+
+<section begin=ana_m2clima.h />;<span id="ana_m2clima.h"></span>[[ana_m2clima.h]]
+:For providing analytic 2-D momentum climatology.
+:'''cpp flag = '''[[Options#ANA_M2CLIMA | ANA_m2CLIMA]]
+:'''cpp flag = '''[[Options#M2CLIMATOLOGY | M2CLIMATOLOGY]]  <section end=ana_m2clima.h />
+
+<section begin=ana_m2obc.h />;<span id="ana_m2obc.h"></span>[[ana_m2obc.h]]
+:For providing analytic 2-D momentum open boundary conditions.
+:'''cpp flag = '''[[Options#ANA_M2OBC | ANA_M2OBC]]  <section end=ana_m2obc.h />
+
+<section begin=ana_m3clima.h />;<span id="ana_m3clima.h"></span>[[ana_m3clima.h]]
+:For providing analytic 3-D momentum climatology.
+:'''cpp flag = '''[[Options#ANA_M3CLIMA | ANA_M3CLIMA]]  <section end=ana_m3clima.h />
+
+<section begin=ana_m3obc.h />;<span id="ana_m3obc.h"></span>[[ana_m3obc.h]]
+:For providing analytic 3-D momentum open boundary conditions.
+:'''cpp flag = '''[[Options#ANA_M3OBC | ANA_M3OBC]]  <section end=ana_m3obc.h />
+
+<section begin=ana_mask.h />;<span id="ana_mask.h"></span>[[ana_mask.h]]
+:For providing analytic land masks.
+:'''cpp flag = '''[[Options#ANA_GRID | ANA_GRID]]
+:'''cpp flag = '''[[Options#MASKING | MASKING]]  <section end=ana_mask.h />
+
+<section begin=ana_nudgcoef.h />;<span id="ana_nudgcoef.h"></span>[[ana_nudgcoef.h]]
+:For providing analytic atmospheric humidity.
+:'''cpp flag = '''[[Options#NUDGING_COFF | NUDGING_COFF]]  <section end=ana_nudgcoef.h />
+
+<section begin=ana_pair.h />;<span id="ana_pair.h"></span>[[ana_pair.h]]
+:For providing analytic atmospheric pressure.
+:'''cpp flag = '''[[Options#ANA_PAIR | ANA_PAIR]]  <section end=ana_pair.h />
+
+<section begin=ana_passive.h />;<span id="ana_passive.h"></span>[[ana_passive.h]]
+:For providing analytic passive tracer initial conditions.
+:'''cpp flag = '''[[Options#ANA_PASSIVE | ANA_PASSIVE]]
+:'''cpp flag = '''[[Options#T_PASSIVE | T_PASSIVE]]  <section end=ana_passive.h />
+
+<section begin=ana_perturb.h />;<span id="ana_perturb.h"></span>[[ana_perturb.h]]
+:For providing perturbations to the initial conditions.
+:'''cpp flag = '''[[Options#ANA_PERTURB | ANA_PERTURB]]  <section end=ana_perturb.h />
+
+<section begin=ana_psource.h />;<span id="ana_psource.h"></span>[[ana_psource.h]]
+:For providing analytic atmospheric humidity.
+:'''cpp flag = '''[[Options#ANA_PSOURCE | ANA_PSOURCE]]
+:'''cpp flag = '''[[Options#TS_PSOURCE | TS_PSOURCE]]
+:'''cpp flag = '''[[Options#UV_PSOURCE | UV_PSOURCE]]  <section end=ana_psource.h />
+
+<section begin=ana_rain.h />;<span id="ana_rain.h"></span>[[ana_rain.h]]
+:For providing analytic atmospheric rainfall rates.
+:'''cpp flag = '''[[Options#ANA_RAIN | ANA_RAIN]]  <section end=ana_rain.h />
+
+<section begin=ana_scope.h />;<span id="ana_scope.h"></span>[[ana_scope.h]]
+:For providing analytic adjoint sensitivity spatial scope masking arrays.
+:'''cpp flag = '''[[Options#ANA_GRID | ANA_GRID]]  <section end=ana_scope.h />
+
+<section begin=ana_sediment.h />;<span id="ana_sediment.h"></span>[[ana_sediment.h]]
+:For providing analytic initial conditions for the sediments and bed conditions.
+:'''cpp flag = '''[[Options#ANA_SEDIMENT | ANA_SEDIMENT]]  <section end=ana_sediment.h />
+
+<section begin=ana_smflux.h />;<span id="ana_smflux.h"></span>[[ana_smflux.h]]
+:For providing analytic surface momentum flux (wind stress).
+:'''cpp flag = '''[[Options#ANA_SMFLUX | ANA_SMFLUX]]  <section end=ana_smflux.h />
+
+<section begin=ana_specir.h />;<span id="ana_specir.h"></span>[[ana_specir.h]]
+:For providing analytic calculation of spectral downwelling irradiance.
+:'''cpp flag = '''[[Options#ECOSIM | ECOSIM]]  <section end=ana_specir.h />
+
+<section begin=ana_spinning.h />;<span id="ana_spinning.h"></span>[[ana_spinning.h]]
+:For providing analytic time variable rotation forces.
+:'''cpp flag = '''[[Options#ANA_SPINNING | ANA_SPINNING]]  <section end=ana_spinning.h />
+
+<section begin=ana_srflux.h />;<span id="ana_srflux.h"></span>[[ana_srflux.h]]
+:For providing analytic incoming shortwave radiation.
+:'''cpp flag = '''[[Options#ANA_SRFLUX | ANA_SRFLUX]]
+:'''cpp flag = '''[[Options#DIURNAL_SRFLUX | DIURNAL_SRFLUX]] <section end=ana_srflux.h />
+
+<section begin=ana_ssh.h />;<span id="ana_ssh.h"></span>[[ana_ssh.h]]
+:For providing analytic sea surface height climatology.
+:'''cpp flag = '''[[Options#ANA_SSH | ANA_SSH]]
+:'''cpp flag = '''[[Options#ZCLIMATOLOGY | ZCLIMATOLOGY]]  <section end=ana_ssh.h />
+
+<section begin=ana_sss.h />;<span id="ana_sss.h"></span>[[ana_sss.h]]
+:For providing analytic sea surface salinity.
+:'''cpp flag = '''[[Options#ANA_SSS | ANA_SSS]]
+:'''cpp flag = '''[[Options#SALINITY | SALINITY]]
+:'''cpp flag = '''[[Options#SCORRECTION | SCORRECTION]]
+:'''cpp flag = '''[[Options#SRELAXATION | SRELAXATION]]  <section end=ana_sss.h />
+
+<section begin=ana_sst.h />;<span id="ana_sst.h"></span>[[ana_sst.h]]
+:For providing analytic atmospheric rainfall rates.
+:'''cpp flag = '''[[Options#ANA_SST | ANA_SST]]
+:'''cpp flag = '''[[Options#QCORRECTION | QCORRECTION]]  <section end=ana_sst.h />
+
+<section begin=ana_stflux.h />;<span id="ana_stflux.h"></span>[[ana_stflux.h]]
+:For providing analytic surface tracer fluxes.
+:'''cpp flag = '''[[Options#ANA_STFLUX | ANA_STFLUX]]
+:'''cpp flag = '''[[Options#ANA_SSFLUX | ANA_SSFLUX]]
+:'''cpp flag = '''[[Options#ANA_SPFLUX | ANA_SPFLUX]]  <section end=ana_stflux.h />
+
+<section begin=ana_tair.h />;<span id="ana_tair.h"></span>[[ana_tair.h]]
+:For providing analytic air temperatures.
+:'''cpp flag = '''[[Options#ANA_TAIR | ANA_TAIR]]  <section end=ana_tair.h />
+
+<section begin=ana_tclima.h />;<span id="ana_tclima.h"></span>[[ana_tclima.h]]
+:For providing analytic atmospheric rainfall rates.
+:'''cpp flag = '''[[Options#ANA_TCLIMA | ANA_TCLIMA]]
+:'''cpp flag = '''[[Options#TCLIMATOLOGY | TCLIMATOLOGY]]  <section end=ana_tclima.h />
+
+<section begin=ana_tobc.h />;<span id="ana_tobc.h"></span>[[ana_tobc.h]]
+:For providing analytic tracer open boundary conditions.
+:'''cpp flag = '''[[Options#ANA_TOBC | ANA_TOBC]]  <section end=ana_tobc.h />
+
+<section begin=ana_vmix.h />;<span id="ana_vmix.h"></span>[[ana_vmix.h]]
+:For providing analytic vertical mixing coefficients.
+:'''cpp flag = '''[[Options#ANA_VMIX | ANA_VMIX]]  <section end=ana_vmix.h />
+
+<section begin=ana_winds.h />;<span id="ana_winds.h"></span>[[ana_winds.h]]
+:For providing analytic atmospheric winds.
+:'''cpp flag = '''[[Options#ANA_WINDS | ANA_WINDS]]  <section end=ana_winds.h />
+
+<section begin=ana_wwave.h />;<span id="ana_wwave.h"></span>[[ana_wwave.h]]
+:For providing analytic wind-induced surface waves (amplitude, direction, and period).
+:'''cpp flag = '''[[Options#ANA_WWAVE | ANA_WWAVE]]  <section end=ana_wwave.h />
+c atmospheric rainfall rates.
+:'''cpp flag = '''[[Options#ANA_SST | ANA_SST]]
+:'''cpp flag = '''[[Options#QCORRECTION | QCORRECTION]]  <section end=ana_sst.h />
+
+<section begin=ana_stflux.h />;<span id="ana_stflux.h"></span>[[ana_stflux.h]]
+:For providing analytic surface tracer fluxes.
+:'''cpp flag = '''[[Options#ANA_STFLUX | ANA_STFLUX]]
+:'''cpp flag = '''[[Options#ANA_SSFLUX | ANA_SSFLUX]]
+:'''cpp flag = '''[[Options#ANA_SPFLUX | ANA_SPFLUX]]  <section end=ana_stflux.h />
+
+<section begin=ana_tair.h />;<span id="ana_tair.h"></span>[[ana_tair.h]]
+:For providing analytic air temperatures.
+:'''cpp flag = '''[[Options#ANA_TAIR | ANA_TAIR]]  <section end=ana_tair.h />
+
+<section begin=ana_tclima.h />;<span id="ana_tclima.h"></span>[[ana_tclima.h]]
+:For providing analytic atmospheric rainfall rates.
+:'''cpp flag = '''[[Options#ANA_TCLIMA | ANA_TCLIMA]]
+:'''cpp flag = '''[[Options#TCLIMATOLOGY | TCLIMATOLOGY]]  <section end=ana_tclima.h />
+
+<section begin=ana_tobc.h />;<span id="ana_tobc.h"></span>[[ana_tobc.h]]
+:For providing analytic tracer open boundary conditions.
+:'''cpp flag = '''[[Options#ANA_TOBC | ANA_TOBC]]  <section end=ana_tobc.h />
+
+<section begin=ana_vmix.h />;<span id="ana_vmix.h"></span>[[ana_vmix.h]]
+:For providing analytic vertical mixing coefficients.
+:'''cpp flag = '''[[Options#ANA_VMIX | ANA_VMIX]]  <section end=ana_vmix.h />
+
+<section begin=ana_winds.h />;<span id="ana_winds.h"></span>[[ana_winds.h]]
+:For providing analytic atmospheric winds.
+:'''cpp flag = '''[[Options#ANA_WINDS | ANA_WINDS]]  <section end=ana_winds.h />
+
+<section begin=ana_wwave.h />;<span id="ana_wwave.h"></span>[[ana_wwave.h]]
+:For providing analytic wind-induced surface waves (amplitude, direction, and period).
+:'''cpp flag = '''[[Options#ANA_WWAVE | ANA_WWAVE]]  <section end=ana_wwave.h />
