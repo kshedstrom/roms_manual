@@ -70,8 +70,8 @@ grid.  The vertical grid is shown in Fig.\ \ref{fvert}.
 \put(3451,-2986){\makebox(0,0)[lb]{$w_1$}}
 \put(3676,-3436){\makebox(0,0)[lb]{$w_0$}}
 \put(3451,-2536){\makebox(0,0)[lb]{$w_2$}}
-\put(3451,-1186){\makebox(0,0)[lb]{$w_{\rm Nm}$}}
-\put(3376,-1411){\makebox(0,0)[lb]{$\rho_{\rm Nm}$}}
+\put(3451,-1186){\makebox(0,0)[lb]{$w_{\rm N-1}$}}
+\put(3376,-1411){\makebox(0,0)[lb]{$\rho_{\rm N-1}$}}
 \end{picture}
 \caption{Placement of variables on staggered vertical grid}
 \label{fvert}
@@ -147,9 +147,8 @@ condition.
 Note that the equation of state must be able to handle $T = S = 0$
 since this is the value inside masked regions.
 
-\subsubsection{Free surface and pressure gradients}
+%\subsubsection{Free surface and pressure gradients}
 
-If needed.
 %The surface elevation inside the land mask is simply used for setting
 %the total depth and therefore the location of the $s$-coordinate
 %surfaces.
@@ -169,6 +168,8 @@ of that cell. Water can always flow in and resubmerge the cell.
   \item The wetting and drying only happens during the 2-D
 computations; the 3-D computations see a depth of
 $D_{crit}$ in the ``dry'' areas.
+  \item The ice component now checks for dry cells when computing
+the ice rheology.
 \end{itemize}
 
 \subsection{Time-stepping overview}
@@ -216,11 +217,17 @@ are described in Appendix~\ref{Frog}.
 \begin{picture}(6.5,7.5)(0,0)
   \includegraphics[width=6.5in]{pics/timestep_all}%
 \end{picture}%
-\caption{Diagrams of the time stepping and mode coupling used in various ROMS versions. (a) Rutgers University ROMS, (b) ROMS AGRIF, (c) UCLA ROMS, described in \cite{SS2005}, (d) non-hydrostatic ROMS (\cite{Kanarska2007}). In all, the curved arrows update the 3-D fields; those with ``pillars'' are leapfrog in nature with the pillar representing the r.h.s. terms. Straight arrows indicate exchange between the barotropic and baroclinic modes. The shape functions for the fast
- time steps show just one option out of many possibilities. The grey
- function has weights to produce an estimate at time $n+1$, while the
- light red function has weights to produce an estimate at time
- $n+\frac{1}{2}$.}
+\caption{Diagrams of the time stepping and mode coupling used in
+various ROMS versions. (a) Rutgers University ROMS (from
+myroms.org), (b) ROMS AGRIF, (c) UCLA ROMS, described in \cite{SS2005},
+(d) non-hydrostatic ROMS (\cite{Kanarska2007}). In all, the curved
+arrows update the 3-D fields; those with ``pillars'' are leapfrog
+in nature with the pillar representing the r.h.s. terms. Straight
+arrows indicate exchange between the barotropic and baroclinic
+modes. The shape functions for the fast time steps show just one
+option out of many possibilities. The grey function has weights to
+produce an estimate at time $n+1$, while the light red function has
+weights to produce an estimate at time $n+\frac{1}{2}$.}
  \label{ftimestep1}
 \end{figure}
 
@@ -321,7 +328,7 @@ differences taken over the distances $\Delta\xi$, $\Delta\eta$ and
 $\Delta \sigma$, respectively. $\Delta z$ is the vertical distance from one
 $\rho$ point to another. $\overline{ ( \hspace{5mm} )}^{\xi}$,
 $\overline{ ( \hspace{5mm} )}^{\eta}$ and $\overline{ ( \hspace{5mm}
-)}^s$ represent averages taken over the distances $\Delta\xi$, $\Delta
+)}^\sigma$ represent averages taken over the distances $\Delta\xi$, $\Delta
 \eta$ and $\Delta \sigma$. % $I_\sigma^0$ indicates a second-order vertical
 %integral computed as a sum from level $\sigma$ to the surface at
 %$\sigma=0$.

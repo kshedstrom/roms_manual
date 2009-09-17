@@ -41,7 +41,7 @@ equation of state.
   \item Mellor-Kantha thermodynamics.
   \item Orthogonal-curvilinear coordinates.
   \item Arakawa C grid.
-  \item Smolarkiewicz or third-order upwind advection of tracers.
+  \item Smolarkiewicz advection of tracers.
 %  \item Optional ridging scheme.
 \end{itemize}
 \kitem{Mixing options} \mbox{}
@@ -76,7 +76,7 @@ equation of state.
 %    graphics libraries.
 \end{itemize}
 \end{klist}
-These lists haven't changed so very much in the past ten to fifteen
+The above list hasn't changed so very much in the past ten to fifteen
 years, but many of the numerical details have changed a great deal.
 Examples include consistent temporal averaging of the barotropic
 mode to guarantee both exact conservation and constancy preservation
@@ -89,8 +89,9 @@ ROMS now comes with a full suite of advanced data assimilation
 routines; these options are beyond the scope of this document.
 
 Chapters \ref{Phys} and \ref{Num} describe the model physics and
-numerical techniques and contain information from Haidvogel et al.\
-\cite{Haidvogel07} and blah.
+numerical techniques and contain information from Shchepetkin and
+McWilliams \cite{SS2008b} and Haidvogel et al.\
+\cite{Haidvogel07}.
 Chapter \ref{Code} lists the model subroutines and functions.
 %Chapter \ref{Progs} describes
 %the support programs which are needed to provide ROMS with data files.
@@ -109,19 +110,20 @@ Chapter \ref{Iphys} describes the ice equations while chapter
 \subsection{Acquiring the ROMS code}
 \label{Svn}
 The version of the model described in this document is a merger between
-ROMS 3.1 and a sea-ice model. The main ROMS code is available for
+ROMS 3.2 and a sea-ice model. The main ROMS code is available for
 download via \code{svn} once you have a login on the ROMS site. The sea ice
 code is a branch off of that and requires special access - contact
 Dave Robertson (robertson@marine.rutgers.edu) for more information.
 
 \subsection{The ROMS forum}
-We maintain an electronic home for ROMS users at www.myroms.org.
-The code lives here on a subversion server, there is a discussion
-forum for all things ROMS, from jobs to debugging help. There's a
+We maintain an electronic home for ROMS users at www.myroms.org,
+with a subversion server for the code. There is also a discussion
+forum for all things ROMS, from jobs to debugging help, plus a
 bug tracking system, and a wiki too. The wiki is given parts of
 this manual as they are created, but the nature of wikis is that
 they can be more fluid, with more authors, than a static document such
-as this. Again, Dave Robertson is the one to talk to.
+as this. Again, Dave Robertson is the one to talk to if you care to
+contribute to the wiki.
 
 \subsection{Warnings and bugs}
 ROMS is not a large program by some standards, but it is still complex
