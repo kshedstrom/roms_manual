@@ -432,7 +432,7 @@ equation (\ref{st13}) is:
 \end{multline}
 %}
 where $\phi_2$ includes the $\frac{\partial z}{\partial \xi}$ term,
-$\overline{\cal D}_{h_u}$ is the horizontal viscosity and the
+$\overline{\cal D}_{h_u}$ is the horizontal viscosity, and the
 vertical viscosity only contributes through the upper and lower
 boundary conditions.  The corresponding vertical integral of equation
 (\ref{st14}) is:
@@ -545,8 +545,8 @@ new $D$ is available for the time rate of change terms
 in equations (\ref{ubar2}) and (\ref{vbar2}).
 A third-order predictor-corrector time stepping is used.
 In practice, we actually time step all the way to time
-$(n+\code{dtfast} \times M^\star)$
-and while maintaining weighted averages of the values of $\overline{u}$,
+$(n+\code{dtfast} \times M^\star)$,
+while maintaining weighted averages of the values of $\overline{u}$,
 $\overline{v}$ and $\zeta$.  The averages are used to replace the
 values at time $n+1$ in both the baroclinic and barotropic modes,
 and for recomputing the vertical grid spacing $H_z$.
