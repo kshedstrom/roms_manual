@@ -601,7 +601,8 @@ conditions,
 using Newton iterations. $\tau^\star$ is the upper limit of $\tau$
 with $A(\tau) \geq 0$. In practice we initially set
 $$
-  A_0 = 1, r = 0 \mbox{and} \tau = \frac{(p+2)(p+q+2)}{(p+1)(p+q+1)}
+  A_0 = 1, r = 0 \quad \mbox{and} \quad
+  \tau = \frac{(p+2)(p+q+2)}{(p+1)(p+q+1)},
 $$
 compute $A(\tau)$ using eq.~(\ref{weights}), normalize using:
 \begin{equation}
@@ -710,34 +711,111 @@ noticeable in shallow areas with large tides.
 
 \subsection{Advection schemes}
 \label{Advect}
-Thus far, the advection scheme presented here is a centered
-second-order scheme. This scheme is known to have some unfortunate
+The advection of a tracer $C$ has an equation of the form
+\begin{equation}
+  \frac{\partial}{\partial t} \frac{ H_z C}{mn} =
+  - \frac{\partial}{\partial \xi} F^\xi
+  - \frac{\partial}{\partial \eta} F^\eta
+  - \frac{\partial}{\partial \sigma} F^\sigma ,
+\end{equation}
+where we have introduced the advective fluxes:
+\begin{align}
+   F^\xi &= \frac{H_z u C}{n} \\
+   F^\eta &= \frac{H_z v C}{m} \\
+   F^\sigma &= \frac{H_z \Omega C}{mn} .
+\end{align}
+
+\subsubsection{Second-order Centered}
+The simplest form of the advective fluxes is the centered
+second-order:
+\begin{align}
+   F^\xi &= \frac{\overline{H_z}^\xi u
+               \overline{C}^\xi}{\overline{n}^\xi} \\
+   F^\eta &= \frac{\overline{H_z}^\eta v
+               \overline{C}^\eta}{\overline{m}^\eta} \\
+   F^\sigma &= \frac{\overline{H_z}^\sigma \Omega
+               \overline{C}^\sigma}{mn} .
+\end{align}
+This scheme is known to have some unfortunate
 properties in the presence of strong gradients, such as large over- and
 under-shoots of tracers, leading to the need for large amounts of
-horizontal smoothing. SCRUM also provides two alternative advection
-schemes with better behavior in many situations. At present, the
-alternatives are only implemented in the full 3-D engine of the model.
+horizontal smoothing. ROMS provides alternative advection
+schemes with better behavior in many situations, but retains this
+one for comparison purposes.
+
+\subsubsection{Fourth-order Centered}
+The barotropic advection is centered fourth-order unless you
+specifically pick centered second-order as your horizontal advection
+scheme. To get fourth-order, create gradient terms:
+\begin{align}
+     G^{\xi} &= \overline{\left(\frac{\partial C}{\partial
+            \xi}\right)}^\xi \\
+     G^{\eta} &= \overline{\left(\frac{\partial C}{\partial
+            \eta}\right)}^\eta \\
+     G^{\sigma} &= \overline{\left(\frac{\partial C}{\partial
+            \sigma}\right)}^\sigma  .
+\end{align}
+The fluxes now become:
+\begin{align}
+   F^\xi &= \frac{\overline{H_z}^\xi} {\overline{n}^\xi} u \left(
+               \overline{C}^\xi -
+           \frac{1}{3} \frac{\partial
+               G^{\xi}}{\partial \xi} \right) \label{uflux} \\
+   F^\eta &= \frac{\overline{H_z}}{\overline{m}^\eta} ^\eta v \left(
+               \overline{C}^\eta-
+           \frac{1}{3} \frac{\partial
+               G^{\eta}}{\partial \eta} \right) \\
+   F^\sigma &= \frac{\overline{H_z}^\sigma} {mn} \Omega \left(
+               \overline{C}^\sigma -
+           \frac{1}{3} \frac{\partial
+               G^{\sigma}}{\partial \sigma} \right) \label{wflux} .
+\end{align}
+
+\subsubsection{Fourth-order Akima}
+An alternate fourth-order algorithm is that by Akima:
+\begin{align}
+     G^{\xi} &= 2 {\frac{\partial C}{\partial \xi}_i
+         \frac{\partial C}{\partial \xi}_{i+1}} \, \bigg/ \left(
+         \frac{\partial C}{\partial \xi}_i +
+          \frac{\partial C}{\partial \xi}_{i+1} \right) \\
+     G^{\eta} &= 2 {\frac{\partial C}{\partial \eta}_j
+         \frac{\partial C}{\partial \eta}_{j+1}} \, \bigg/ \left(
+         \frac{\partial C}{\partial \eta}_j +
+          \frac{\partial C}{\partial \eta}_{j+1} \right) \\
+     G^{\sigma} &= 2 {\frac{\partial C}{\partial \sigma}_k
+         \frac{\partial C}{\partial \sigma}_{k-1}} \, \bigg/ \left(
+         \frac{\partial C}{\partial \sigma}_k +
+          \frac{\partial C}{\partial \sigma}_{k-1} \right) \\
+\end{align}
+With the fluxes as in \ref{uflux}--\ref{wflux}.
 
 \subsubsection{Third-order Upwind}
 There is a class of third-order upwind advection schemes, both
 one-dimensional (Leonard \cite{Leonard79}) and two-dimensional (Rasch
-\cite{Rasch94}). This scheme is known as UTOPIA (Uniformly Third-Order
-Polynomial Interpolation Algorithm). Applying flux limiters to UTOPIA
-is explored in Thuburn \cite{Thuburn96}, although it is not implemented
-in SCRUM. The two-dimensional formulation in Rasch contains terms of
-order $u^2\psi$ and $u^3\psi$, including cross terms ($uv\psi$). The
-terms which are nonlinear in velocity have been dropped in SCRUM,
-leaving one extra upwind term in the computation of the advective
-fluxes:
+\cite{Rasch94} and Shchepetkin and McWilliams \cite{SS98}). This scheme
+is known as UTOPIA (Uniformly Third-Order Polynomial Interpolation
+Algorithm). Applying flux limiters to UTOPIA is explored in Thuburn
+\cite{Thuburn96}, although it is not implemented in ROMS. The
+two-dimensional formulation in Rasch contains terms of order $u^2C$
+and $u^3C$, including cross terms ($uvC$). The terms which are
+nonlinear in velocity have been dropped in ROMS, leaving one extra upwind
+term in the computation of the advective fluxes:
 \begin{align}
-   F^\xi &= \frac{H_z u}{n} \left( \psi - \gamma \frac{\partial^2
-   \psi}{\partial \xi^2} \right) \\
-   F^\eta &= \frac{H_z v}{m} \left( \psi - \gamma \frac{\partial^2
-   \psi}{\partial \eta^2} \right)
+   F^\xi &= \frac{H_z u}{n} \left( C - \gamma \frac{\partial^2
+   C}{\partial \xi^2} \right) \\
+   F^\eta &= \frac{H_z v}{m} \left( C - \gamma \frac{\partial^2
+   C}{\partial \eta^2} \right)
 \end{align}
 The second derivative terms are centered on a $\rho$ point in the grid,
 but are needed at a $u$ or $v$ point in the flux. The upstream value is
-used [see equation (\ref{equp})]. The value of $\gamma$ in the model is
+used:
+\begin{equation}
+   F^\xi_{i,j,k} = \frac{\overline{H_z}^\xi}{\overline{n}^\xi}
+   \left[ \max(0,u_{i,j,k}) C_{i-1,j,k} +
+   \min(0,u_{i,j,k}) C_{i,j,k} \right] .
+\label{equp}
+\end{equation}
+The value of $\gamma$ in the model is
 $\frac{1}{8}$ while that in Rasch \cite{Rasch94} is $\frac{1}{6}$.
 
 Because the third-order upwind scheme is designed to be
@@ -747,8 +825,8 @@ Instead, we use a centered fourth-order scheme in the vertical when
 the third-order upwind option is turned on:
 \begin{equation}
    F^s = \frac{H_z w}{mn} \left[
-     - \frac{1}{16} \psi_{i,j,k-1} + \frac{9}{16} \psi_{i,j,k} +
-       \frac{9}{16} \psi_{i,j,k+1} - \frac{1}{16} \psi_{i,j,k+2} \right]
+     - \frac{1}{16} C_{i,j,k-1} + \frac{9}{16} C_{i,j,k} +
+       \frac{9}{16} C_{i,j,k+1} - \frac{1}{16} C_{i,j,k+2} \right]
 \end{equation}
 
 One advantage of UTOPIA over MPDATA is that it can be used on
@@ -835,20 +913,22 @@ from vertical motions and the compressibility of water.  They are
 quite complicated and we have not implemented them to see if they
 alter the flow.
 
-\subsection{The pressure gradient terms}
-\label{PG}
-The pressure gradient terms in equations (\ref{st13}) and
-(\ref{st14}) are written in the form
-\begin{equation}
-  H_z \nabla \phi + \frac{g \rho H_z}{\rho_o} \nabla z
-  + g H_z \nabla \zeta
-\label{prgs}
-\end{equation}
-This is the form traditionally used in sigma-coordinate models to
-account for the horizontal differences being taken along surfaces of
-constant $\sigma$.  This form can be shown to lead to significant
-errors when $|\nabla h|$ is large (Haney \cite{Haney}; and Beckmann
-and Haidvogel \cite{BH93}). Shchepetkin....
+%\subsection{The pressure gradient terms}
+%\label{PG}
+%The pressure gradient terms in equations (\ref{st13}) and
+%(\ref{st14}) are written in the form
+%\begin{equation}
+%  H_z \nabla \phi + \frac{g \rho H_z}{\rho_o} \nabla z
+%  + g H_z \nabla \zeta
+%\label{prgs}
+%\end{equation}
+%This is the form traditionally used in sigma-coordinate models to
+%account for the horizontal differences being taken along surfaces of
+%constant $\sigma$.  This form can be shown to lead to significant
+%errors when $|\nabla h|$ is large (Haney \cite{Haney}; and Beckmann
+%and Haidvogel \cite{BH93}). Shchepetkin....
+
+\input{mixing}
 
 \subsection{Open boundary conditions}
 Need update for ROMS here...
@@ -872,19 +952,19 @@ have modified the scheme to account for propagation in all three
 directions. In SCRUM, only the two horizontal directions are accounted
 for:
 \begin{equation}
-   \frac{\partial \psi}{\partial t} = - \left( C_x \frac{\partial
-   \psi}{\partial \xi} + C_y \frac{\partial \psi}{\partial \eta}) \right)
+   \frac{\partial C}{\partial t} = - \left( C_x \frac{\partial
+   C}{\partial \xi} + C_y \frac{\partial C}{\partial \eta}) \right)
 \label{eqrk}
 \end{equation}
 where
 \begin{align}
-   C_x & = \frac{F \frac{\partial \psi}{\partial \xi}}{
-   \left( \frac{\partial \psi}{\partial \xi} \right)^2 +
-   \left( \frac{\partial \psi}{\partial \eta} \right)^2 } \\
-   C_y & = \frac{F \frac{\partial \psi}{\partial \eta}}{
-   \left( \frac{\partial \psi}{\partial \xi} \right)^2 +
-   \left( \frac{\partial \psi}{\partial \eta} \right)^2 } \\
-   F & = - \frac{\partial \psi}{\partial t}
+   C_x & = \frac{F \frac{\partial C}{\partial \xi}}{
+   \left( \frac{\partial C}{\partial \xi} \right)^2 +
+   \left( \frac{\partial C}{\partial \eta} \right)^2 } \\
+   C_y & = \frac{F \frac{\partial C}{\partial \eta}}{
+   \left( \frac{\partial C}{\partial \xi} \right)^2 +
+   \left( \frac{\partial C}{\partial \eta} \right)^2 } \\
+   F & = - \frac{\partial C}{\partial t}
 \end{align}
 These terms are evaluated at the closest interior point in a manner
 consistent with the time stepping scheme used. The phase velocities are

@@ -1,0 +1,306 @@
+%The viscous-plastic terms (\ref{fx1}) and (\ref{fy1})
+%are found by taking the divergence of the stress tensor:
+%\begin{equation}
+%  ({\cal F}_x, {\cal F}_y) = \nabla \cdot \mbox{\boldmath $\sigma$}
+%\end{equation}
+%with the result that
+%\begin{equation}
+%   {\cal F}_x = {\partial \over \partial x} \left[ (\eta + \zeta)
+%   {\partial u \over \partial x} + (\zeta - \eta)
+%   {\partial v \over \partial y} - P/2 \right] +
+%   {\partial \over \partial y} \left[ \eta \left( 
+%   {\partial u \over \partial y} + {\partial v \over \partial x}
+%   \right) \right]
+%\label{fx1}
+%\end{equation}
+%\begin{equation}
+%   {\cal F}_y = {\partial \over \partial y} \left[ (\eta + \zeta)
+%   {\partial v \over \partial y} + (\zeta - \eta)
+%   {\partial u \over \partial x} - P/2 \right] +
+%   {\partial \over \partial x} \left[ \eta \left( 
+%   {\partial u \over \partial y} + {\partial v \over \partial x}
+%   \right) \right]
+%\label{fy1}
+%\end{equation}
+
+%The ``pressure gradient'' term is also modeled as a term in the
+%internal ice stress.  This term represents the resistance which ice
+%has to being compressed (ice strength) and is a function of ice
+%thickness and concentration:
+%\begin{equation}
+%  P = P^* A h_i \exp[ -C (1-A)] H(-\nabla \cdot \vec{v})~.
+%\label{press}
+%\end{equation}
+%The Heaviside function guarantees that the ice has no strength when the
+%flow is divergent (Gray and Killworth \cite{Gray95}).
+
+\subsection{Horizontal curvilinear coordinates}
+
+Applying the curvilinear transformation used in \S\ref{Ocurve} and
+described in Appendix \ref{Curve}, we use a transformation to an
+orthogonal curvilinear coordinate system.  Denoting the velocity
+components in the new coordinate system by
+\begin{equation}
+   \vec{v} \cdot \hat{\xi} = u
+\end{equation}
+and
+\begin{equation}
+   \vec{v} \cdot \hat{\eta} = v
+\end{equation}
+the equations of motion (\ref{ist1}), (\ref{ist2}),
+(\ref{ist3a})--(\ref{ist3b}) can be re-written
+(see, e.g., Arakawa and Lamb \cite{AL}):
+{\samepage
+%\[
+ %  {\partial u \over \partial t}
+ %  + m u {\partial u \over \partial \xi}
+ %  + n v {\partial u \over \partial \eta}
+ %  = \left\{f + mn \left[ v \frac{\partial}{\partial \xi}
+ %  \!\! \left( \frac{1}{n} \right) - u \frac{\partial}{\partial \eta}
+ %  \!\! \left( \frac{1}{m} \right) \right] \right\} v
+%\]
+\begin{equation}
+   {\partial u \over \partial t} = fv
+   - gm {\partial \zeta_w \over \partial \xi} +
+   {1 \over M} \left( \tau_a^{\xi} + \tau_w^{\xi} + {\cal F}_{\xi}
+   \right)
+\label{ist13}
+\end{equation}
+}
+\vspace{.2cm}
+{\samepage
+%\[
+%   {\partial v \over \partial t} +
+%   m u {\partial v \over \partial \xi} +
+%   n v {\partial v \over \partial \eta} =
+%   - \left\{f + mn \left[ v \frac{\partial}{\partial \xi}
+%   \!\! \left( \frac{1}{n} \right) - u \frac{\partial}{\partial \eta}
+%   \!\! \left( \frac{1}{m} \right) \right] \right\} u
+%\]
+\begin{equation}
+   {\partial v \over \partial t} = - fu
+   - gn {\partial \zeta_w \over \partial \eta} +
+   {1 \over M} \left( \tau_a^{\eta} + \tau_w^{\eta} + {\cal F}_{\eta}
+   \right)
+\label{ist14}
+\end{equation}
+}
+\begin{equation}
+   {\partial A h_i \over \partial t} =
+   - mn \left[ {\partial \over \partial \xi} \!\!
+   \left( {A h_i u \over n}
+   \right ) + {\partial \over \partial \eta} \!\!
+   \left( {A h_i v \over m}
+   \right) \right] + S_h
+\label{ist15}
+\end{equation}
+\begin{equation}
+   {\partial A h_s \over \partial t} =
+   - mn \left[ {\partial \over \partial \xi} \!\!
+   \left( {A h_s u \over n}
+   \right ) + {\partial \over \partial \eta} \!\!
+   \left( {A h_s v \over m}
+   \right) \right] + S_s
+\label{ist15a}
+\end{equation}
+\begin{equation}
+   {\partial A \over \partial t} =
+   - mn \left[ {\partial \over \partial \xi} \!\! \left( {Au \over n}
+   \right ) + {\partial \over \partial \eta} \!\! \left( {Av \over m}
+   \right) \right] + S_A
+\label{ist16}
+\end{equation}
+\vspace{.2cm}
+$S_h$, $S_s$ and $S_A$ remain unchanged.
+
+The viscous-plastic terms can be derived from equation
+(\ref{stress1}).  In curvilinear coordinates the strain rate tensor
+can be written as:
+\begin{equation}
+   \epsilon_{11} = m {\partial u \over \partial \xi} +
+    vmn {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
+\end{equation}
+\begin{equation}
+   \epsilon_{12} = e_{21} = {1 \over 2} \left[
+   {m \over n} {\partial \left( nv \right) \over \partial \xi}
+   + {n \over m} {\partial \left( mu \right) \over \partial \eta}
+   \right]
+\end{equation}
+\begin{equation}
+   \epsilon_{22} = n {\partial v \over \partial \eta} +
+    umn {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
+\end{equation}
+In curvilinear coordinates the divergence of a symmetric tensor {\bf T}
+is:
+\[
+    \nabla \cdot \mbox{\bf T} =
+    \hat{\xi} \left[ m
+    {\partial \mbox{\bf T}_{11} \over \partial \xi}
+    + n {\partial \mbox{\bf T}_{12} \over \partial \eta}
+    + \mbox{\bf T}_{11} mn {\partial \over \partial \xi} \!\!
+    \left( {1 \over n} \right) \right. \mbox{\hspace{2 cm}}
+\]
+\[
+    \mbox{\hspace{2 cm}} \left. + 2 \mbox{\bf T}_{12} mn
+    {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
+    - \mbox{\bf T}_{22} mn
+    {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
+    \right]
+\]
+\[
+    + \hat{\eta} \left[ m
+    {\partial \mbox{\bf T}_{12} \over \partial \xi}
+    + n {\partial \mbox{\bf T}_{22} \over \partial \eta}
+    - \mbox{\bf T}_{11} mn {\partial \over \partial \eta} \!\!
+    \left( {1 \over m} \right) \right. \mbox{\hspace{2 cm}}
+\]
+\begin{equation}
+    \mbox{\hspace{2 cm}} \left. + 2 \mbox{\bf T}_{12} mn
+    {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
+    + \mbox{\bf T}_{22} mn
+    {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
+    \right]
+\end{equation}
+A more general expression for derivatives of tensors is given by
+Aris \cite{Aris} in terms of Christoffel symbols.
+
+The viscous-plastic terms become:
+\[
+   {\cal F}_{\xi} = m {\partial \over \partial \xi} \left[
+   (\zeta - \eta ) mn {\partial \over \partial \xi} \!\! \left(
+   {u \over n} \right) \right] +
+   m {\partial \over \partial \xi} \left[
+   (\zeta - \eta ) mn {\partial \over \partial \eta} \!\! \left(
+   {v \over m} \right) \right] - {m \over 2}
+   {\partial P \over \partial \xi}
+\]
+\[
+   + 2 m {\partial \over \partial \xi} \left[ \eta m
+   {\partial u \over \partial \xi} + \eta v mn 
+   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
+   \right]
+   + n {\partial \over \partial \eta} \left[ \eta {m \over n}
+   {\partial (nv) \over \partial \xi} + \eta {n \over m}
+   {\partial (mu) \over \partial \eta} \right]
+\]
+\[
+   + 2 \eta m^2 n {\partial u \over \partial \xi}
+   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
+   + 2 \eta v m^2 n^2
+   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
+   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
+   + 2 \eta m^2 {\partial (nv) \over \partial \xi}
+   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
+\]
+\begin{equation}
+   + 2 \eta n^2 {\partial (mu) \over \partial \eta}
+   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
+   - 2 \eta m n^2 {\partial v \over \partial \eta}
+   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
+   - 2 \eta u m^2 n^2 \left[
+   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
+   \right]^2
+\end{equation}
+\vspace{2 mm}
+\[
+   {\cal F}_{\eta} = n {\partial \over \partial \eta} \left[
+   (\zeta - \eta ) mn {\partial \over \partial \xi} \!\! \left(
+   {u \over n} \right) \right] +
+   n {\partial \over \partial \eta} \left[
+   (\zeta - \eta ) mn {\partial \over \partial \eta} \!\! \left(
+   {v \over m} \right) \right] - {n \over 2}
+   {\partial P \over \partial \eta}
+\]
+\[
+   + m {\partial \over \partial \xi} \left[ \eta {m \over n}
+   {\partial (nv) \over \partial \xi} + \eta {n \over m}
+   {\partial (mu) \over \partial \eta} \right]
+   + 2n {\partial \over \partial \eta} \left[ \eta n
+   {\partial v \over \partial \eta} + \eta u mn 
+   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
+   \right]
+\]
+\[
+   - 2 \eta m^2 n {\partial u \over \partial \xi}
+   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
+   - 2 \eta v m^2 n^2 \left[
+   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
+   \right]^2
+   + 2 \eta m^2 {\partial (nv) \over \partial \xi}
+   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
+\]
+\begin{equation}
+   + 2 \eta n^2 {\partial (mu) \over \partial \eta}
+   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
+   + 2 \eta m n^2 {\partial v \over \partial \eta}
+   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
+   + 2 \eta u m^2 n^2
+   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
+   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
+\end{equation}
+
+\subsection{Numerical Scheme}
+
+A key feature of the numerical scheme is a staggered grid, known as
+the ``Arakawa C grid'', where the velocity is defined on the sides of a
+grid box and variables such as thickness and viscosity are defined
+at the center of the grid box, as shown in Fig.\ \ref{fcgr}.
+
+Because of the strong ice interaction (which in this model is
+dissipative in nature) the momentum equations are essentially
+parabolic in form and hence have few numerical instability problems
+over long-term integrations.  (While there are few numerical
+problems, it should be emphasized that the dissipative ice
+interaction terms are highly nonlinear and can lead to unstable flow
+fields in the absence of water drag.  Such a feature is a physical
+characteristic of plastic flow and not a numerical artifact).
+However, in principle it is possible for the ice interaction to be
+very small even though there may be a finite ice mass.  Under this
+situation, the momentum advection terms could cause nonlinear
+instabilities.  To ensure against such situations, Hibler put a lower
+limit on the bulk viscosity parameter
+(and hence indirectly shear viscosity as well). It is never
+allowed to drop below $1.0 \times 10^7$ $kg/s$, a value which
+negligibly modifies the ice drift.
+% We have not found this to be
+% necessary and therefore do not limit the viscosities.
+
+Nonlinear instabilities over long-term integrations can also arise from
+the nonlinear advection terms in the thickness continuity equations.
+To avoid this problem, the advection terms in equations
+(\ref{ist3a})--(\ref{ist3b}) can be computed with a choice of either
+Smolarkiewicz's MPDATA (\cite{Smolark90}) or third-order upwind
+(Leonard \cite{Leonard79}). See \S\ref{Advect} for a description of
+these schemes. It may be possible to omit the diffusivity from these
+equations if the forcing fields are sufficiently smooth.
+
+\subsection{Horizontal boundary conditions}
+
+As mentioned above, initial conditions at all points and ice
+velocities at the boundaries are thereafter required to initiate the
+integration of the system of equations forward in time.  The most
+natural boundary condition is to take the ice velocity to be zero on
+the boundaries.  This can be done either at a land boundary or at an
+ocean location where there is no ice.  Note that the boundary
+condition does not affect the ice motion in such circumstances since
+in the absence of ice the strength is zero.  More generally, as long
+as the ocean boundaries are removed from the ice edge, the coupled
+nature of the model will cause a natural ice edge boundary condition
+to be created.  However, it is also possible to form an ``open''
+boundary condition by setting the strength equal to zero near a
+boundary.  These gridboxes are called ``outflow cells'' in Hibler
+\cite{Hibler79}.  In the Arctic simulations, these outflow cells
+are used at the open edge near Greenland.
+
+The boundary conditions on the momentum equations are to set $u$ and $v$
+to zero at all boundaries, including islands.  This is accomplished
+by the elliptic solver during the implicit timestep.
+
+The ice and snow thickness and ice concentration equations have no-flux
+boundary conditions imposed along the mask boundaries.  The outflow
+cells contain a radiation condition if the velocity is outward and no
+change if the velocity is inward.
+
+The primary characteristic of the outflow cells is that the ice
+strength goes to zero there.  The values of $P$, $\zeta$, and $\eta$
+are all set to zero in outflow cells.

@@ -1,34 +1,29 @@
 \section{Ice Model Formulation}
 \label{Iphys}
 
-Hibler \cite{Hibler79} has described a model for the simulation of sea
-ice circulation and thickness.  The model has been tested over a
-seasonal cycle and the results are also shown in that article.  This
-report was derived from the documentation for the sea ice model written
-by Hibler \cite{HiblerDoc} since the dynamical equations are much the
-same.  The model itself has been rewritten by Paul Budgell and is now
-implemented on an orthogonal, curvilinear Arakawa C-grid, has a new
-elliptic solver, and the nonlinear advection of momentum has been
-omitted.  The thermodynamics are derived from Mellor and Kantha
-\cite{Mellor89} (MK89 below). Sirpa H\"akkinen allowed us to use her
-implementation of MK89; we obtained it from the Norwegians, who call it
-``hakkis''.
+The sea-ice component of ROMS is a combination of the
+elastic-viscous-plastic (EVP) rheology (Hunke and Dukowicz
+\cite{Hunke97}, Hunke \cite{Hunke_2001}) and simple one-layer
+ice and snow thermodynamics with a molecular sublayer under the ice
+(Mellor and Kantha \cite{Mellor89}). It is tightly coupled, having
+the same grid (Arakawa-C) and timestep as the ocean and sharing the same
+parallel coding structure for use with MPI or OpenMP (Budgell
+\cite{Budgell05}).
 
-\subsection{Model structure}
-The overall structure consists of two principal components---the
-momentum equations and the ice continuity equations.  The momentum
-balance includes air and water stress, Coriolis force, internal ice
-stress, inertial forces and ocean tilt as shown in equations
+\subsection{Dynamics}
+The momentum equations describe the change in ice/snow velocity due
+to the combined effects of the Coriolis force, surface ocean tilt,
+air and water stress, and internal ice stress:
 (\ref{ist1}) and (\ref{ist2}):
 \begin{align}
-  M {\partial u \over \partial t}
+  M \frac{\partial u }{ \partial t}
  % + M \vec{v} \cdot \nabla u
- & = Mfv - Mg {\partial \zeta_w \over \partial x} +
+ & = Mfv - Mg \frac{\partial \zeta_w }{ \partial x} +
  \tau_a^x + \tau_w^x + {\cal F}_x
 \label{ist1} \\
-  M {\partial v \over \partial t}
+  M \frac{\partial v }{ \partial t}
  % + M \vec{v} \cdot \nabla v
- & = - Mfu - Mg {\partial \zeta_w \over \partial y} +
+ & = - Mfu - Mg \frac{\partial \zeta_w }{ \partial y} +
  \tau_a^y + \tau_w^y + {\cal F}_y.
 \label{ist2}
 \end{align}
@@ -38,7 +33,7 @@ Nonlinear formulas are used for both the ocean-ice and air-ice surface
 stress:
 \begin{align}
   \vec{\tau}_a & = \rho_a C_a | \vec{V}_{10} | \vec{V}_{10} \\
-  C_a & = {1 \over 2} C_d \left[ 1 - \cos( 2 \pi \min(h_i+.1, .5)
+  C_a & = \frac{1 }{ 2} C_d \left[ 1 - \cos( 2 \pi \min(h_i+.1, .5)
   \right] \\
   \vec{\tau}_w & = \rho_w C_w | \vec{v}_w - \vec{v} |
   ( \vec{v}_w - \vec{v}) .
@@ -50,23 +45,24 @@ of the medium. We would like to emulate the viscous-plastic rheology
 of Hibler (1979) \cite{Hibler79}:
 \begin{equation}
   \sigma_{ij} = 2 \eta \dot \epsilon_{ij} + (\zeta - \eta) \dot
-  \epsilon_{kk} \delta_{ij} - {P \over 2} \delta_{ij}
+  \epsilon_{kk} \delta_{ij} - \frac{P }{ 2} \delta_{ij}
 \end{equation}
 \begin{equation}
-  \dot \epsilon_{ij} \equiv {1 \over 2} \left( {\partial u_i \over
-  \partial x_j} + {\partial u_j \over \partial x_i} \right)
+  \dot \epsilon_{ij} \equiv \frac{1 }{ 2} \left( \frac{\partial u_i
+  }{
+  \partial x_j} + \frac{\partial u_j }{ \partial x_i} \right)
 \end{equation}
 \begin{equation}
   P = P^* A h_i e^{-C(1-A)}
 \end{equation}
 where the nonlinear viscosities are given by
 \begin{equation}
-\zeta = { P \over 2 \left[ (\epsilon^2_{11} +
+\zeta = \frac{ P }{ 2 \left[ (\epsilon^2_{11} +
    \epsilon^2_{22} ) ( 1 + 1/e^2 ) + 4 e^{-2} \epsilon^2_{12}
       + 2 \epsilon_{11} \epsilon_{22} ( 1 - 1/e^2 ) \right] ^{1/2} }
 \end{equation}
 \begin{equation}
-      \eta = { \zeta \over e^2 }.
+      \eta = \frac{ \zeta }{ e^2 }.
 \end{equation}
 We would also like to have an explicit model that can be solved
 efficiently on parallel computers. The EVP rheology has a tunable
@@ -74,15 +70,16 @@ coefficient $E$ (the Young's modulus) which can be chosen to make
 the elastic term small compared to the other terms. We rearrange the VP
 rheology:
 \begin{equation}
-  {1 \over 2 \eta} \sigma_{ij} + {\eta - \zeta \over 4 \eta \zeta}
-  \sigma_{kk} \delta_{ij} + {P \over 4 \zeta} \delta_{ij} = \dot
+  \frac{1 }{ 2 \eta} \sigma_{ij} + \frac{\eta - \zeta }{ 4 \eta \zeta}
+  \sigma_{kk} \delta_{ij} + \frac{P }{ 4 \zeta} \delta_{ij} = \dot
   \epsilon_{ij}
 \end{equation}
 then add the elastic term:
 \begin{equation}
-  {1 \over E} {\partial \sigma_{ij} \over \partial t} + {1 \over 2
-  \eta} \sigma_{ij} + {\eta - \zeta \over 4 \eta \zeta} \sigma_{kk}
-  \delta_{ij} + {P \over 4 \zeta} \delta_{ij} = \dot \epsilon_{ij}
+  \frac{1 }{ E} \frac{\partial \sigma_{ij} }{ \partial t} +
+  \frac{1 }{ 2
+  \eta} \sigma_{ij} + \frac{\eta - \zeta }{ 4 \eta \zeta} \sigma_{kk}
+  \delta_{ij} + \frac{P }{ 4 \zeta} \delta_{ij} = \dot \epsilon_{ij}
 \end{equation}
 
 Much like the ocean model, the ice model has a split timestep. The
@@ -90,25 +87,25 @@ internal ice stress term is updated on a shorter timestep so as to
 allow the elastic wave velocity to be resolved.
 
 Once the new ice velocities are computed, the ice tracers can be
-advected using the MPDATA scheme \cite{Smolarkiewicz}. The tracers in
+advected using the MPDATA scheme \cite{Smolark90}. The tracers in
 this case are the ice thickness, ice concentration, snow thickness,
 internal ice temperature, and surface melt ponds. The continuity
 equations describing the evolution of these parameters (equations
 (\ref{ist3a})--(\ref{ist3b})) also include thermodynamic terms ($S_h$,
 $S_s$ and $S_A$), which will be described in \S\ref{Growth}:
 \begin{align}
-  {\partial A h_i \over \partial t} & =
-  - {\partial (u A h_i) \over \partial x} -
-  {\partial (v A h_i) \over \partial y}
+  \frac{\partial A h_i }{ \partial t} & =
+  - \frac{\partial (u A h_i) }{ \partial x} -
+  \frac{\partial (v A h_i) }{ \partial y}
   + S_h + {\cal D}_h
 \label{ist3a} \\
-  {\partial A h_s \over \partial t} & =
-  - {\partial (u A h_s) \over \partial x} -
-  {\partial (v A h_s) \over \partial y}
+  \frac{\partial A h_s }{ \partial t} & =
+  - \frac{\partial (u A h_s) }{ \partial x} -
+  \frac{\partial (v A h_s) }{ \partial y}
   + S_s + {\cal D}_s
 \label{ist3c} \\
-  {\partial A \over \partial t} & =
-  - {\partial (uA) \over \partial x} - {\partial (vA) \over \partial y}
+  \frac{\partial A }{ \partial t} & =
+  - \frac{\partial (uA) }{ \partial x} - \frac{\partial (vA) }{ \partial y}
   + S_A + {\cal D}_A \qquad \qquad 0 \leq A \leq 1 .
 \label{ist3b}
 \end{align}
@@ -118,8 +115,8 @@ represents the advection of ice blocks in which no ridging occurs as
 long as there is any open water. An optional ridging term can be added
 (Gray and Killworth \cite{Gray96}):
 \begin{equation}
-  {\partial A \over \partial t} =
-  - {\partial (uA) \over \partial x} - {\partial (vA) \over \partial y}
+  \frac{\partial A }{ \partial t} =
+  - \frac{\partial (uA) }{ \partial x} - \frac{\partial (vA) }{ \partial y}
   - A \alpha(A) \, \nabla \cdot \vec{v} \, H(-\nabla \cdot \vec{v})
   + S_A + {\cal D}_A \qquad \qquad 0 \leq A \leq 1 .
 \end{equation}
@@ -177,334 +174,54 @@ constants are listed in Table \ref{icemomvars}.
 \label{icemomvars}
 \end{table}
 
-%The viscous-plastic terms (\ref{fx1}) and (\ref{fy1})
-%are found by taking the divergence of the stress tensor:
-%\begin{equation}
-%  ({\cal F}_x, {\cal F}_y) = \nabla \cdot \mbox{\boldmath $\sigma$}
-%\end{equation}
-%with the result that
-%\begin{equation}
-%   {\cal F}_x = {\partial \over \partial x} \left[ (\eta + \zeta)
-%   {\partial u \over \partial x} + (\zeta - \eta)
-%   {\partial v \over \partial y} - P/2 \right] +
-%   {\partial \over \partial y} \left[ \eta \left( 
-%   {\partial u \over \partial y} + {\partial v \over \partial x}
-%   \right) \right]
-%\label{fx1}
-%\end{equation}
-%\begin{equation}
-%   {\cal F}_y = {\partial \over \partial y} \left[ (\eta + \zeta)
-%   {\partial v \over \partial y} + (\zeta - \eta)
-%   {\partial u \over \partial x} - P/2 \right] +
-%   {\partial \over \partial x} \left[ \eta \left( 
-%   {\partial u \over \partial y} + {\partial v \over \partial x}
-%   \right) \right]
-%\label{fy1}
-%\end{equation}
-
-%The ``pressure gradient'' term is also modeled as a term in the
-%internal ice stress.  This term represents the resistance which ice
-%has to being compressed (ice strength) and is a function of ice
-%thickness and concentration:
-%\begin{equation}
-%  P = P^* A h_i \exp[ -C (1-A)] H(-\nabla \cdot \vec{v})~.
-%\label{press}
-%\end{equation}
-%The Heaviside function guarantees that the ice has no strength when the
-%flow is divergent (Gray and Killworth \cite{Gray95}).
-
-\subsection{Horizontal curvilinear coordinates}
-
-Applying the curvilinear transformation used in \S\ref{Ocurve} and
-described in Appendix \ref{Curve}, we use a transformation to an
-orthogonal curvilinear coordinate system.  Denoting the velocity
-components in the new coordinate system by
-\begin{equation}
-   \vec{v} \cdot \hat{\xi} = u
-\end{equation}
-and
-\begin{equation}
-   \vec{v} \cdot \hat{\eta} = v
-\end{equation}
-the equations of motion (\ref{ist1}), (\ref{ist2}),
-(\ref{ist3a})--(\ref{ist3b}) can be re-written
-(see, e.g., Arakawa and Lamb \cite{AL}):
-{\samepage
-%\[
- %  {\partial u \over \partial t}
- %  + m u {\partial u \over \partial \xi}
- %  + n v {\partial u \over \partial \eta}
- %  = \left\{f + mn \left[ v \frac{\partial}{\partial \xi}
- %  \!\! \left( \frac{1}{n} \right) - u \frac{\partial}{\partial \eta}
- %  \!\! \left( \frac{1}{m} \right) \right] \right\} v
-%\]
-\begin{equation}
-   {\partial u \over \partial t} = fv
-   - gm {\partial \zeta_w \over \partial \xi} +
-   {1 \over M} \left( \tau_a^{\xi} + \tau_w^{\xi} + {\cal F}_{\xi}
-   \right)
-\label{ist13}
-\end{equation}
-}
-\vspace{.2cm}
-{\samepage
-%\[
-%   {\partial v \over \partial t} +
-%   m u {\partial v \over \partial \xi} +
-%   n v {\partial v \over \partial \eta} =
-%   - \left\{f + mn \left[ v \frac{\partial}{\partial \xi}
-%   \!\! \left( \frac{1}{n} \right) - u \frac{\partial}{\partial \eta}
-%   \!\! \left( \frac{1}{m} \right) \right] \right\} u
-%\]
-\begin{equation}
-   {\partial v \over \partial t} = - fu
-   - gn {\partial \zeta_w \over \partial \eta} +
-   {1 \over M} \left( \tau_a^{\eta} + \tau_w^{\eta} + {\cal F}_{\eta}
-   \right)
-\label{ist14}
-\end{equation}
-}
-\begin{equation}
-   {\partial A h_i \over \partial t} =
-   - mn \left[ {\partial \over \partial \xi} \!\!
-   \left( {A h_i u \over n}
-   \right ) + {\partial \over \partial \eta} \!\!
-   \left( {A h_i v \over m}
-   \right) \right] + S_h
-\label{ist15}
-\end{equation}
-\begin{equation}
-   {\partial A h_s \over \partial t} =
-   - mn \left[ {\partial \over \partial \xi} \!\!
-   \left( {A h_s u \over n}
-   \right ) + {\partial \over \partial \eta} \!\!
-   \left( {A h_s v \over m}
-   \right) \right] + S_s
-\label{ist15a}
-\end{equation}
-\begin{equation}
-   {\partial A \over \partial t} =
-   - mn \left[ {\partial \over \partial \xi} \!\! \left( {Au \over n}
-   \right ) + {\partial \over \partial \eta} \!\! \left( {Av \over m}
-   \right) \right] + S_A
-\label{ist16}
-\end{equation}
-\vspace{.2cm}
-$S_h$, $S_s$ and $S_A$ remain unchanged.
-
-The viscous-plastic terms can be derived from equation
-(\ref{stress1}).  In curvilinear coordinates the strain rate tensor
-can be written as:
-\begin{equation}
-   \epsilon_{11} = m {\partial u \over \partial \xi} +
-    vmn {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
-\end{equation}
-\begin{equation}
-   \epsilon_{12} = e_{21} = {1 \over 2} \left[
-   {m \over n} {\partial \left( nv \right) \over \partial \xi}
-   + {n \over m} {\partial \left( mu \right) \over \partial \eta}
-   \right]
-\end{equation}
-\begin{equation}
-   \epsilon_{22} = n {\partial v \over \partial \eta} +
-    umn {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
-\end{equation}
-In curvilinear coordinates the divergence of a symmetric tensor {\bf T}
-is:
-\[
-    \nabla \cdot \mbox{\bf T} =
-    \hat{\xi} \left[ m
-    {\partial \mbox{\bf T}_{11} \over \partial \xi}
-    + n {\partial \mbox{\bf T}_{12} \over \partial \eta}
-    + \mbox{\bf T}_{11} mn {\partial \over \partial \xi} \!\!
-    \left( {1 \over n} \right) \right. \mbox{\hspace{2 cm}}
-\]
-\[
-    \mbox{\hspace{2 cm}} \left. + 2 \mbox{\bf T}_{12} mn
-    {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
-    - \mbox{\bf T}_{22} mn
-    {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
-    \right]
-\]
-\[
-    + \hat{\eta} \left[ m
-    {\partial \mbox{\bf T}_{12} \over \partial \xi}
-    + n {\partial \mbox{\bf T}_{22} \over \partial \eta}
-    - \mbox{\bf T}_{11} mn {\partial \over \partial \eta} \!\!
-    \left( {1 \over m} \right) \right. \mbox{\hspace{2 cm}}
-\]
-\begin{equation}
-    \mbox{\hspace{2 cm}} \left. + 2 \mbox{\bf T}_{12} mn
-    {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
-    + \mbox{\bf T}_{22} mn
-    {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
-    \right]
-\end{equation}
-A more general expression for derivatives of tensors is given by
-Aris \cite{Aris} in terms of Christoffel symbols.
-
-The viscous-plastic terms become:
-\[
-   {\cal F}_{\xi} = m {\partial \over \partial \xi} \left[
-   (\zeta - \eta ) mn {\partial \over \partial \xi} \!\! \left(
-   {u \over n} \right) \right] +
-   m {\partial \over \partial \xi} \left[
-   (\zeta - \eta ) mn {\partial \over \partial \eta} \!\! \left(
-   {v \over m} \right) \right] - {m \over 2}
-   {\partial P \over \partial \xi}
-\]
-\[
-   + 2 m {\partial \over \partial \xi} \left[ \eta m
-   {\partial u \over \partial \xi} + \eta v mn 
-   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
-   \right]
-   + n {\partial \over \partial \eta} \left[ \eta {m \over n}
-   {\partial (nv) \over \partial \xi} + \eta {n \over m}
-   {\partial (mu) \over \partial \eta} \right]
-\]
-\[
-   + 2 \eta m^2 n {\partial u \over \partial \xi}
-   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
-   + 2 \eta v m^2 n^2
-   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
-   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
-   + 2 \eta m^2 {\partial (nv) \over \partial \xi}
-   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
-\]
-\begin{equation}
-   + 2 \eta n^2 {\partial (mu) \over \partial \eta}
-   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
-   - 2 \eta m n^2 {\partial v \over \partial \eta}
-   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
-   - 2 \eta u m^2 n^2 \left[
-   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
-   \right]^2
-\end{equation}
-\vspace{2 mm}
-\[
-   {\cal F}_{\eta} = n {\partial \over \partial \eta} \left[
-   (\zeta - \eta ) mn {\partial \over \partial \xi} \!\! \left(
-   {u \over n} \right) \right] +
-   n {\partial \over \partial \eta} \left[
-   (\zeta - \eta ) mn {\partial \over \partial \eta} \!\! \left(
-   {v \over m} \right) \right] - {n \over 2}
-   {\partial P \over \partial \eta}
-\]
-\[
-   + m {\partial \over \partial \xi} \left[ \eta {m \over n}
-   {\partial (nv) \over \partial \xi} + \eta {n \over m}
-   {\partial (mu) \over \partial \eta} \right]
-   + 2n {\partial \over \partial \eta} \left[ \eta n
-   {\partial v \over \partial \eta} + \eta u mn 
-   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
-   \right]
-\]
-\[
-   - 2 \eta m^2 n {\partial u \over \partial \xi}
-   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
-   - 2 \eta v m^2 n^2 \left[
-   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
-   \right]^2
-   + 2 \eta m^2 {\partial (nv) \over \partial \xi}
-   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
-\]
-\begin{equation}
-   + 2 \eta n^2 {\partial (mu) \over \partial \eta}
-   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
-   + 2 \eta m n^2 {\partial v \over \partial \eta}
-   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
-   + 2 \eta u m^2 n^2
-   {\partial \over \partial \eta} \!\! \left( {1 \over m} \right)
-   {\partial \over \partial \xi} \!\! \left( {1 \over n} \right)
-\end{equation}
-
-\subsection{Numerical Scheme}
-
-A key feature of the numerical scheme is a staggered grid, known as
-the ``Arakawa C grid'', where the velocity is defined on the sides of a
-grid box and variables such as thickness and viscosity are defined
-at the center of the grid box, as shown in Fig.\ \ref{fcgr}.
-
-Because of the strong ice interaction (which in this model is
-dissipative in nature) the momentum equations are essentially
-parabolic in form and hence have few numerical instability problems
-over long-term integrations.  (While there are few numerical
-problems, it should be emphasized that the dissipative ice
-interaction terms are highly nonlinear and can lead to unstable flow
-fields in the absence of water drag.  Such a feature is a physical
-characteristic of plastic flow and not a numerical artifact).
-However, in principle it is possible for the ice interaction to be
-very small even though there may be a finite ice mass.  Under this
-situation, the momentum advection terms could cause nonlinear
-instabilities.  To ensure against such situations, Hibler put a lower
-limit on the bulk viscosity parameter
-(and hence indirectly shear viscosity as well). It is never
-allowed to drop below $1.0 \times 10^7$ $kg/s$, a value which
-negligibly modifies the ice drift.
-% We have not found this to be
-% necessary and therefore do not limit the viscosities.
-
-Nonlinear instabilities over long-term integrations can also arise from
-the nonlinear advection terms in the thickness continuity equations.
-To avoid this problem, the advection terms in equations
-(\ref{ist3a})--(\ref{ist3b}) can be computed with a choice of either
-Smolarkiewicz's MPDATA (\cite{Smolark90}) or third-order upwind
-(Leonard \cite{Leonard79}). See \S\ref{Advect} for a description of
-these schemes. It may be possible to omit the diffusivity from these
-equations if the forcing fields are sufficiently smooth.
-
-\subsection{Horizontal boundary conditions}
-
-As mentioned above, initial conditions at all points and ice
-velocities at the boundaries are thereafter required to initiate the
-integration of the system of equations forward in time.  The most
-natural boundary condition is to take the ice velocity to be zero on
-the boundaries.  This can be done either at a land boundary or at an
-ocean location where there is no ice.  Note that the boundary
-condition does not affect the ice motion in such circumstances since
-in the absence of ice the strength is zero.  More generally, as long
-as the ocean boundaries are removed from the ice edge, the coupled
-nature of the model will cause a natural ice edge boundary condition
-to be created.  However, it is also possible to form an ``open''
-boundary condition by setting the strength equal to zero near a
-boundary.  These gridboxes are called ``outflow cells'' in Hibler
-\cite{Hibler79}.  In the Arctic simulations, these outflow cells
-are used at the open edge near Greenland.
-
-The boundary conditions on the momentum equations are to set $u$ and $v$
-to zero at all boundaries, including islands.  This is accomplished
-by the elliptic solver during the implicit timestep.
-
-The ice and snow thickness and ice concentration equations have no-flux
-boundary conditions imposed along the mask boundaries.  The outflow
-cells contain a radiation condition if the velocity is outward and no
-change if the velocity is inward.
-
-The primary characteristic of the outflow cells is that the ice
-strength goes to zero there.  The values of $P$, $\zeta$, and $\eta$
-are all set to zero in outflow cells.
+Note that Hibler's $h_I$ variable is equivalent to our $A h_i$
+combination - his $h_I$ is the average thickness over the whole
+gridbox while our $h_i$ is the average thickness over the ice-covered
+fraction of the gridbox. 
 
 \subsection{Thermodynamics}
 \label{Growth}
 
-The thermodynamics used is based on the algorithm described in
-Mellor and Kantha \cite{Mellor89}, who have a useful description of the
-various melting and freezing processes, plus the coupling to a full
-three-dimensional ocean. Their form of equations
+The thermodynamics is based on calculating how much ice grows and
+melts on each of the surface, bottom, and sides of the ice floes,
+as well as frazil ice formation (Mellor and Kantha \cite{Mellor89}).
+Once the ice tracers are advected, the ice concentration and
+thickness are timestepped according to the terms on the right:
+
 (\ref{ist3a}) and (\ref{ist3b}) is:
 \begin{align}
-  {\partial A h_i \over \partial t} +
-  {\partial (u A h_i) \over \partial x} +
-  {\partial (v A h_i) \over \partial y}
-  & = {\rho_o \over \rho_i} \left[ A (W_{io} - W_{ai}) + (1-A) W_{ao}
+  \frac{D A h_i }{D t}
+% + \frac{\partial (u A h_i) }{ \partial x} +
+%  \frac{\partial (v A h_i) }{ \partial y}
+  & = \frac{\rho_o }{ \rho_i} \left[ A (W_{io} - W_{ai}) + (1-A) W_{ao}
   + W_{fr} \right]
 \label{ist4a} \\
-  {\partial A \over \partial t} +
-  {\partial (uA) \over \partial x} + {\partial (vA) \over \partial y}
-  & = {\rho_o A \over \rho_i h_i} \left[ \Phi (1-A) W_{ao} + (1-A)
+  \frac{D A }{ D t}
+%  +\frac{\partial (uA) }{ \partial x} + \frac{\partial (vA) }{ \partial y}
+  & = \frac{\rho_o A }{ \rho_i h_i} \left[ \Phi (1-A) W_{ao} + (1-A)
   W_{fr} \right] \qquad \qquad 0 \leq A \leq 1 .
 \label{ist4b}
 \end{align}
+The term $Ah_i$ is the "effective thickness", a measure of the ice
+volume. Its evolution equation is simply quantifying the change in
+the amount of ice. The ice concentration equation is more interesting in
+that it provides the partitioning between ice melt/growth on the sides
+vs. on the top and bottom. The parameter $\Phi$ controls this and has
+differing values for ice melt and retreat. In principle, most of the ice
+growth is assumed to happen at the base of the ice while rather more of
+the melt happens on the sides of the ice due to warming of the water in
+the leads.
+
+The heat fluxes through the ice are based on a simple one layer
+Semtner \cite{Semtner76a} type model with
+snow on top. The temperature is assumed to be linear within the snow
+and within the ice. The ice contains brine pockets for a
+total ice salinity of 5. The surface ocean temperature and salinity
+is half a $dz$ below the surface. The water right below the surface
+is assumed to be at the freezing temperature; a logarithmic boundary
+layer is computed having the temperature and salinity matched at
+freezing.
+
 Here, the $W$ variables are the freeze or
 melt rates as shown in Fig.\ \ref{fm+k} and Table \ref{thermvar}.  The
 frazil ice growth $W_{fr}$ will be discussed further in
@@ -665,7 +382,7 @@ Washington, if $T_3$ is found to be above the melting temperature, it
 is set to $T_{\rm melt}$ and the extra energy goes into melting the
 snow or ice:
 \begin{align}
-   W_{ai} & = {Q_{ai} - Q_{i2} \over \rho_o L_3} \\
+   W_{ai} & = \frac{Q_{ai} - Q_{i2} }{ \rho_o L_3} \\
    L_3 & \equiv \left[ E(T_3,1) - E(T_1, R_1) \right]
 \end{align}
 Note that $L_3 = (1-r)L_i$ plus a small sensible heat correction.
@@ -679,7 +396,7 @@ has a uniform overall salinity of $S_i$ and that the freezing
 temperature is a linear function of salinity. The brine fraction $r$ is
 given by
 $$
-  r = {S_i m \over T_1}
+  r = \frac{S_i m }{ T_1}
 $$
 The enthalpy of the combined ice/brine system is given by
 \begin{equation}
@@ -687,29 +404,29 @@ The enthalpy of the combined ice/brine system is given by
 \end{equation}
 Substituting in for $r$ and differentiating gives:
 \begin{equation}
-  {\partial E \over \partial T} = - {S_i m L_i \over T_1^2} + C_{pi}
+  \frac{\partial E }{ \partial T} = - \frac{S_i m L_i }{ T_1^2} + C_{pi}
 \end{equation}
 
 Inside the snow, we have
 \begin{equation}
-   Q_s = {k_s \over h_s} (T_2 - T_3)
+   Q_s = \frac{k_s }{ h_s} (T_2 - T_3)
 \end{equation}
 The heat conduction in the upper part of the ice layer is
 \begin{equation}
-   Q_{I2} = { 2 k_i \over h_i} (T_1 - T_2)
+   Q_{I2} = \frac{ 2 k_i }{ h_i} (T_1 - T_2)
    \label{qi2}
 \end{equation}
 These can be set equal to each other to solve for $T_2$
 \begin{equation}
-   T_2 = {T_3 + C_k T_1 \over 1 + C_k}
+   T_2 = \frac{T_3 + C_k T_1 }{ 1 + C_k}
 \end{equation}
 where
 $$
-  C_k \equiv {2 k_i h_s \over h_i k_s}.
+  C_k \equiv \frac{2 k_i h_s }{ h_i k_s}.
 $$
 Substituting into (\ref{qi2}), we get:
 \begin{equation}
-  Q_s = Q_{I2} = {2k_i \over h_i} {(T_1 - T_3) \over (1 + C_k)}
+  Q_s = Q_{I2} = \frac{2k_i }{ h_i} \frac{(T_1 - T_3) }{ (1 + C_k)}
 \label{qsnow}
 \end{equation}
 Note that in the absence of snow, $C_k$ becomes zero and we recover the
@@ -717,36 +434,36 @@ formula for the no-snow case in which $T_3 = T_2$.
 
 At the bottom of the ice, we have
 \begin{equation}
-  Q_{I0} = {2 k_i \over h_i} (T_0 - T_1)
+  Q_{I0} = \frac{2 k_i }{ h_i} (T_0 - T_1)
 \end{equation}
 The difference between $Q_{I0}$ and $Q_{I2}$ goes into the enthalpy of
 the ice:
 \begin{equation}
-   \rho_i h_i \left[ {\partial E \over \partial t} + \vec{v} \cdot 
+   \rho_i h_i \left[ \frac{\partial E }{ \partial t} + \vec{v} \cdot 
    \nabla E \right] = Q_{I0} - Q_{I2}
 \end{equation}
 We can use the chain rule to obtain an equation for timestepping $T_1$:
 \begin{equation}
-   \rho_i h_i {\partial E \over \partial T}
-   \left[ {\partial T_1 \over \partial t} + \vec{v} \cdot 
+   \rho_i h_i \frac{\partial E }{ \partial T}
+   \left[ \frac{\partial T_1 }{ \partial t} + \vec{v} \cdot 
    \nabla T_1 \right] = Q_{I0} - Q_{I2}
 \end{equation}
 where
 \begin{align*}
-  Q_{I0} - Q_{I2} & = {2 k_i \over h_i} \left[ (T_0 - T_1) - 
-  {(T_1 - T_3) \over 1 + C_k} \right] \\
-	          & = {2 k_i \over h_i} \left[ (T_0 +
-  {T_3 - (2 + C_k) T_1 \over 1 + C_k} \right]
+  Q_{I0} - Q_{I2} & = \frac{2 k_i }{ h_i} \left[ (T_0 - T_1) - 
+  \frac{(T_1 - T_3) }{ 1 + C_k} \right] \\
+	          & = \frac{2 k_i }{ h_i} \left[ (T_0 +
+  \frac{T_3 - (2 + C_k) T_1 }{ 1 + C_k} \right]
 \end{align*}
 
 \subsubsection{Ocean surface boundary conditions}
 The ocean receives surface stresses from both the atmosphere and the
 ice, according to the ice concentration:
 \begin{align}
-   K_m {\partial u_w \over \partial z} & = {A \over \rho_o} \tau_{io}^x
-    + {1-A \over \rho_o} \tau_{ao}^x \\
-   K_m {\partial v_w \over \partial z} & = {A \over \rho_o} \tau_{io}^y
-    + {1-A \over \rho_o} \tau_{ao}^y
+   K_m \frac{\partial u_w }{ \partial z} & = \frac{A }{ \rho_o} \tau_{io}^x
+    + \frac{1-A }{ \rho_o} \tau_{ao}^x \\
+   K_m \frac{\partial v_w }{ \partial z} & = \frac{A }{ \rho_o} \tau_{io}^y
+    + \frac{1-A }{ \rho_o} \tau_{ao}^y
 \end{align}
 where the relevant variables are in table \ref{tobc}.
 
@@ -778,23 +495,23 @@ Variable & Value & Definition \\ \hline
 
 The surface ocean is assumed to be at the freezing temperature for the
 surface salinity ($T_0 = mS$) where we use the salinity from the
-uppermost model point at $z=- {1\over 2}\Delta z$. From this, we can
+uppermost model point at $z=- \frac{1}{ 2}\Delta z$. From this, we can
 obtain a vertical temperature gradient for the upper ocean to use in
 the heat flux formula:
 \begin{equation}
-   {F_T \over \rho_o C_po} = -C_{T_z} (T_0 - T) \qquad z \rightarrow 0
+   \frac{F_T }{ \rho_o C_po} = -C_{T_z} (T_0 - T) \qquad z \rightarrow 0
 \end{equation}
 where
 \begin{gather}
-  C_{T_z} = {u_\tau \over P_{rt} k^{-1}\ln (-z/z_0) + B_T} \\
-  B_T = b \left(z_0 u_\tau \over \nu \right) ^{1/2} Pr^{2/3}
+  C_{T_z} = \frac{u_\tau }{ P_{rt} k^{-1}\ln (-z/z_0) + B_T} \\
+  B_T = b \left(\frac{z_0 u_\tau }{ \nu} \right) ^{1/2} Pr^{2/3}
 \end{gather}
 
 Once we have a the value for $F_T$, we can use it to find the ice
 growth rates:
 \begin{align}
-   W_{io} = {1 \over \rho_o L_o} (Q_{io} - F_T) \\
-   W_{ao} = {1 \over \rho_o L_o} (Q_{ao} - F_T) \\
+   W_{io} = \frac{1 }{ \rho_o L_o} (Q_{io} - F_T) \\
+   W_{ao} = \frac{1 }{ \rho_o L_o} (Q_{ao} - F_T) \\
 \end{align}
 where
 \begin{equation}
@@ -804,7 +521,7 @@ where
 The ocean model receives the following heat and salt fluxes:
 \begin{align}
    F_T & = A Q_{io} + (1 - A) Q_{ao} - W_o L_o \\
-   F_S & = (W_o - A W_{ro}) (S_i-S_0) + (1-A)S_o (\mbox{\.P}-\mbox{\.E})
+   F_S & = (W_o - A W_{ro}) (S_i-S_0) + (1-A)S_o (\mbox{\.P}-\mbox{\.E}) \\
    W_o & \equiv A W_{io} + (1-A) W_{ao}
 \end{align}
 
@@ -852,8 +569,8 @@ Variable & Value & Definition \\ \hline
 Defining $\gamma = m_i / m_{w_2}$ and dropping terms of order $\gamma^2$
 leads to:
 \begin{align}
-   T_2 & = T_1 + \gamma \left[ {L \over C_{pw}} + T_1 \left( 1
-   - {C_{pi} \over C_{pw}} \right) \right] \label{t2eq} \\
+   T_2 & = T_1 + \gamma \left[ \frac{L }{ C_{pw}} + T_1 \left( 1
+   - \frac{C_{pi} }{ C_{pw}} \right) \right] \label{t2eq} \\
    S_2 & = S_1 (1 + \gamma) \label{s2eq} .
 \end{align}
 We also want the final temperature and salinity to be on the freezing
@@ -863,15 +580,15 @@ line, which we approximate as:
 \end{equation}
 We can then solve for $\gamma$:
 \begin{equation}
-   \gamma = {-T_1 + mS_1 + nz \over {L \over C_{pw}}+ T_1 \left( 1
-   - {C_{pi} \over C_{pw}} \right) - mS_1} .
+   \gamma = \frac{-T_1 + mS_1 + nz }{ {L }{ C_{pw}}+ T_1 \left( 1
+   - \frac{C_{pi} }{ C_{pw}} \right) - mS_1} .
 \end{equation}
 The ocean is checked at each depth $k$ and at each timestep for
 supercooling.  If the water is below freezing, the temperature and
 salinity are adjusted as in equations (\ref{t2eq}) and (\ref{s2eq})
 and the ice above is thickened by the amount:
 \begin{equation}
-   \Delta h = \gamma_k \Delta z_k {\rho_w \over \rho_i} .
+   \Delta h = \gamma_k \Delta z_k \frac{\rho_w}{\rho_i} .
 \end{equation}
 
 \subsubsection{Differences from Mellor and Kantha}
@@ -881,13 +598,15 @@ MK89. However, there are also ways in which we have deviated from it.
   \item Add advection of snow.
   \item Add lateral melting of snow when ice is melting laterally.
   \item We iterate on the solution of $T_3$.
-  \item We took a shortcut in the solution of $S_0, T_0$ for the
-    surface heat and salt fluxes. We also apply them differently to the
-    ocean model.
+%  \item We took a shortcut in the solution of $S_0, T_0$ for the
+%    surface heat and salt fluxes. We also apply them differently to the
+%    ocean model.
   \item We added various limiters:
     \begin{itemize}
-      \item Ice concentration:$A \geq A_{\min}$, $A_{\min} = 0.02$.
-      \item Ice thickness: $h_i \geq h_{\min}$, $h_{\min} = 0.1$.
+      \item Ice concentration:$A_{\min} \leq A \leq 1.0$, $A_{\min} = 0.0$.
+      \item Ice thickness: $h_i \geq 0.0$.
+      \item Snow thickness: $h_s \geq 0.0$.
       \item Brine fraction: $r \leq r_{\max}$, $r_{\max} = 0.2$
+     \item Surface water: $0.0 \leq W_s \leq W_{s\max}$, $W_{s\max} = 0.1$
     \end{itemize}
 \end{itemize}

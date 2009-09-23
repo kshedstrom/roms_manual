@@ -1,37 +1,289 @@
 \section{Horizontal and Vertical Mixing}
 
-\subsection{Horizontal friction and diffusion}
-\label{Smooth}
-
 In Chapter \ref{Phys}, the diffusive terms were written simply as
 ${\cal D}_u, {\cal D}_v, {\cal D}_T,$ and ${\cal D}_S$.  The vertical
 component of these terms was described in \S\ref{Vfric}.  Here we
-describe SCRUM's options for representing the horizontal
+describe the ROMS options for representing the horizontal
 component of these terms.
 
-\subsubsection{Laplacian}
-The Laplacian of a scalar $\psi$ in curvilinear coordinates is (see
-Appendix \ref{Curve}):
-\begin{equation}
-   \nabla^2 \psi = \nabla \cdot \nabla \psi = mn \left[ 
-   {\partial \over \partial \xi} \!\! \left( {m \over n} 
-   {\partial \psi \over \partial \xi} \right) +
-   {\partial \over \partial \eta} \!\! \left( {n \over m} 
-   {\partial \psi \over \partial \eta} \right) \right]
-\end{equation}
-This term in SCRUM is multiplied by ${\nu_2 H_z \over mn}$ and becomes
-\begin{equation}
-   \left[ 
-   {\partial \over \partial \xi} \!\! \left( {\nu_2 H_zm \over n} 
-   {\partial \psi \over \partial \xi} \right) +
-   {\partial \over \partial \eta} \!\! \left( {\nu_2 H_zn \over m} 
-   {\partial \psi \over \partial \eta} \right) \right]
-\end{equation}
-where $\psi$ is any of $u$, $v$, $T$, and $S$.  This form guarantees
-that the term does not contribute to the volume-integrated equations,
-except when using no-slip boundaries in the momentum equations.
+\subsection{Deviatory stress tensor}
+\label{Smooth}
+
+Note: this material was copied from the wiki, where it was
+contributed by Hernan Arango.
+The horizontal components of the divergence of the stress tensor
+(Wajsowicz, 1993 \cite{Wajsowicz_93}) in
+nondimesional, orthogonal curvilinear coordinates ($\xi$, $\eta$,
+$s$) with dimensional, spatially-varying metric factors
+($\frac{1}{m}$, $\frac{1}{n}$, $H_{z}$) and velocity components
+($u$, $v$, $\omega H_{z}$) are given by:
+
+\begin{align}
+      F^{u} \equiv
+\widehat{\xi}\cdot\left(\nabla\cdot\vec{\sigma}\right) =
+          \frac{mn}{H_{z}} \Biggl[ & {\pder{}{\xi}}  \Biggl(
+\frac{H_{z}{\sigma}_{\xi\xi}} {n} \Biggr) +
+                                     {\pder{}{\eta}} \Biggl(
+\frac{H_{z}{\sigma}_{\xi\eta}}{m} \Biggr) +
+                                     {\pder{}{s}}    \Biggl(
+\frac{{\sigma}_{\xi s}}{mn} \Biggr) + \\
+         &H_{z}{\sigma}_{\xi\eta}  {\pder{}{\eta}} \left(
+\frac{1}{m}\right) -
+          H_{z}{\sigma}_{\eta\eta} {\pder{}{\xi}}  \left(
+\frac{1}{n}\right) -
+          \frac{1}{n} {\sigma}_{ss}{\pder{H_{z}}{\xi}} \Biggr]
+\label{eqstressu}
+\end{align}
+
+\begin{align}
+      F^{v} \equiv
+\widehat{\eta}\cdot\left(\nabla\cdot\vec{\sigma}\right) =
+          \frac{mn}{H_{z}} \Biggl[ & {\pder{}{\xi}}  \Biggl(
+\frac{H_{z}{\sigma}_{\eta\xi}} {n} \Biggr) +
+                                     {\pder{}{\eta}} \Biggl(
+\frac{H_{z}{\sigma}_{\eta\eta}}{m} \Biggr) +
+                                     {\pder{}{s}}    \Biggl(
+\frac{{\sigma}_{\eta s}}{mn} \Biggr) + \\
+         &H_{z}{\sigma}_{\eta\xi}  {\pder{}{\xi}}  \left(
+\frac{1}{n} \right) -
+          H_{z}{\sigma}_{\xi\xi}   {\pder{}{\eta}} \left(
+\frac{1}{m} \right) -
+          \frac{1}{m}{\sigma}_{ss} {\pder{H_{z}}{\eta}} \Biggr]
+\label{eqstressv}
+\end{align}
+
+where
+\begin{align}
+      {\sigma}_{\xi\xi}   &= \left( A_{M} + \nu \right) e_{\xi\xi} +
+\left( \nu - A_{M}\right) e_{\eta\eta}, \\
+   \noalign{\smallskip}
+      {\sigma}_{\eta\eta} &= \left( \nu - A_{M} \right) e_{\xi\xi} +
+\left( A_{M} + \nu\right) e_{\eta\eta}, \\
+   \noalign{\smallskip}
+      {\sigma}_{ss} &= 2\,\nu\,e_{ss}, \\
+   \noalign{\smallskip}
+      {\sigma}_{\xi\eta} &= {\sigma}_{\eta\xi} =
+2\,A_{M}\,e_{\xi\eta}, \\
+   \noalign{\smallskip}
+      {\sigma}_{\xi s}   &=  2\,K_{M}\,e_{\xi s}, \\
+   \noalign{\smallskip}
+      {\sigma}_{\eta s}  &=  2\,K_{M}\,e_{\eta s},
+\end{align}
+
+and the strain field is:
+
+\begin{align}
+      e_{\xi\xi}   &= m  {\pder{u}{\xi}}  + mnv {\pder{}{\eta}}
+\left( \frac{1}{m} \right), \\
+   \noalign{\smallskip}
+      e_{\eta\eta} &= n\;{\pder{v}{\eta}} + mnu {\pder{}{\xi}}
+\left( \frac{1}{n} \right), \\
+   \noalign{\smallskip}
+      e_{ss} &= \frac{1}{H_{z}}   {\pder{\left( \omega H_{z} \right)
+}{s}} + 
+                \frac{m}{H_{z}} u {\pder{H_{z}}{\xi}} +
+                \frac{n}{H_{z}} v {\pder{H_{z}}{\eta}}, \\
+   \noalign{\smallskip}
+      2\,e_{\xi\eta} &= \frac{m}{n} {\pder{\left( nv \right) }{\xi}}
++
+                        \frac{n}{m} {\pder{\left( mu \right)
+}{\eta}}, \\
+   \noalign{\smallskip}
+      2\,e_{\xi s} &= \frac{1}{mH_{z}}  {\pder{\left( mu \right)
+}{s}} +
+                 m H_{z} {\pder{\omega}{\xi}}, \\
+   \noalign{\smallskip}
+      2\,e_{\eta s} &= \frac{1}{nH_{z}} \;
+{\pder{\left(nv\right)}{s}} \;+
+                 n\;H_{z} {\pder{\omega}{\eta}}.
+\end{align}
+
+Here, $A_{M}(\xi,\eta)$ and $K_{M}(\xi,\eta,s)$ are the spatially
+varying horizontal and vertical viscosity coefficients,
+respectively, and $\nu$ is another (very small, often neglected)
+horizontal viscosity coefficient. Notice that because of the
+generalized terrain-following vertical coordinates of ROMS, we need
+to transform the horizontal partial derivatives from constant
+''z-''surfaces to constant ''s-''surfaces.  And the vertical metric
+or level thickness is the Jacobian of the transformation,
+$H_{z}={\pder{z}{s}}$. Also in these models, the ''vertical''
+velocity is computed as $\frac{\omega H_{z}}{mn}$ and has units of
+$\hbox{m}^3/\hbox{s}$.
+
+\subsubsection{Traverse stress tensor}
+
+Assuming transverse isotropy, as in Sadourny and Maynard (1997)
+\cite{Sadourny_97} and Griffies and Hallberg (2000) \cite{Griffies_2000},
+the deviatoric stress tensor can be split into vertical and horizontal
+sub-tensors.  The horizontal (or transverse) sub-tensor is symmetric, it
+has a null trace, and it possesses axial symmetry in the local vertical
+direction.  Then, transverse stress tensor can be derived from eq.
+(\ref{eqstressu}) and (\ref{eqstressu}), yielding
+
+\begin{align}
+      H_{z}F^{u} &= {n^2}m
+{\partial\over\partial\xi}\left(\frac{H_{z}F^{u\xi}}{n}\right) +
+                {m^2}n
+{\partial\over\partial\eta}\left(\frac{H_{z}F^{u\eta}}{m}\right)
+\label{eqtstressu} \\
+   \noalign{\smallskip}
+      H_{z}F^{v} &= {n^2}m
+{\partial\over\partial\xi}\left(\frac{H_{z}F^{v\xi}}{n}\right) +
+                {m^2}n
+{\partial\over\partial\eta}\left(\frac{H_{z}F^{v\eta}}{m}\right)
+\label{eqtstressv} 
+\end{align}
+
+where
+
+\begin{align}
+         F^{u\xi} &= \frac{1}{n} \;A_{M}\left[
+               \frac{m}{n} {\pder{\left( nu \right) }{\xi}} \;-
+               \frac{n}{m} {\pder{\left( mv \right) }{\eta}}
+\right], \\
+      \noalign{\smallskip}
+         F^{u\eta} &= \frac{1}{m} A_{M}\left[
+               \frac{n}{m} {\pder{\left( mu \right) }{\eta}} +
+               \frac{m}{n} {\pder{\left( nv \right) }{\xi}}
+\;\right], \\
+      \noalign{\medskip}
+         F^{v\xi} &= \frac{1}{n} \;A_{M}\left[
+               \frac{m}{n} {\pder{\left( nv \right) }{\xi}} \;+
+               \frac{n}{m} {\pder{\left( mu \right) }{\eta}}
+\right], \\
+      \noalign{\smallskip}
+         F^{v\eta} &= \frac{1}{m} A_{M}\left[
+               \frac{n}{m} {\pder{\left( mv \right) }{\eta}} -
+               \frac{m}{n} {\pder{\left( nu \right) }{\xi}}
+\;\right].
+\end{align}
+
+Notice the flux form of eq. (\ref{eqtstressu}) and (\ref{eqtstressv})
+and the symmetry between the $F^{u\xi}$ and $F^{v\eta}$ terms which are
+defined at density points on a C-grid. Similarly, the $F^{u\eta}$ and
+$F^{v\xi}$ terms are symmetric and defined at vorticity points.  These
+staggering positions are optimal for the discretization of the tensor;
+it has no computational modes and satisfies first-moment conservation.
+
+The biharmonic friction operator can be computed by applying twice
+the tensor operator eq. (\ref{eqtstressu}) and (\ref{eqtstressv}), but
+with the squared root of the biharmonic viscosity coefficient (Griffies
+and Hallberg, 2000 \cite{Griffies_2000}).  For simplicity and momentum
+balance, the thickness $H_{z}$ appears only when computing the second
+harmonic operator as in Griffies and Hallberg (2000).
+
+\subsubsection{Rotated Transverse Stress Tensor}
+
+In some applications with tall and steep topography, it
+will be advantageous to reduce substantially the contribution of the
+stress tensor eq. (\ref{eqtstressu}) and (\ref{eqtstressv}) to
+the vertical mixing when operating along constant $s$-surfaces.
+The transverse stress tensor rotated along geopotentials (constant depth)
+is then given by
+
+\begin{align}
+      H_{z}R^{u} &= {n^2}m {\pder{}{\xi}}  \Biggl(
+\frac{H_{z}R^{u\xi}} {n} \Biggr) +
+                    {m^2}n {\pder{}{\eta}} \Biggl(
+\frac{H_{z}R^{u\eta}}{m} \Biggr) +
+                           {\pder{}{s}}    \Biggl( R^{us} \Biggr)
+\label{eqrstressu}
+\\
+   \noalign{\smallskip}
+      H_{z}R^{v} &= {n^2}m {\pder{}{\xi}}  \Biggl(
+\frac{H_{z}R^{v\xi}} {n} \Biggr) +
+                    {m^2}n {\pder{}{\eta}} \Biggl(
+\frac{H_{z}R^{v\eta}}{m} \Biggr) +
+                           {\pder{}{s}}    \Biggl( R^{vs} \Biggr)
+\label{eqrstressv}
+\end{align}
+
+where
+
+\begin{align}
+         R^{u\xi} = &\frac{1}{n}\; A_{M} \left[
+                 \frac{1}{n}\;\left( m {\pder{\left(nu\right)}{\xi}} -
+                                     m {\pder{z}{\xi}} \frac{1}{H_{z}}
+                         {\pder{\left( nu \right) }{s}} \right) -
+                 \frac{1}{m}  \left( n {\pder{\left( mv \right) }{\eta}} -
+                                     n {\pder{z}{\eta}} \frac{1}{H_{z}}
+                                       {\pder{\left( mv \right) }{s}}\right)
+                              \right], \\
+      \noalign{\medskip}
+         R^{u\eta} = &\frac{1}{m} A_{M} \left[
+                 \frac{1}{m}  \left( n {\pder{\left( mu \right) }{\eta}} -
+                                     n {\pder{z}{\eta}} \frac{1}{H_{z}}
+                         {\pder{\left( mu \right) }{s}} \right) +
+                 \frac{1}{n}\;\left( m {\pder{\left( nv \right) }{\xi}} -
+                                     m {\pder{z}{\xi}} \frac{1}{H_{z}}
+                                      {\pder{\left( nv \right) }{s}} \right)
+                              \right], \\
+      \noalign{\medskip}
+         R^{us} = &m {\pder{z}{\xi}} A_{M} \left[
+                 \frac{1}{n}\;\left( m {\pder{z}{\xi}} \frac{1}{H_{z}}
+                                       {\pder{\left( nu \right) }{s}} -
+                 m {\pder{\left( nu \right) }{\xi}} \right) -
+                 \frac{1}{m}  \left( n {\pder{z}{\eta}} \frac{1}{H_{z}}
+                                       {\pder{\left( mv \right) }{s}} -
+                           n {\pder{\left( mv \right) }{\eta}} \right)
+                              \right] +\\
+                &n\; {\pder{z}{\eta}} A_{M} \left[
+                 \frac{1}{m}  \left( n {\pder{z}{\eta}} \frac{1}{H_{z}}
+                                       {\pder{\left( mu \right) }{s}} -
+                             n {\pder{\left( mu \right) }{\eta}} \right) +
+                 \frac{1}{n}\;\left( m {\pder{z}{\xi}} \frac{1}{H_{z}}
+                                       {\pder{\left( nv \right) }{s}} -
+                             m {\pder{\left( nv \right) }{\xi}} \right)
+                              \right], \\
+      \noalign{\bigskip}
+         R^{v\xi} = &\frac{1}{n}\;A_{M} \left[
+                 \frac{1}{n}\;\left( m {\pder{\left( nv \right) }{\xi}} -
+                                     m {\pder{z}{\xi}} \frac{1}{H_{z}}
+                            {\pder{\left( nv \right) }{s}} \right) +
+                 \frac{1}{m}  \left( n {\pder{\left( mu \right) }{\eta}}-
+                                     n {\pder{z}{\eta}} \frac{1}{H_{z}}
+                                      {\pder{\left( mu \right) }{s}} \right)
+                              \right], \\
+      \noalign{\medskip}
+         R^{v\eta} = &\frac{1}{m}A_{M} \left[
+                 \frac{1}{m}  \left( n {\pder{\left( mv \right) }{\eta}} -
+                                     n {\pder{z}{\eta}} \frac{1}{H_{z}}
+                              {\pder{\left( mv \right) }{s}} \right) -
+                 \frac{1}{n}\;\left( m {\pder{\left( nu \right) }{\xi}} -
+                                     m {\pder{z}{\xi}} \frac{1}{H_{z}}
+                                       {\pder{\left( nu \right)}{s}} \right)
+                              \right], \\
+      \noalign{\medskip}
+         R^{vs} = &m {\pder{z}{\xi}} A_{M} \left[
+                 \frac{1}{n}\;\left( m {\pder{z}{\xi}} \frac{1}{H_{z}}
+                                       {\pder{\left( nv \right) }{s}} -
+                        m {\pder{\left( nv \right) }{\xi}} \right) +
+                 \frac{1}{m}  \left( n {\pder{z}{\eta}} \frac{1}{H_{z}}
+                                       {\pder{\left( mu \right) }{s}} -
+                            n {\pder{\left( mu \right) }{\eta}} \right)
+                              \right] +\\
+                &n\; {\pder{z}{\eta}} A_{M} \left[
+                 \frac{1}{m}  \left( n {\pder{z}{\eta}} \frac{1}{H_{z}}
+                                       {\pder{\left( mv \right) }{s}} -
+                              n {\pder{\left( mv \right) }{\eta}} \right) -
+                 \frac{1}{n}\;\left( m {\pder{z}{\xi}} \frac{1}{H_{z}}
+                                       {\pder{\left( nu \right) }{s}} -
+                            m {\pder{\left( nu \right) }{\xi}} \right)
+                              \right].
+\end{align}
+
+Notice that transverse stress tensor remains invariant under
+coordinate transformation.  The rotated tensor (\ref{eqrstressu})
+and (\ref{eqrstressv}) retains the
+same properties as the unrotated tensor (\ref{eqtstressu}) and
+(\ref{eqtstressv}).  The additional terms
+that arise from the slopes of $s$-surfaces along
+geopotentials are discretized using a modified version of the triad
+approach of Griffies {\em et al.} (1998) \cite{Griffies_98}.
 
 \subsubsection{Biharmonic}
+Biharmonic mixing has less of a physical justification and is used
+for damping of numerical noise at the $2 \Delta x$ scale.
 The biharmonic operator is $\nabla^4 = \nabla^2 \nabla^2$; the
 corresponding term is computed using a temporary variable $Y$:
 \begin{equation}
@@ -50,117 +302,27 @@ and is
    {\partial \over \partial \eta} \!\! \left( {H_zn \over m} 
    {\partial Y \over \partial \eta} \right) \right]
 \end{equation}
-where $\psi$ is once again any of $u$, $v$, $T$, and $S$.  Note that
+where $\psi$ is any of $u$, $v$, $T$, and $S$.  Note that
 $u$ and $v$ are treated as independent scalar quantities rather than as
 a vector.  The complete Laplacian operator on a vector quantity
 $\vec{u}$ contains additional terms, including $v$ terms in the $u$
 equation and vice versa.  These extra terms were found to be small in a
 test problem and have been left out of the model.
 
-\subsubsection{Rotated mixing tensors}
-Both the Laplacian and biharmonic terms above operate on surfaces of
-constant $s$ and can contribute substantially to the vertical mixing.
-However, the oceans are thought
-to mix along constant density surfaces so this is not entirely
-satisfactory.  Therefore, the option of using rotated mixing tensors
-for the Laplacian and biharmonic operators has been added.  Options
-exist to diffuse on constant $z$ surfaces (\code{MIX\_GP\_UV},
-\code{MIX\_GP\_TS}), constant {\sl in situ} density surfaces
-(\code{MIX\_EPI\_UV}, \code{MIX\_EPI\_TS}), and constant potential
-density surfaces ((\code{MIX\_ISO\_UV}, \code{MIX\_ISO\_TS})
-
-The horizontal Laplacian diffusion operator is computed by finding the
-three components of the flux of the quantity $\psi$.  The $\xi$ and
-$\eta$ components are locally horizontal, rather than along the
-$s$ surface. Here, \code{MIX\_EPI} represents both the epineutral and
-isopycnal options. The diffusive fluxes are:
-\begin{align}
-   F^\xi & = \nu_2 \left[ m
-   {\partial \psi \over \partial \xi} -
-   \underbrace{ \left( m {\partial z \over \partial \xi}
-   \underbrace{+ S_x }_{\mbox{\tt MIX\_EPI}} \right)
-   {\partial \psi \over \partial z} }_{\mbox{\tt MIX\_GP}} \right]
-\label{fluxx}
-\\
-   F^\eta & = \nu_2 \left[ n
-   {\partial \psi \over \partial \eta} -
-   \underbrace{ \left[ n {\partial z \over \partial \eta}
-   \underbrace{+ S_y }_{\mbox{\tt MIX\_EPI}} \right)
-   {\partial \psi \over \partial z} }_{\mbox{\tt MIX\_GP}} \right]
-\label{fluxy}
-\\
-   F^s & =
-   - \underbrace{ {1 \over H_z} \left( m
-   {\partial z \over \partial \xi}
-   \underbrace{+ S_x }_{\mbox{\tt MIX\_EPI}} \right)
-   F^\xi }_{\mbox{\tt MIX\_GP}}
-   - \underbrace{ {1 \over H_z} \left( n
-   {\partial z \over \partial \eta}
-   \underbrace{+ S_y }_{\mbox{\tt MIX\_EPI}} \right)
-   F^\eta }_{\mbox{\tt MIX\_GP}}
-\label{fluxs}
-\end{align}
-where
-\begin{align*}
-  S_x & = { { \partial \rho \over \partial x} \over
-    { \partial \rho \over \partial z} } =
-    { \left[ m {\partial \rho \over \partial \xi} -
-    {m \over H_z} {\partial z \over \partial \xi}
-    { \partial \rho \over \partial s} \right] \over
-    {1 \over H_z} {\partial \rho \over \partial s} }
-\\
-  S_y & = { { \partial \rho \over \partial y} \over
-    { \partial \rho \over \partial z} } =
-    { \left[ n {\partial \rho \over \partial \eta} -
-    {n \over H_z} {\partial z \over \partial \eta}
-    { \partial \rho \over \partial s} \right] \over
-    {1 \over H_z} {\partial \rho \over \partial s} }
-\end{align*}
-No flux boundary conditions are easily imposed by setting
-\begin{eqnarray*}
-  F^\xi = 0    && \mbox{ at $\xi$ walls} \\
-  F^\eta = 0   && \mbox{ at $\eta$ walls} \\
-  F^s = 0 && \mbox{ at $s = -1,0$}
-\end{eqnarray*}
-
-Finally, the flux divergence is calculated and is added to the
-right-hand-side term for the field being computed:
-\begin{equation}
-  {\partial \over \partial \xi} \left( { H_z F^\xi \over n} \right) +
-  {\partial \over \partial \eta} \left( { H_z F^\eta \over m} \right) +
-  {\partial \over \partial s}
-  \left( { H_z F^s \over mn} \right)
-\label{rot1}
-\end{equation}
-
-The biharmonic rotated mixing tensors are computed much as the
-non-rotated biharmonic mixing.  We define a temporary variable $Y$
-based on equation (\ref{rot1}):
-\begin{equation}
-  Y = {mn \over H_z} \left[
-  {\partial \over \partial \xi} \left( { H_z F^\xi \over n} \right) +
-  {\partial \over \partial \eta} \left( { H_z F^\eta \over m} \right) +
-  {\partial \over \partial s}
-  \left( { H_z F^s \over mn} \right)
-  \right] .
-\end{equation}
-We then build up fluxes of $Y$ as in equations
-(\ref{fluxx})--(\ref{fluxs}).  We then apply equation (\ref{rot1})
-to these $Y$ fluxes to obtain the biharmonic mixing tensors.
-
 \subsection{Vertical mixing schemes}
 \label{Vmix}
-SCRUM contains a variety of methods for setting the vertical viscous and
+ROMS contains a variety of methods for setting the vertical viscous and
 diffusive coefficients. The choices range from simply choosing fixed
-values to the KPP and Mellor-Yamada turbulence closure schemes.
-See Large \cite{Large98} for a review of surface ocean mixing schemes.
-Many schemes have a background molecular value which is used when the
-turbulent processes are assumed to be small (such as in the interior).
+values to the KPP, generic lengthscale (GLS) and Mellor-Yamada turbulence
+closure schemes.  See Large \cite{Large98} for a review of surface ocean
+mixing schemes.  Many schemes have a background molecular value which
+is used when the turbulent processes are assumed to be small (such as
+in the interior).
 
 \subsubsection{Mellor-Yamada}
 One of the more popular closure schemes is that of Mellor and Yamada
 \cite{Mellor74}, \cite{Mellor82}. They actually present a hierarchy of
-closures of increasing complexity. SCRUM provides only the
+closures of increasing complexity. ROMS provides only the
 ``Level 2.5'' closure with the Galperin et al.\ \cite{Galperin88}
 modifications as described in Allen et al.\ \cite{Allen95}.
 This closure scheme adds two prognostic equations, one
