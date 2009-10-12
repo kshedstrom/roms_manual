@@ -531,7 +531,7 @@ talk about how they work. They get defined in the top Makefile:
 source-dir-to-binary-dir = $(addprefix $(SCRATCH_DIR)/, $(notdir $1))
 
 # $(call source-to-object, source-file-list)
-source-to-object = $(call source-dir-to-bindary-dir,   \
+source-to-object = $(call source-dir-to-binary-dir,   \
                    $(subst .F,.o,$(filter %.F,$1)))
 
 # $(call f90-source, source-file-list)
@@ -855,14 +855,6 @@ Hence this stuff at the top of the \code{makefile}:
 NEED_VERSION := 3.80 3.81
 $(if $(filter $(MAKE_VERSION),$(NEED_VERSION)),,        \
  $(error This makefile requires one of GNU make version $(NEED_VERSION).))
-\end{verbatim}
-
-\item One annoyance is that the compile phase of \code{one-compile-rule}
-didn't seem to be working. I was forced to keep the pattern rule for
-\code{.o} files:
-\begin{verbatim}
-%.o: %.f90
-<TAB>  cd $(SCRATCH_DIR); $(FC) -c $(FFLAGS) $(notdir $<)
 \end{verbatim}
 
 \item The \code{Makefile} dependencies get just a little trickier every

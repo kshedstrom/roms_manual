@@ -1,10 +1,40 @@
 \section{Details of the Code}
 \label{Code}
+\subsection{Directory structure}
+The directory structure is as shown in Fig.\ \ref{fdirs}, with the
+ability to run the ocean alone or coupled to atmospheric and/or
+wave models. If running just the ocean, the model can be run forward
+in time (the Nonlinear model) or as an adjoint, tangent linear, or
+representer model for data assimilation purposes. This document
+describes the uncoupled forward model only.
+
 \subsection{Main subroutines}
-The main program is in \code{scrum.F}. It calls the initialization
-routines and then calls either \code{main3d} or \code{main2d}.
-A flow chart for \code{main3d} is shown in Fig.\ \ref{flow}.
-The boxes refer to subroutines which are described as follows:
+
+\subsubsection{master.F}
+The main program is in \code{master.F}. It is simply a shell, including
+one of \code{mct\_coupler.h}, \code{esmf\_coupler.h} or \code{ocean.h}. In
+our case, \code{ocean.h} contains the actual main program, which
+initializes MPI (if needed), calls \code{ROMS\_initialize}, then
+calls \code{ROMS\_run} with arguments for how many steps to take,
+then \code{ROMS\_finalize}, then finally wraps up the MPI.
+
+\subsubsection{ocean\_control.F}
+This is again a shell which includes one of many other files to do
+the actual work. In this case, the worker files all contain
+\code{ROMS\_initialize}, \code{ROMS\_run} and \code{ROMS\_finalize}
+and live in the \code{ROMS/Drivers} directory. The driver file we
+will be looking at is \code{nl\_ocean.h}.
+
+\subsubsection{ROMS\_initialize}
+This is called at the beginning of the run and therefore starts off
+by finding out how many parallel processes are running and which one
+this is before doing anything else. 
+
+calls the initialization routines and then calls either \code{main3d}
+or \code{main2d}.  A flow chart for \code{main3d} is shown in Fig.\
+\ref{flow}.  The boxes refer to subroutines which are described as
+follows:
+
 \begin{figure}
 \thinlines
 \begin{center}

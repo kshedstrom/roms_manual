@@ -898,7 +898,7 @@ combination of the two, weighted so that the surface down value is used
 near the surface while the other is used near the bottom.
 
 The density is obtained from temperature and salinity via an
-equation of state.  SCRUM provides a choice of a nonlinear equation
+equation of state.  ROMS provides a choice of a nonlinear equation
 of state $\rho = \rho(T,S,z)$ or a linear equation of state $\rho =
 \rho(T)$.  The nonlinear equation of state has been modified and now
 corresponds to the UNESCO equation of state as derived by Jackett and
@@ -949,7 +949,7 @@ things out (if it is indeed going out). This works well for a wave
 propagating normal to the boundary, but has problems when waves
 approach the boundary at an angle. Raymond and Kuo \cite{Raymond84}
 have modified the scheme to account for propagation in all three
-directions. In SCRUM, only the two horizontal directions are accounted
+directions. In ROMS, only the two horizontal directions are accounted
 for:
 \begin{equation}
    \frac{\partial C}{\partial t} = - \left( C_x \frac{\partial
@@ -971,7 +971,7 @@ consistent with the time stepping scheme used. The phase velocities are
 limited so that the local CFL condition is satisfied. They are then
 applied to the boundary point using equation (\ref{eqrk}), again using
 a consistent time stepping scheme. Raymond and Kuo give the form used
-for centered differencing and a leapfrog time step while SCRUM uses
+for centered differencing and a leapfrog time step while ROMS uses
 one-sided differences.
 
 The radiation approach is appropriate for waves leaving the domain. A

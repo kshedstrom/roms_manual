@@ -65,14 +65,17 @@ selecting which system-compiler file is to be included from the
 \code{Compilers} directory. See section \S\ref{Inc_fort} and
 \S\ref{make_env}.
 
-\kitem{BINDIR} Directory in which to place the binary executable.
+\kitem{Local File Options}
+\begin{klist}
+  \kitem{BINDIR} Directory in which to place the binary executable.
 The default is ``\code{.}'', the current (top) directory.
 
-\kitem{SCRATCH\_DIR} Put the \code{.f90} and the temporary binary files
+  \kitem{SCRATCH\_DIR} Put the \code{.f90} and the temporary binary files
 in a build directory to avoid clutter. The default is \code{Build}
 under the top directory. It can also point to differing places if you want
 to keep these files for multiple projects at the same time, each in
 their own directory.
+\end{klist}
 \end{klist}
 
 \subsection{Providing the Environment}
@@ -123,18 +126,18 @@ type:
 \begin{verbatim}
     make -f makefile.circle_pgi
 \end{verbatim}
-for instance. If that's too
-cumbersome, there's also an option of keeping track of the user-defined
-choices in a build script. There are now two of these scripts in the
-\code{ROMS/Bin} directory: \code{build.sh} (which is surprisingly
-a \code{csh} script) and \code{build.bash}.  The build scripts use
-environment variables to provide values for the list above, overwriting
-those found in the ROMS \code{makefile}. Just as in the multiple
-\code{makefile} option, you will need as many copies of the build script
-as you have applications. The scope of these variables is local to the
-build script, allowing you to compile different applications at the
-same time from the same sources as long as each \code{\$(SCRATCH\_DIR)}
-is unique.
+for instance. Another option of keeping track of the user-defined
+choices in a \code{build script}. The advantage is that updates
+to the \code{build scripts} are less frequent than updates to the
+\code{makefile}. There are now two of these scripts in the \code{ROMS/Bin}
+directory: \code{build.sh} (which is surprisingly a \code{csh} script)
+and \code{build.bash}.  The \code{build scripts} use environment variables
+to provide values for the list above, overwriting those found in the ROMS
+\code{makefile}. Just as in the multiple \code{makefile} option, you will
+need as many copies of the build script as you have applications. The
+scope of these variables is local to the build script, allowing you to
+compile different applications at the same time from the same sources
+as long as each \code{\$(SCRATCH\_DIR)} is unique.
 
 Both scripts have the same options:
 \begin{klist}
