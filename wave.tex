@@ -3,20 +3,20 @@
 This chapter describes the parts of ROMS for which the user is
 responsible when configuring it for a given application.  Section
 \ref{User} describes the process in a generic fashion while
-\S\ref{UpDown} and \S\ref{NEP} step through the application of SCRUM
+\S\ref{UpDown} and \S\ref{NEP} step through the application of ROMS
 to upwelling/downwelling and wind-driven Northeast Pacific problems,
 respectively.  As distributed, ROMS is ready to run quite a few
 examples, where the C preprocessor flags determine which is to be
 executed.  Some of these examples are described in Haidvogel and
-Beckmann \cite{Haidvogel99}. Some of them are listed here:
+Beckmann \cite{Haidvogel99}, some are listed here:
 \begin{klist}
-   \kitem{BIG\_BAD\_BASIN} This is a rectangular, flat-bottomed basin with
+   \kitem{BASIN} This is a rectangular, flat-bottomed basin with
  double-gyre wind forcing. When run, it produces a western boundary
  current flowing into a central ``Gulf Stream''
  which goes unstable and generates eddies. The goal is to run
  adiabatically to study the homogenization of potential vorticity.
- It earned its name by taking a long time and causing difficulties
- for the spectral versions of SPEM.
+ It earned its nickname of Big Bad Basin by taking a long time to
+ run and causing difficulties for the spectral versions of SPEM.
 %   \kitem{CANYON\_A} The canyon is a periodic channel with a steep shelf
 % along one wall, where the shelf contains a steep canyon.  There is a
 % periodic forcing which causes the water to oscillate along the
@@ -27,9 +27,9 @@ Beckmann \cite{Haidvogel99}. Some of them are listed here:
 % problem.
 %   \kitem{CANYON\_B} This is like Canyon A, except that it is
 % stratified.
-%   \kitem{DAMEE\_B}  DAMEE stands for Data Assimilation and Model
+%   \kitem{DAMEE\_4}  DAMEE stands for Data Assimilation and Model
 % Evaluation Experiment and is a comparison of different models of
-% the North Atlantic.  Version B is a big domain
+% the North Atlantic.  Version 4 is a big domain
 % extending from 30$^\circ$ S to 65$^\circ$ N.  Additional input files
 % are required to run the DAMEE configurations.
    \kitem{GRAV\_ADJ} The gravitational adjustment problem takes place
@@ -53,15 +53,16 @@ part of a domain with a sloping bottom.
  you run it for several days without vertical mixing, you end up with
  dense water over light water.
 \end{klist}
-Some input files for the ROMS examples can be found under \code{Data/ROMS}
-in the ROMS distribution.
+Some NetCDF input files for the ROMS examples can be found under
+\code{Data/ROMS} in the ROMS distribution. The ASCII input files are
+under \code{ROMS/External}.
 
 \subsection{Configuring ROMS}
 \label{User}
 
 The four main sections you need to change in ROMS are the \code{makefile}
 or \code{build.bash}, an include file with \code{cpp} options, any
-analytic functions, and the ascii input file. If more realistic fields
+analytic functions, and the ASCII input file. If more realistic fields
 are desired, you will have to provide other input files as well, for
 instance for the grid and the wind forcing.
 
@@ -108,7 +109,7 @@ procedure.
 Some of the cpp Options have names beginning with \code{ANA\_}. For each one of
 these, you will be expected to provide an analytic expression for the field
 in question in the corresponding include file. These files
-are listed in \S\ref{Funcs} and their location is determined
+are listed in \S\ref{Functionals} and their location is determined
 by \code{MY\_ANALYTICAL\_DIR}. You may chose to copy those from
 \code{User/Functionals} to some new directory and place your version of
 the assignments within
@@ -135,7 +136,9 @@ add the appropriate code to \code{checkdefs.F}, such as:
 \end{verbatim}
 Note that the number ``7'' on the \code{Coptions} line must be set
 according to the length of the string you are adding.  In this case 7
-is for `` SLEET,'', including the comma and the space.
+is for `` SLEET,'', including the comma and the space. You do not
+need to do this for your application name (\code{WIKI\_TEST} here),
+since checkdefs will print whatever is in \code{MyAppCPP}.
 
 \subsubsection{Model domain}
 \label{Muddy}
@@ -166,8 +169,8 @@ Coriolis parameter.  Most of the simple test problems have their grid
 information specified in \code{ana\_grid.h} in the directory
 \code{ROMS/Functionals}.  More realistic problems require a NetCDF grid
 file, produced by the grid generation programs described in Wilkin and
-Hedstrom \cite{GRIDS}.  The variables which are read by
-\code{get\_grid} are:
+Hedstrom \cite{GRIDS}, by the Matlab \code{SeaGrid}, or by some
+other method.  The variables which are read by \code{get\_grid} are:
 \begin{tabbing}
   Gnu \= \kill
   \> \code{xl, el, spherical, f, h, pm, pn, x\_rho, y\_rho,
@@ -269,8 +272,8 @@ conditions.
 \end{figure}
 
 The three-dimensional model fields are carried in four-dimensional
-arrays, where the fourth array index refers to one of three
-time levels. The tracers have a fifth array index tells which
+arrays, where the fourth array index refers to one of two or three
+time levels. The tracers have a fifth array index telling which
 tracer is being referred to.
 For instance, $\code{itemp}=1$ refers to
 potential temperature while $\code{isalt}=2$ refers to salinity.  The
@@ -324,12 +327,12 @@ $$
 $$
 depending on whether or not
 \code{SALINITY} is defined.  Specify which equation of state you
-would like to use with the \code{NONLIN\_EOS} C preprocessor flag your
+would like to use with the \code{NONLIN\_EOS} C preprocessor flag in your
 application include file. The linear coefficients \code{R0}, \code{T0},
 \code{Tcoef}, \code{S0}, and \code{Scoef} are set in \code{ocean.in}. Note
 that we are computing {\em in situ} density from potential temperature and
 salinity. Some of the vertical mixing schemes require potential density
-and some other terms, which are computed by \code{rho\_eos} as well.
+and some other fields, which are computed by \code{rho\_eos} as well.
 
 \subsubsection{Boundary conditions}
 \label{Bcs}
@@ -339,11 +342,18 @@ in \code{u3dbc\_im}, \code{v3dbc\_im}, \code{u2dbc\_im}, \code{v2dbc\_im},
 and provide the boundary values for the fields $u, v, \overline{u},
 \overline{v}$, all tracers, and $\zeta$, respectively. They are currently
 configured for a closed basin, a periodic channel, a doubly periodic
-domain or an open domain with various radiation conditions. Each side is
+domain or a domain with various open boundary conditions. Each side is
 controlled independently with \code{WEST} being the \code{i=1} boundary,
 \code{EAST} being the \code{i=L} boundary, \code{SOUTH} being the \code{j=1}
 boundary, and \code{NORTH} being the \code{j=M} boundary. These choices are
 made via the \code{cpp} options in your include file.
+
+Many of the choices for open boundaries require that the model have
+some values for the boundary conditions. These can be specified in
+the appropriate \code{ana\_xxx.h} file for say \code{ANA\_TOBC} or
+they can be read from a boundary NetCDF file. There is logic in
+\code{globaldefs.h} by which ROMS decides whether or not it needs to
+read a boundary file.
 
 \subsubsection{Model forcing}
 \label{Mforce}
@@ -351,279 +361,477 @@ made via the \code{cpp} options in your include file.
 
 There are two different ways to apply a wind forcing: as a surface
 momentum flux in the vertical viscosity term, or as a body force over
-the upper water column.  In the past, our vertical resolution was
-relatively coarse and the vertical viscosity would have to have been
-unreasonably large for us to resolve the surface Ekman layer.  If that
-is your situation, define \code{BODYFORCE} in \code{cppdefs.h} and
-provide a value for \code{levsfrc} in \code{scrum.in}.  The forcing is
-applied over the levels from \code{levsfrc} to \code{N}.  The above
-caution about vertical resolution also applies to the surface fluxes of
-$T$ and $S$, although \code{BODYFORCE} only refers to wind stress, not
-the surface tracer fluxes.
-%In addition, if you have vertical diffusion
-%of tracers and no surface fluxes, you will erode the vertical
-%stratification unless \code{CLIMAT\_TS\_MIXV} is defined.
-
-More recently, we have been setting the vertical $s$-coordinate
-parameters to retain some resolution near the surface and to apply the
+the upper water column.
+Usually, we set the vertical $\sigma$-coordinate
+parameters to retain some resolution near the surface and apply the
 fluxes as boundary conditions to the vertical viscosity/diffusivity.
 In either case, the surface and bottom fluxes are either defined
-analytically or read from the forcing file.  You must either edit the
-appropriate parts of \code{analytical.F} or create a NetCDF forcing
-file in the format expected by \code{get\_smflux}, \code{get\_stflux}
-and their friends.  Note that it is quite common to put the wind
-stress into the forcing file while having an analytic bottom stress.
+analytically, read from a forcing file, or computed inside ROMS
+using a bulk flux formula using the appropriate atmospheric fields
+(air temperature and winds, for instance).  You must either edit the
+appropriate \code{ana\_xxx.h} or create a NetCDF forcing
+file in the format expected by ROMS. Note that it is quite common
+to put the surface variables the forcing file while having an analytic
+bottom heat flux. ROMS now has the capability of reading in a list
+of forcing fields---it can be convenient to have one file per field
+rather than stuffing tides, winds, river inputs all into one file.
+
+In the past, our vertical resolution was relatively coarse and the
+vertical viscosity would have to have been unreasonably large for
+us to resolve the surface Ekman layer.  If that is your situation,
+define \code{BODYFORCE} in \code{cppdefs.h} and provide a value for
+\code{levsfrc} in \code{ocean.in}.  The forcing is applied over the
+levels from \code{levsfrc} to \code{N}.  The above caution about
+vertical resolution also applies to the surface fluxes of $T$ and
+$S$, although \code{BODYFORCE} only refers to wind stress, not the
+surface tracer fluxes.
 
 \smallskip
 \noindent {\bf(b) Climatology}
 
-One way to force the model is via a nudging to the tracer climatologies.
-This was is used in the North Atlantic simulations in sponge layers
-along the northern and southern boundaries.  Set the climatologies
-in \code{ana\_tclima} or in a file read by \code{get\_tclima}, set
-\code{NUDGING} in \code{cppdefs.h} and also
-set the array \code{nudgcof} in \code{set\_nudgcof.F}.
+One way to force the model is via a nudging to the tracer and/or
+momentum climatologies. Nudging to tracers was is used in the North
+Atlantic simulations in sponge layers along the northern and southern
+boundaries. Set the climatologies in \code{ana\_tclima.h} or in a
+file read by \code{get\_data}, set \code{TCLM\_NUDGING} in
+\code{wiki\_test.h} and also set the array \code{Tnudgcof} in
+\code{ana\_nudgcoef.h}.
 
+\smallskip
+\noindent {\bf(c) Tides}
 
-\subsubsection{\code{scrum.in}}
-SCRUM expects to read a number of variables on standard in.  It is
-easiest to prepare an input file and then run SCRUM as:
+There is also more than one way to force with tides. One way is to
+provide boundary conditions with enough temporal resolution to
+resolve the tides. Another is to provide ROMS with the tidal
+consituents at all grid points and to have ROMS reconstruct the
+tidal currents (\code{UV\_TIDES})  and/or elevations (\code{SSH\_TIDES})
+for any given time. An example of such a tidal forcing file is in
+\code{Data/ROMS/Forcing/test\_head\_frc.nc}.
+
+The non-trunk code with ice, etc. includes an option to
+add on the long-period tides (\code{TIDES\_ASTRO}) from Foreman
+(\cite{??}). There is also an option to include the tidal potential
+forcing term (\code{POT\_TIDES}), requiring the tidal potential to
+be included in the tides forcing file.
+
+\smallskip
+\noindent {\bf(d) Rivers}
+
+Point sources can be used to provide river inflow to the model.
+These too can be specified in a forcing file if not provided via
+\code{ana\_psource}).
+
+\subsubsection{\code{ocean.in}}
+ROMS expects to read a number of variables from an ASCII file.
+For serial or OpenMP execution, the syntax is:
 \begin{verbatim}
-       scrum < scrum.in > scrum.out &
+       oceanS (or oceanO) < ocean.in > roms.out &
 \end{verbatim}
-The input is organized as pairs of lines, the first with a number and
-then some text which is ignored, the second with the values for the
-set of variables for which the first line provides the key.  The pairs
-of lines can be in any order but are usually sorted numerically.  The
-number 99 signals the end of these pairs and the rest of the input file
-contains comments for the user.  The input pairs are as follows:
+while MPI execution requires:
+\begin{verbatim}
+       oceanM ocean.in > roms.out &
+\end{verbatim}
+so that each process can read the file.
+
+Example files are in \code{ROMS/External} with names like
+\code{ocean\_grav\_adj.h}, where ``grav\_adj'' refers to the name of
+the application. Lines beginning with ``!'' are comments and will be
+ignored by ROMS on reading them.
+
+The input is organized as key/value pairs, separated by on or two
+equals signs. It is possible for ROMS to run on more than one grid
+simultaneously, with the number of grids being set at compile time
+via the build script and/or the \code{makefile}. If there is one
+equals sign (\code{=}), ROMS will use the corresponding value for
+all grids. If there are two (\code{==}), ROMS will read a value for
+each grid. Thus far, our domains have used just one grid since the
+inter-grid coupling has not been released.
+
+ROMS will ignore the parameters not needed by the current
+simulation, e.g., the GLS parameters will not be read if you are not
+using that mixing scheme. However, I believe all the example files
+contain all possible parameters (except the ice branch ones).
+The input parameters are in groups, as follows:
 \begin{klist}
-   \kitem{\qquad 1} Time-stepping parameters.
+   \kitem{Header}
      \begin{klist}
-       \kitem{ntimes}    Number of timesteps to evolve the 3-D
+   \kitem{TITLE} A text string to put in the output files.
+   \kitem{MyAppCPP} The shorthand name for this application.
+   \kitem{VARNAME} The location of the \code{varinfo.dat} file
+     containing information about fields to read/write from/to NetCDF
+     files.
+     \end{klist}
+   \kitem{Grid-dimension parameters}
+     \begin{klist}
+       \kitem{Lm} Number of I-direction INTERIOR RHO-points.
+       \kitem{Mm} Number of J-direction INTERIOR RHO-points.
+       \kitem{N} Number of vertical levels.
+       \kitem{Nbed} Number of sediment bed layers.
+       \kitem{NAT} Number of active tracers (usually 2).
+       \kitem{NPT} Number of passive tracers.
+       \kitem{NCS} Number of cohesive (mud) sediment tracers.
+       \kitem{NNS} Number of non-cohesive (sand) sediment tracers.
+     \end{klist}
+   \kitem{Domain-docomposition parameters}
+     \begin{klist}
+       \kitem{NtileI} Number of I-direction partitions
+       \kitem{NtileJ} Number of J-direction partitions
+     \end{klist}
+   \kitem{Time-stepping parameters}
+     \begin{klist}
+       \kitem{NTIMES}    Number of timesteps to evolve the 3-D
        equations in the current run.  This is actually the total
      number, including any previous segments of the same run.  For
      instance, if you already did a three-month run and wish to
-     continue for another three months, set \code{ntimes} to the
-     number of steps needed for six months.  If you don't like this
-     and would prefer to have the behavior of the SPEM variable
-     \code{ntmes}, modify \code{main.F} so that:
-     \begin{verbatim}
-        do iic=ntstart,ntimes
-     \end{verbatim}
-     becomes
-     \begin{verbatim}
-        do iic=ntstart,ntimes-1+ntstart
-     \end{verbatim}
-       \kitem{dt}        Timestep in seconds for the 3-D equations.
-       \kitem{ndtfast}   Number of timesteps for the 2-D equations
+     continue for another three months, set \code{NTIMES} to the
+     number of steps needed for six months.
+       \kitem{DT}        Timestep in seconds for the 3-D equations.
+       \kitem{NDTFAST}   Number of timesteps for the 2-D equations
      to be executed each \code{dt}.
      \end{klist}
-   \kitem{\qquad 2}   Input/Output parameters.  SCRUM has several
-   possible output files.  The output files
-   include a restart file, a history file, an averages file, and a
-   station file.  The restart file often contains only two records with
-   the older record being overwritten during the next write.  The
-   history file can contain a subset of the restart fields, for
-   instance just the surface elevation and the surface temperature.
-   The averages file contains time-averages of the model fields, for
-   instance montly means, or yearly means, depending on \code{navg}.
-   The station file contains timeseries for specified points, possibly
-   quite frequently since each record is small.
+   \kitem{Model iteration loops parameters}
      \begin{klist}
-       \kitem{nrrec}     Record number of the restart file to read
-     as the initial conditions.
-       \kitem{nrreci}    Record number of the ice restart file to read
-     as the initial conditions (coupled ice model only).
-       \kitem{nrst}      Number of timesteps between writing of
+       \kitem{ERstr}
+       \kitem{ERend}
+       \kitem{Nouter}
+       \kitem{Ninner}
+     \end{klist}
+   \kitem{GST parameters}
+     \begin{klist}
+       \kitem{NEV} Number of eigenvalues
+       \kitem{NCV} Number of eigenvectors
+     \end{klist}
+   \kitem{Input/Output parameters}  ROMS has several
+   possible output files.  The output files can
+   include a restart file, a history file, an averages file, and a
+   station file, for instance.  The restart file often contains
+   only two records with the older record being overwritten during
+   the next write.  The history file can contain a subset of the
+   restart fields, for instance just the surface elevation and the
+   surface temperature.  The averages file contains time-averages
+   of the model fields, for instance montly means, or yearly means,
+   depending on \code{navg}.  The station file contains timeseries
+   for specified points, possibly quite frequently since each record
+   is small. For some, machinery is in place to write multiple
+   files, numbering them _0001, _0002, etc.
+     \begin{klist}
+       \kitem{NRREC}     Record number of the restart file to read
+     as the initial conditions. Set to -1 to read the latest record.
+       \kitem{LcycleRST} Logical, true to cycle between two records
+     of the restart file.
+       \kitem{NRST}      Number of timesteps between writing of
      restart fields.
-       \kitem{nwrt}      Number of timesteps between writing fields
-     into the history file.
-       \kitem{ntsavg}    Starting timestep for the accumulation of
+       \kitem{NSTA}      Number of timesteps between writing fields
+     into the stations file.
+       \kitem{NFLT}      Number of timesteps between writing fields
+     into the floats file.
+       \kitem{NINFO}     Number of timesteps between calling
+       \code{diag} to write some global information and check for
+       NaN values. 
+     \end{klist}
+   \kitem{History, average, diagnostic output parameters}
+     \begin{klist}
+       \kitem{LDEFOUT} True for creating new output files for
+       stations, history, floats, etc. If false, output is appended
+       to these files.
+       \kitem{NHIS}  Number of timesteps between writing history
+       records.
+       \kitem{NDEFHIS}  Number of timesteps between starting new history
+       files.
+       \kitem{NTSAVG}    Starting timestep for the accumulation of
      output time-averaged data.  For instance, you might want to average
      over the last day of a thirty-day run.
-       \kitem{navg}      Number of timesteps between writing
+       \kitem{NAVG}      Number of timesteps between writing
      time-averaged data into the averages file.
-       \kitem{nsta}      Number of timesteps between writing data into
-     stations file.
-       \kitem{ninfo}     Number of timesteps between printing a single
-     line of diagnostic information to the standard output.
-       \kitem{ldefhis}   Logical switch used to create the history
-     file.  If \code{.true.}, a new history file is created.  If
-     \code{.false.} and $\code{nlev} > 0$, data is appended to an
-     existing history file.
-       \kitem{lcycle}    Logical flag used to recycle time records in
-     the restart file. If \code{.true.}, only the latest two restart
-     time records are retained.  If \code{.false.}, all restart
-     fields are saved every \code{nrst} timesteps without recycling.
+       \kitem{NDEFAVG}      Number of timesteps between starting
+     new averages files.
+       \kitem{NTSDIA}    Starting timestep for the accumulation of
+     output diagnostics data.  For instance, you might want to write
+     diagnostics for the last day of a thirty-day run.
+       \kitem{NDIA}      Number of timesteps between writing
+     diagnostics data into the diagnostics file.
+       \kitem{NDEFDIA}      Number of timesteps between starting
+     new diagnostics files.
      \end{klist}
-   \kitem{\qquad 3}   Laplacian horizontal mixing of tracers.
+    \kitem{Tangent lienar and adjoint output parameters}
      \begin{klist}
-       \kitem{tnu2}     Constant mixing
+       \kitem{LcycleTLM} Logical, true to cycle between two records
+       \kitem{NTLM}      Number of timesteps between writing
+     tangent linear data.
+       \kitem{NDEFTLM}      Number of timesteps between starting
+     new tangent linear files.
+     of the restart file.
+       \kitem{LcycleADJ} Logical, true to cycle between two records
+     of the restart file.
+       \kitem{NADJ}      Number of timesteps between writing
+     adjoint data.
+       \kitem{NDEFADJ}      Number of timesteps between starting
+     new adjoint files.
+       \kitem{NSFF}
+       \kitem{NOBC}
+     \end{klist}
+    \kitem{Check-pointing GST restart parameters}
+     \begin{klist}
+       \kitem{LrstGST} GST restart switch
+       \kitem{MaxIterGST} Maximum number of iterations
+       \kitem{NGST} Check-pointing interval
+     \end{klist}
+    \kitem{Ritz GST parameter}
+     \begin{klist}
+       \kitem{Ritz\_tol} Relative accuracy of the Ritz values
+       computed in the GST analysis.
+     \end{klist}
+   \kitem{Horizontal mixing of tracers}
+     \begin{klist}
+       \kitem{TNU2}     Constant mixing
      coefficient for the horizontal Laplacian diffusion of each tracer.
-     A value is expected for each of the \code{NT} tracers.
-     \end{klist}
-   \kitem{\qquad 4}   Biharmonic horizontal mixing of tracers.
-     \begin{klist}
-       \kitem{tnu4}     Constant mixing
+     A value is expected for each of the \code{NAT+NPT} tracers.
+       \kitem{TNU4}     Constant mixing
      coefficient for the horizontal biharmonic diffusion of each tracer.
-     A value is expected for each of the \code{NT} tracers.
+     A value is expected for each of the \code{NAT+NPT} tracers.
      \end{klist}
-   \kitem{\qquad 5}   Isopycnal thicknesses.
+   \kitem{Horizontal viscosity coefficients}
      \begin{klist}
-       \kitem{Kdiff} Isopycnal mixing thickness diffusivity for
-     each tracer variable. A value is expected for each of the
-     \code{NT} tracers. These isopycnal thicknesses are used when the
-     Gent/McWilliams isopycnic mixing is activated (not currently
-     implimented).
-     \end{klist}
-   \kitem{\qquad 6}   Horizontal viscosity coefficients.
-     \begin{klist}
-       \kitem{uvnu2}    Constant mixing coefficient for the horizontal
+       \kitem{VISC2}    Constant mixing coefficient for the horizontal
      Laplacian viscosity.
-       \kitem{uvnu4}    Constant mixing coefficient for the horizontal
+       \kitem{VISC4}    Constant mixing coefficient for the horizontal
      biharmonic viscosity.
      \end{klist}
-   \kitem{\qquad 7}   Vertical mixing coefficients for tracers.
+   \kitem{Vertical mixing coefficients for tracers}
      \begin{klist}
-       \kitem{akt\_bak}  Background vertical mixing coefficient
-     for the tracers.
-     A value is expected for each of the \code{NT} tracers.
+       \kitem{AKT\_BAK}  Background vertical mixing coefficient
+     for the tracers (\code{NAT+NPT} values).
      \end{klist}
-   \kitem{\qquad 8}   Vertical mixing coefficient for momentum.
+   \kitem{Vertical mixing coefficient for momentum}
      \begin{klist}
-       \kitem{akv\_bak}  Background vertical mixing coefficient 
+       \kitem{AKV\_BAK}  Background vertical mixing coefficient 
      for momentum.
      \end{klist}
-   \kitem{\qquad 9}   Mellor-Yamada Level 2.5 parameters.
+   \kitem{Turbulent closure parameters}
      \begin{klist}
-       \kitem{akq\_bak}  Background vertical mixing coefficient
+       \kitem{AKK\_BAK}  Background vertical mixing coefficient
      for turbulent kinetic energy.
-       \kitem{q2nu2}    Constant mixing coefficient for the horizontal
+       \kitem{AKP\_BAK}  Background vertical mixing coefficient
+     for turbulent kinetic energy.
+       \kitem{TKENU2}    Constant mixing coefficient for the horizontal
      Laplacian diffusion of turbulent kinetic energy.
-       \kitem{q2nu4}    Constant mixing coefficient for the horizontal
+       \kitem{TKENU4}    Constant mixing coefficient for the horizontal
      biharmonic diffusion of turbulent kinetic energy.
      \end{klist}
-   \kitem{\qquad 10}   Bottom drag coefficients.
+   \kitem{Generic length-scale turbulence closure parameters}
      \begin{klist}
-       \kitem{rdrg}     Linear bottom drag coefficient.
-       \kitem{rdrg2}    Quadratic bottom drag coefficient.
-       \kitem{Zo}       Bottom roughness.
+       \kitem{GLS\_P}
+       \kitem{GLS\_M}
+       \kitem{GLS\_N}
+       \kitem{GLS\_Kmin}
+       \kitem{GLS\_Pmin}
+       \kitem{GLS\_CMU0}
+       \kitem{GLS\_C1}
+       \kitem{GLS\_C2}
+       \kitem{GLS\_C3M}
+       \kitem{GLS\_C3P}
+       \kitem{GLS\_SIGK}
+       \kitem{GLS\_SIGP}
      \end{klist}
-   \kitem{\qquad 11}  Various parameters.
+   \kitem{Contants used in surface TKE flux computation}
      \begin{klist}
-       \kitem{nmix\_en}  Number of timesteps between computations of
-     isopycnal slopes used in the rotated mixing tensor.
-       \kitem{adv\_ord}  Order of advection scheme when using
-     Smolarkiewicz advection.  A value of $\code{adv\_ord}=2$ is
-     recommended to suppress the diffusive nature of the ``upwind''
-     scheme.  A value of $\code{adv\_ord}=1$
-     will yield the standard ``upwind'' advection.
-       \kitem{levsfrc}  Deepest level to apply surface momentum
+       \kitem{CHARNOK\_ALPHA} Charnok surface roughness.
+       \kitem{ZOS\_HSIG\_ALPHA} Roughness from wave amplitude.
+       \kitem{SZ\_ALPHA} Roughness from wave dissipation.
+       \kitem{CRGBAN\_CW} Craig and Banner wave breaking.
+     \end{klist}
+   \kitem{Bottom drag coefficients}
+     \begin{klist}
+       \kitem{RDRG}     Linear bottom drag coefficient.
+       \kitem{RDRG2}    Quadratic bottom drag coefficient.
+       \kitem{Zob}       Bottom roughness.
+       \kitem{Zos}       Surface roughness (under ice shelves).
+     \end{klist}
+   \kitem{Height of atmospheric measurements for bulk flux
+   parameterizations}
+     \begin{klist}
+       \kitem{BLK\_ZQ} Height of air humidity values.
+       \kitem{BLK\_ZT} Height of air temperature values.
+       \kitem{BLK\_ZW} Height of wind values.
+     \end{klist}
+   \kitem{Wetting and drying parameter}
+     \begin{klist}
+       \kitem{DCRIT}  Minimum depth for dry cells.
+     \end{klist}
+   \kitem{Various parameters}
+     \begin{klist}
+       \kitem{WTYPE}  Water type.
+       \kitem{LEVSFRC}  Deepest level to apply surface momentum
      stresses as a body force.
             Used when the C-preprocessor option BODYFORCE is defined.
-       \kitem{levbfrc}  Shallowest level to apply bottom momemtum
+       \kitem{LEVBFRC}  Shallowest level to apply bottom momemtum
     stresses as a body force.
             Used when the C-preprocessor option BODYFORCE is defined.
      \end{klist}
-   \kitem{\qquad 12}  Vertical $s$-coordinates parameters.
+   \kitem{Vertical coordinate parameters}
      \begin{klist}
-       \kitem{theta\_s}  $s$-coordinate surface control parameter,
+       \kitem{Vtransform} Transformation equation, 1 for old style.
+       \kitem{Vstretching} Stretching function, 1 for old style.
+     \end{klist}
+   \kitem{Vertical $\sigma$-coordinates parameters}
+     \begin{klist}
+       \kitem{theta\_s}  $\sigma$-coordinate surface control parameter,
      [$0 < \code{theta\_s} < 20$].
-       \kitem{theta\_b}  $s$-coordinate bottom  control parameter,
+       \kitem{theta\_b}  $\sigma$-coordinate bottom  control parameter,
      [$0 < \code{theta\_b} < 1$].
        \kitem{Tcline}   Width of the surface or bottom boundary layer
      in which higher vertical resolution is required during stretching.
-
-       {\bf WARNING}: Users need to experiment with these parameters. We
-                     have found out that the model goes unstable with
-                     high values of \code{theta\_s}.  With steep and
-                     very tall topography, it is recommended that you
-                     use $\code{theta\_s} \leq 3.0$.
      \end{klist}
-   \kitem{\qquad 13}  Mean Density and time stamp.
+   \kitem{Mean Density and Brunt-V\"ais\"al\"a frequency}
      \begin{klist}
-       \kitem{rho0}     Mean density used in the Boussinesq
+       \kitem{RHO0}     Mean density used in the Boussinesq
      approximation.
-       \kitem{dstart}   Time stamp assigned to model initialization
-     (days).  Usually a Calendar linear coordinate, like modified
-     Julian day. For example:
-     \begin{quote}
-               $\code{dstart}=10200$   corresponds to   May 1, 1996
-     \end{quote}
-     It is called modified Julian day because an offset of 2440000
-     needs to be added.
-       \kitem{rnudg}    Time scale (days) of nudging towards
-     climatology at the interior and at the boundaries.
+       \kitem{BVF\_BAK} Background Brunt-V\"ais\"al\"a frequency.
      \end{klist}
-   \kitem{\qquad 14}  Nudging/relaxation time scales.
+   \kitem{Time parameters}
      \begin{klist}
-       \kitem{Znudg}    Time scale (days) of nudging towards
-     sea surface height climatology.
-       \kitem{M2nudg}    Time scale (days) of nudging towards
-     2-D momenum climatology.
-       \kitem{M3nudg}    Time scale (days) of nudging towards
-     3-D momenum climatology.
-       \kitem{Tnudg}    Time scale (days) of nudging towards
-     tracer climatology.
-     A value is expected for each of the \code{NT} tracers.
+       \kitem{DSTART}   Time stamp assigned to model initialization
+     (days).
+       \kitem{TIDE\_START}   Time of tidal origin relative to model
+       origin.
+       \kitem{TIME\_REF}  Reference time in the format yyyymmdd.dd.
      \end{klist}
-   \kitem{\qquad 15}  Linear equation of state parameters.
+  \kitem{Nudging time scales}
+     \begin{klist}
+       \kitem{TNUDG}    Time scale (days) of nudging towards
+     tracer climatology at the interior and at the boundaries.
+     A value is expected for each active tracer.
+       \kitem{ZNUDG}    Time scale (days) of nudging towards
+     free surface climatology at the interior and at the boundaries.
+       \kitem{M2NUDG}    Time scale (days) of nudging towards
+     2-D momenum climatology at the interior and at the boundaries.
+       \kitem{M3NUDG}    Time scale (days) of nudging towards
+     3-D momenum climatology at the interior and at the boundaries.
+     \end{klist}
+   \kitem{Open boundary factor}
+     \begin{klist}
+       \kitem{OBCFAC}   Ratio of inflow and outflow nudging time scales.
+     \end{klist}
+   \kitem{Linear equation of state parameters}
      \begin{klist}
        \kitem{R0}       Background density value used in
     the linear equation of state.
-       \kitem{T0}       Background potential temperature constant used
-    in \code{analytical.F}.
-       \kitem{S0}       Background salinity constant used
-    in \code{analytical.F}.
-       \kitem{Tcoef}    Thermal expansion coefficient in the linear
+       \kitem{T0}       Background potential temperature constant.
+       \kitem{S0}       Background salinity constant.
+       \kitem{TCOEF}    Thermal expansion coefficient in the linear
     equation of state.
-       \kitem{Scoef}    Saline contraction coefficient in the linear
+       \kitem{SCOEF}    Saline contraction coefficient in the linear
     equation of state.
      \end{klist}
-   \kitem{\qquad 16}  Slipperiness parameters.
+   \kitem{Slipperiness parameter}
      \begin{klist}
        \kitem{gamma2}   Slipperiness variable, either 1.0 (free
      slip) or $-1.0$ (no slip).
-       \kitem{wall1}    Logical switch for side 1 ($i=1$), \code{.true.}
-     if it is a wall, \code{.false.} if it is open.
-       \kitem{wall2}    Logical switch for side 2 ($j=1$), \code{.true.}
-     if it is a wall, \code{.false.} if it is open.
-       \kitem{wall3}    Logical switch for side 3 ($i=\code{L}$),
-     \code{.true.}
-     if it is a wall, \code{.false.} if it is open.
-       \kitem{wall4}    Logical switch for side 4 ($j=\code{M}$),
-     \code{.true.}
-     if it is a wall, \code{.false.} if it is open.
      \end{klist}
-   \kitem{\qquad 17}  Logical switches to activate the writing of fields
-  associated with the momentum equations into the NetCDF history file:
+   \kitem{Adjoint sensitivity time parameters}
      \begin{klist}
-       \kitem{wrtU}     Write out 3-D $u$-velocity component.
-       \kitem{wrtV}     Write out 3-D $v$-velocity component.
-       \kitem{wrtW}     Write out 3-D $w$-velocity component.
-       \kitem{wrtO}     Write out 3-D $\Omega$ vertical velocity.
-       \kitem{wrtUBAR}  Write out 2-D $u$-velocity component.
-       \kitem{wrtVBAR}  Write out 2-D $v$-velocity component.
-       \kitem{wrtZ}     Write out free-surface.
+       \kitem{DstrS} Starting day.
+       \kitem{DendS} Ending day.
      \end{klist}
-   \kitem{\qquad 18}  Logical switches to activate the writing of
-     fields associated with the tracer equations into the NetCDF history
-     file.  A value is expected for each of the \code{NT} tracers.
+   \kitem{Adjoint sensitivity vertical level parameters}
      \begin{klist}
-       \kitem{wrtT}     Write out tracer type variables: potential
+       \kitem{KstrS} Starting level.
+       \kitem{KendS} Ending level.
+     \end{klist}
+   \kitem{Adjoint sensitivity logical parameters}
+     \begin{klist}
+       \kitem{Lstate(isFsur)} Free surface.
+       \kitem{Lstate(isUbar)} 2D U-momentum.
+       \kitem{Lstate(isVbar)} 2D V-momentum.
+       \kitem{Lstate(isUvel)} 3D U-momentum.
+       \kitem{Lstate(isVvel)} 3D V-momentum.
+     \end{klist}
+   \kitem{Adjoint sensitivity logical parameters}
+     \begin{klist}
+       \kitem{Lstate(isTvar)} Tracers (NT values expected).
+     \end{klist}
+   \kitem{Stochastic optimals time scale}
+     \begin{klist}
+       \kitem{SO\_decay}  Stochastic optimals time decorrelation
+       scale (days) assumed for red noise processes.
+     \end{klist}
+   \kitem{Logicals for stochatic optimals}
+     \begin{klist}
+       \kitem{SOstate(isUstr)}  Surface U-stress.
+       \kitem{SOstate(isVstr)}  Surface V-stress.
+     \end{klist}
+   \kitem{Logical for tracer stochastic optimals}
+     \begin{klist}
+       \kitem{Lstate(isTsur)} Surface tracer flux (NT values expected).
+     \end{klist}
+   \kitem{Stochastic optimals surface standard deviations}
+     \begin{klist}
+       \kitem{SO\_sdev(isUstr)} Surface U-stress.
+       \kitem{SO\_sdev(isVstr)} Surface V-stress.
+       \kitem{SO\_sdev(isTsur)} Surface tracer flux (NT values
+       expected).
+     \end{klist}
+   \kitem{Logical switches to activate the writing of
+   history/averages fields}
+     \begin{klist}
+       \kitem{Hout(idUvel)}    3-D $u$-velocity component.
+       \kitem{Hout(idVvel)}    3-D $v$-velocity component.
+       \kitem{Hout(idWvel)}    3-D $w$-velocity component.
+       \kitem{Hout(idOvel)}    3-D $\Omega$ vertical velocity.
+       \kitem{Hout(idUbar)}  2-D $u$-velocity component.
+       \kitem{Hout(idVbar)}  2-D $v$-velocity component.
+       \kitem{Hout(idFsur)}     Free-surface.
+       \kitem{Hout(idBath)}     Time-dependent bathymetry.
+\vspace{2 mm}
+       \kitem{Hout(idTvar)}     Tracer type variables: potential
     temperature, salinity, etc.
-     \end{klist}
-   \kitem{\qquad 19}  Logical switches to activate the writing of
-   other fields into the NetCDF history file:
-     \begin{klist}
-       \kitem{wrtRHO}   Write out density anomaly.
-       \kitem{wrtAKV}   Write out vertical viscosity coefficient.
-       \kitem{wrtAKT}   Write out vertical diffusion coefficient for
+\vspace{2 mm}
+       \kitem{Hout(idUsms)}   Surface U-stress.
+       \kitem{Hout(idVsms)}   Surface V-stress.
+       \kitem{Hout(idUbms)}   Bottom U-stress.
+       \kitem{Hout(idVbms)}   Bottom V-stress.
+\vspace{2 mm}
+       \kitem{Hout(idUbrs)}   Bottom U-current stress.
+       \kitem{Hout(idVbrs)}   Bottom V-current stress.
+       \kitem{Hout(idUbws)}   Bottom U-wave stress.
+       \kitem{Hout(idVbws)}   Bottom V-wave stress.
+       \kitem{Hout(idUbcs)}   Bottom max wave-current U-stress.
+       \kitem{Hout(idVbcs)}   Bottom max wave-current V-stress.
+\vspace{2 mm}
+       \kitem{Hout(idUbot)}   Bed wave orbital U-velocity.
+       \kitem{Hout(idVbot)}   Bed wave orbital V-velocity.
+       \kitem{Hout(idUbur)}   Bottom max wave-current U-stress.
+       \kitem{Hout(idVbur)}   Bottom max wave-current V-stress.
+\vspace{2 mm}
+       \kitem{Hout(idW2xx)}  2D radiation stress, Sxx component.
+       \kitem{Hout(idW2xy)}  2D radiation stress, Sxy component.
+       \kitem{Hout(idW2yy)}  2D radiation stress, Syy component.
+       \kitem{Hout(idU2rs)}  2D V-radiation stress.
+       \kitem{Hout(idV2rs)}  2D V-radiation stress.
+       \kitem{Hout(idU2Sd)}  2D V-Stokes velocity.
+       \kitem{Hout(idV2Sd)}  2D V-Stokes velocity.
+\vspace{2 mm}
+       \kitem{Hout(idW3xx)}  3D radiation stress, Sxx component.
+       \kitem{Hout(idW3xy)}  3D radiation stress, Sxy component.
+       \kitem{Hout(idW3yy)}  3D radiation stress, Syy component.
+       \kitem{Hout(idW3zx)}  3D radiation stress, Szx component.
+       \kitem{Hout(idW3zy)}  3D radiation stress, Szy component.
+       \kitem{Hout(idU3rs)}  3D V-radiation stress.
+       \kitem{Hout(idV3rs)}  3D V-radiation stress.
+       \kitem{Hout(idU3Sd)}  3D V-Stokes velocity.
+       \kitem{Hout(idV3Sd)}  3D V-Stokes velocity.
+\vspace{2 mm}
+       \kitem{Hout(idWamp)}  Wave height.
+       \kitem{Hout(idWlen)}  Wave length.
+       \kitem{Hout(idWdir)}  Wave direction.
+\vspace{2 mm}
+\vspace{2 mm}
+       \kitem{wrtAKV}   Vertical viscosity coefficient.
+       \kitem{wrtAKT}   Vertical diffusion coefficient for
      temperature.
-       \kitem{wrtAKS}   Write out vertical diffusion coefficient for
+       \kitem{wrtAKS}   Vertical diffusion coefficient for
      salinity.
-       \kitem{wrtHBL}   Write out depth of the planetary boundary layer.
+       \kitem{wrtHBL}   Depth of the planetary boundary layer.
      \end{klist}
    \kitem{\qquad 20}  Number and Levels to output:
      \begin{klist}
