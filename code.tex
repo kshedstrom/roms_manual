@@ -31,7 +31,7 @@ The directories shown here are:
   subset of the Northeast Pacific grid, but at four times the
   resolution.
   \kitem{Circle} This is a circular domain wave propagation problem
-  with an analytic solution used as a test problem.
+  with an analytic solution used as a test problem (\cite{Lamb32}).
   \kitem{NEP} This is the Northeast Pacific domain covering the
   waters off the west coast of the US, from California to the Bering
   Sea. It is a rectangular domain at about 11 km resolution when
@@ -53,105 +53,110 @@ The directories shown here are:
   \kitem{makefile} This is the standard ROMS makefile as described
   in \S\ref{Gmake}.
   \kitem{Master} The ROMS main program is here, in various forms for
-  the forward model, coupled models and others.
+  the forward model, coupled models and others. See \S\ref{Master}.
 
 \begin{figure}[t]
 \thinlines
 \begin{center}
 \setlength{\unitlength}{3947sp}%
 %
-\begin{picture}(4605,5286)(1486,-7276)
-\put(1501,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Apps/}%
+\begin{picture}(5505,5286)(1486,-7276)
+\put(6976,-5461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Sediment/}%
 }}}}
-\put(6076,-3061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Bin/}%
+\put(3376,-3061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Circle/}%
 }}}}
-\put(6076,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Drivers/}%
+\put(3376,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}CGOA/}%
 }}}}
-\put(6076,-3661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}External/}%
+\put(3376,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Bering\_10k/}%
 }}}}
-\put(6076,-3961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Functionals/}%
+\put(3376,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Bering/}%
 }}}}
-\put(6076,-4261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Include/}%
+\put(4876,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Adjoint/}%
 }}}}
-\put(6076,-4561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}License\_ROMS.txt}%
+\put(4876,-3061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Bin/}%
 }}}}
-\put(6076,-4861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Modules/}%
+\put(4876,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Drivers/}%
 }}}}
-\put(6076,-5161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Nonlinear/}%
+\put(4876,-3661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}External/}%
 }}}}
-\put(6076,-5461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Obsolete/}%
+\put(4876,-3961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Functionals/}%
 }}}}
-\put(6076,-5761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Programs/}%
+\put(4876,-4261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Include/}%
 }}}}
-\put(6076,-6061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Representer/}%
+\put(4876,-4561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}License\_ROMS.txt}%
 }}}}
-\put(6076,-6361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}SeaIce/}%
+\put(4876,-4861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Modules/}%
 }}}}
-\put(6076,-6661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Tangent/}%
+\put(4876,-5161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Nonlinear/}%
 }}}}
-\put(6076,-6961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Utility/}%
+\put(4876,-5461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Obsolete/}%
 }}}}
-\put(6076,-7261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Version}%
+\put(4876,-5761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Programs/}%
 }}}}
-\put(3676,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}NEP}%
+\put(4876,-6061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Representer/}%
 }}}}
-\put(3676,-3061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Circle}%
+\put(4876,-6361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}SeaIce/}%
 }}}}
-\put(3676,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}CGOA}%
+\put(4876,-6661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Tangent/}%
 }}}}
-\put(3676,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Bering\_10k}%
+\put(4876,-6961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Utility/}%
 }}}}
-\put(3676,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Bering}%
+\put(4876,-7261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Version}%
 }}}}
 \thinlines
-{\color[rgb]{0,0,0}\put(3001,-2386){\line( 1, 0){600}}
-}%
-{\color[rgb]{0,0,0}\put(3001,-2686){\line( 1, 0){600}}
-}%
-{\color[rgb]{0,0,0}\put(3001,-2086){\line( 0,-1){1200}}
-\put(3001,-3286){\line( 1, 0){600}}
-}%
-{\color[rgb]{0,0,0}\put(3001,-2986){\line( 1, 0){600}}
-}%
-{\color[rgb]{0,0,0}\put(3001,-2086){\line( 1, 0){600}}
-}%
-{\color[rgb]{0,0,0}\put(2251,-4486){\line( 1, 0){3150}}
+{\color[rgb]{0,0,0}\put(2251,-4486){\line( 1, 0){2550}}
 }%
 {\color[rgb]{0,0,0}\put(2101,-2386){\line( 1, 0){900}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-3886){\line( 0, 1){1200}}
-\put(5401,-2686){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-4561){\line( 0, 1){1875}}
+\put(4501,-2686){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-2986){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-2986){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-3286){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-3286){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-3586){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-3586){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-3886){\line( 0,-1){3300}}
-\put(5401,-7186){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-4486){\line( 0,-1){2700}}
+\put(4501,-7186){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-3886){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-3886){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-4186){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-4186){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-4486){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4801,-4486){\line( 0, 1){  0}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-4786){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-4786){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-5086){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-5086){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-5386){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-5386){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-5686){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-5686){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-5986){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-5986){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-6286){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-6286){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-6586){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-6586){\line( 1, 0){300}}
 }%
-{\color[rgb]{0,0,0}\put(5401,-6886){\line( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(4501,-6886){\line( 1, 0){300}}
+}%
+{\color[rgb]{0,0,0}\put(3001,-2386){\line( 1, 0){300}}
+}%
+{\color[rgb]{0,0,0}\put(3001,-2686){\line( 1, 0){300}}
+}%
+{\color[rgb]{0,0,0}\put(3001,-2086){\line( 0,-1){1200}}
+\put(3001,-3286){\line( 1, 0){300}}
+}%
+{\color[rgb]{0,0,0}\put(3001,-2986){\line( 1, 0){300}}
+}%
+{\color[rgb]{0,0,0}\put(3001,-2086){\line( 1, 0){300}}
+}%
+{\color[rgb]{0,0,0}\put(5926,-5086){\line( 1, 0){975}}
+\put(6901,-5086){\line(-1, 0){300}}
+\put(6601,-5086){\line( 0,-1){300}}
+\put(6601,-5386){\line( 1, 0){300}}
 }%
 \put(1501,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Atmosphere/}%
 }}}}
@@ -171,7 +176,11 @@ The directories shown here are:
 }}}}
 \put(1501,-5161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Waves/}%
 }}}}
-\put(6076,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Adjoint/}%
+\put(1501,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Apps/}%
+}}}}
+\put(6976,-5161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Biology/}%
+}}}}
+\put(3376,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}NEP/}%
 }}}}
 \end{picture}%
 \end{center}
@@ -191,22 +200,30 @@ The directories shown here are:
   \kitem{Drivers} The main program includes one of these files,
   depending on how you are running the model. The forward model is in
   \code{nl\_ocean.h}.
-  \kitem{External} ROMS reads an ASCII file on startup. These are
+  \kitem{External} ROMS reads an ASCII file on startup. Here are
   examples for various applications, also examples of the optional
   files for extra components such as a sediment model.
   \kitem{Functionals} The file \code{analytical.F} can include one
   or more code bits for the analytic specification of for instance the
-  initial conditions. These are examples for the supported model test
+  initial conditions. Here are examples for the supported model test
   problems.
   \kitem{Include} Each application has a header file with C
-  preprocessor options for that application. The full list of
-  available options is in \code{cppdefs.h}.
+  preprocessor options for that application. For instance, the
+  \code{UPWELLING} case has the include file \code{upwelling.h}
+  containing C preprocessor options for its periodic channel domain.
+  The full list of available options is in \code{cppdefs.h}.
   \kitem{License\_ROMS.txt} The open source license under which ROMS
   is copyrighted.
   \kitem{Modules} The ROMS data structures are now in Fortran 90
   module files, located here.
   \kitem{Nonlinear} The routines used by the nonlinear forward model
-  are here, implimenting the physics described in \S\ref{Num}.
+  are here, implementing the physics described in \S\ref{Num}.
+  \begin{klist}
+    \kitem{Biology} The files for the ecosystem parts of the forward
+    model are here.
+    \kitem{Sediment} The files for the sediment parts of the forward
+    model are here.
+  \end{klist}
   \kitem{Obsolete} Long unused versions of the boundary conditions
   are stored here.
   \kitem{Programs} Not all computer architectures or compilers are the same.
@@ -229,14 +246,15 @@ The directories shown here are:
 \end{klist}
 
 \subsection{Main subroutines}
+\label{Master}
 
 \subsubsection{master.F}
 The main program is in \code{master.F}. It is simply a shell, including
 one of \code{mct\_coupler.h}, \code{esmf\_coupler.h} or \code{ocean.h}. In
 our case, \code{ocean.h} contains the actual main program, which
-initializes MPI (if needed), calls \code{ROMS\_initialize}, then
+initializes MPI (if needed), calls \code{ROMS\_initialize},
 calls \code{ROMS\_run} with arguments for how many steps to take,
-then \code{ROMS\_finalize}, then finally wraps up the MPI.
+then \code{ROMS\_finalize}, and finally wraps up the MPI.
 See Fig.\ \ref{focean_h}.
 
 \begin{figure}[t]
@@ -268,8 +286,9 @@ See Fig.\ \ref{focean_h}.
 }}}}
 \put(3676,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{get\_data}}%
 }}}}
-\put(6676,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}if (trouble)
-\code{wrt\_rst}}%
+\put(6676,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0.82,0}if (trouble)}%
+}}}}
+\put(7651,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{wrt\_rst}}%
 }}}}
 \put(6676,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{wclock\_off}}%
 }}}}
@@ -334,7 +353,7 @@ this is, then calls the following ROMS routines:
   arrays in ROMS based on the grid sizes read in by \code{inp\_par}.
   \kitem{initial} reads in the initial conditions from a NetCDF file or
   computes them analytically. Likewise for the grid, plus it sets up the
-  vertical grid spacing to be used, and many other details.
+  vertical grid spacing to be used and many other details.
   \kitem{get\_data} reads in the first record of time-varying forcing
   fields, boundary conditions, etc.
 \end{klist}
@@ -345,8 +364,9 @@ iteration in its argument list. The loop consists of calls to:
 \begin{klist}
   \kitem{get\_data} reads in the second and subsequent records of
   time-varying forcing fields, boundary conditions, etc.
-  \kitem{main2d} or \code{main3d} solves the full
-  equations described in \S\ref{Num}.
+  \kitem{main3d} or \code{main2d} solves the full
+  equations described in \S\ref{Num} (\code{main3d}) or the depth-integrated
+  version only (\code{main2d}).
 \end{klist}
 
 \subsubsection{ROMS\_finalize}
@@ -509,7 +529,7 @@ described as follows:
   \kitem{radiation\_stress} computes the radiation stresses due to
   wave-current interactions (\cite{Mellor_2003} and \cite{Mellor_2005}).
   \kitem{cawdir\_eval} computes a 24-hour mean albedo at the marine
-  surface layer. Not in the trunk code.
+  surface. Not in the trunk code.
   \kitem{ccsm\_flux} computes the surface fluxes from the atmosphere
   based on a marine boundary layer. This version comes from CCSM and is
   reputed to do better outside of the tropics. Not in the trunk code.
@@ -566,10 +586,10 @@ described as follows:
   \kitem{step3d\_uv} completes the timestep for the three-dimensional
   velocities.
   \kitem{omega} computes the $\Omega$ vertical velocity.
-  \kitem{my25\_corstep} perfoms the corrector step for turbulent kinetic
+  \kitem{my25\_corstep} performs the corrector step for turbulent kinetic
   energy and length scale prognostic variables, \code{tke} and \code{gls}
   (\cite{Mellor82} and \cite{Galperin88}).
-  \kitem{my25\_corstep} perfoms the corrector step for turbulent kinetic
+  \kitem{my25\_corstep} performs the corrector step for turbulent kinetic
   energy and length scale prognostic variables, \code{tke} and \code{gls}
   (\cite{Umlauf2001}).
   \kitem{biology} computes the changes to the biological tracers due to
@@ -588,16 +608,35 @@ described as follows:
    \begin{klist}
      \kitem{checkdefs}Reports on which C preprocessor variables
    have been \code{\#define}d and checks their consistency.
+     \kitem{ana\_grid} Computes the grid internally.
+     \kitem{ana\_mask} Computes the land mask internally.
      \kitem{get\_grid} Reads in the curvilinear coordinate arrays as
-   well as $f$ and $h$ from a grid netCDF file.
-     \kitem{get\_state} Reads initial fields from disk---either
-   restart or initializing from a climatology.
+   well as $f$ and $h$ from a grid NetCDF file.
+     \kitem{set\_scoord}  Sets and initializes relevant variables
+   associated with the vertical transformation to nondimensional
+   $\sigma$-coordinate described in Appendix~\ref{Scoord}.
+     \kitem{set\_weights} Sets the barotropic time-step average
+   weighting function.
      \kitem{metrics}   Computes the metric term combinations which do
    not depend on the surface elevation and therefore remain constant in
    time.
-     \kitem{set\_scoord}  Sets and initializes relevant variables
-   associated with the vertical transformation to nondimensional
-   $s$-coordinate described in Appendix~\ref{Scoord}.
+     \kitem{ana\_hmixcoef} Computes the horizontal mixing coefficients.
+     \kitem{ana\_nudgcoef} Computes the nudging time scales.
+     \kitem{ana\_initial} Analytic initial conditions for momentum and
+     active tracers.
+     \kitem{ana\_passive} Analytic initial conditions for passive tracers.
+     \kitem{ana\_biology} Analytic initial conditions for ecosystem tracers.
+     \kitem{ana\_sediment} Analytic initial conditions for sediment tracers.
+     \kitem{ana\_ice} Analytic initial conditions for ice variables.
+     \kitem{get\_state} Reads initial fields from disk---either
+   restart or from some other source which has been converted to the
+   appropriate format of NetCDF file.
+     \kitem{set\_depth}  Compute time-evolving depths.
+     \kitem{set\_massflux}  Compute initial horizontal mass fluxes.
+     \kitem{get\_idata} Read in time-invariant forcing data.
+     \kitem{stiffness} Compute grid stiffness.
+     \kitem{grid\_coords}  Convert initial float and station locations to
+     fractional grid coordinates.
    \end{klist}
 
 \subsection{Modules}
@@ -622,9 +661,9 @@ variables. The complete list is:
   \kitem{mod\_boundary.F} This contains the storage for the open boundary
     conditions. If they aren't provided analytically, this will also provide
     the storage for fields read from a file that need to be time-interpolated.
-  \kitem{mod\_clima.F}  If one of \code{CLIMATOLOGY}, \code{AD\_SENSITIVITY},
-    \code{OPT\_OBSERVATIONS}, or \code{SO\_SEMI} is defined, this will
-    provide the storage for the climatological fields.
+  \kitem{mod\_clima.F}  If one of \code{CLIMATOLOGY}
+    or several other options is defined, this will
+    provide the storage for the climatology fields.
   \kitem{mod\_coupler.F}  If either \code{MODEL\_COUPLING}  or
     \code{ESMF\_LIB} is defined, this will set up the requisite fields and
     data structures for the coupling.
@@ -649,7 +688,6 @@ variables. The complete list is:
     is defined, this will set up the variational data assimilation
     variables.
   \kitem{mod\_grid.F} This provides the storage for the model grid fields. 
-    provide the storage for the running means of the fields.
   \kitem{mod\_ice.F} If \code{ICE\_MODEL} is defined, this will provide
     storage for the ice fields.
   \kitem{mod\_iounits.F} This contains a number of variables used by the
@@ -657,15 +695,16 @@ variables. The complete list is:
   \kitem{mod\_kinds.F}  This contains the integers associated with the
     various integer and real Fortran types. If you find more systems
     supporting 128-bit reals, let us know.
-  \kitem{mod\_mixing.F} This contains the arrays for the horizontal and
-    vertical mixing parameterizations, including those used by the various
-    optional schemes.
+  \kitem{mod\_mixing.F} This contains the arrays for the various
+    optional horizontal and vertical mixing parameterizations.
   \kitem{mod\_ncparam.F} This contains all sorts of parameters relating to
     the NetCDF I/O files, including that read from the \code{varinfo.dat}
-    file. The parameter \code{MT} is set here, giving the maximum number of
-    variables that can be read.
+    file. The parameters \code{MV} and \code{NV} are set here, giving
+    the maximum number of variables that can be read [this is a change
+    from the trunk code].
   \kitem{mod\_nesting.F} If \code{NESTING} is defined, this module defines
-    generic structures used for nesting, composed, and mosaic grids.
+    generic structures used for nesting, composed, and mosaic grids. Not
+    yet functional.
   \kitem{mod\_netcdf.F} This brings in \code{netcdf.mod} and defines a few
     type variables based upon it.
   \kitem{mod\_obs.F} If either \code{ASSIMILATION} or \code{NUDGING}
@@ -694,10 +733,10 @@ variables. The complete list is:
     defined, this module defines the work space for the Generalized
     Stability Theory (GST) Analysis package (ARPACK).
   \kitem{mod\_strings.F} This contains strings such as a title for the run,
-    the list of '''cpp''' options defined, and the names of the sections of
+    the list of \code{cpp} options defined, and the names of the sections of
     code being profiled.
-  \kitem{mod\_tides.F}  If \code{AVERAGES} is defined, this will
-    provide the storage for the running means of the fields.
+  \kitem{mod\_tides.F}  If \code{SSH\_TIDES} and/or \code{UV\_TIDES} is
+    defined, this will provide the storage for the tidal constituents.
 \end{klist}
 
 \subsection{Functionals}
@@ -730,18 +769,18 @@ files, especially for idealized problems.
      \kitem{ana\_ice} Computes analytic initial conditions for the sea ice.
      \kitem{ana\_initial}  Sets up analytic initial conditions for the ocean.
      \kitem{ana\_m2clima} Sets up an analytic climatology for the
-   two-dimentional momentum.
+   two-dimensional momentum.
      \kitem{ana\_m2obc} Computes open boundary conditions for the
-   two-dimentional momentum.
+   two-dimensional momentum.
      \kitem{ana\_m3clima} Sets up an analytic climatology for the
-   three-dimentional momentum.
+   three-dimensional momentum.
      \kitem{ana\_m3obc} Computes open boundary conditions for the
-   three-dimentional momentum.
+   three-dimensional momentum.
      \kitem{ana\_mask}  Sets up an analytic mask.
      \kitem{ana\_ncep}  Sets up analytic fields as if they came from NCEP.
      \kitem{ana\_nudgcoef}  Sets up spatially dependent nudging
    coefficients for nudging to a climatology.
-     \kitem{ana\_pair}  Computes analytic air pressure.
+     \kitem{ana\_pair}  Computes analytic sea-level air pressure.
      \kitem{ana\_passive}  Computes analytic initial conditions for
    passive tracers.
      \kitem{ana\_perturb}  Computes analytic perturbations to the
@@ -770,7 +809,7 @@ files, especially for idealized problems.
      \kitem{ana\_tair}  Computes analytic air temperature.
      \kitem{ana\_tclima}  Computes analytic tracer climatology fields.
      \kitem{ana\_tobc}  Computes analytic open boundary conditions for
-   tracers.
+   all tracers (active, passive, biology, and sediment).
      \kitem{ana\_vmix}  Computes analytic vertical mixing coefficients.
      \kitem{ana\_winds}  Computes analytic winds.
      \kitem{ana\_wwave}  Computes analytic wind-induced wave amplitude,
@@ -788,22 +827,22 @@ files, especially for idealized problems.
      \kitem{get\_srflux}  Reads shortwave radiation flux
      \kitem{wrt\_*} Writes to the ROMS NetCDF file of the appropriate type.
    \end{klist}
-   \begin{klist}
-     \kitem{trisolver}  Solves the PDE
-   $A \phi(k-1) + B \phi(k) + C \phi(k+1) = D$
-     for field $\phi$ using the tridiagonal solver, also known as
-  Thomas algorithm (Richtmeyer and Morton \cite{Richtmeyer}).
-   \end{klist}
-\kitem{Bottom boundary-layer model} The model has an optional bottom
-boundary layer based on Styles and Glenn \cite{Styles96}.
-   \begin{klist}
-     \kitem{sg\_bbl96}  Computes kinematic bottom momentum stress using
-   Styles and Glenn \cite{Styles96} bottom boundary layer formulation.
-     \kitem{sg\_ubab}   Computes maximum wave bottom velocity and
-   excursion from wind induced wave amplitude and period by
-   solving the linear wave dispersion relation for a given
-   wave number.
-   \end{klist}
+%   \begin{klist}
+%     \kitem{trisolver}  Solves the PDE
+%   $A \phi(k-1) + B \phi(k) + C \phi(k+1) = D$
+%     for field $\phi$ using the tridiagonal solver, also known as
+%  Thomas algorithm (Richtmeyer and Morton \cite{Richtmeyer}).
+%   \end{klist}
+%\kitem{Bottom boundary-layer model} The model has an optional bottom
+%boundary layer based on Styles and Glenn \cite{Styles96}.
+%   \begin{klist}
+%     \kitem{sg\_bbl96}  Computes kinematic bottom momentum stress using
+%   Styles and Glenn \cite{Styles96} bottom boundary layer formulation.
+%     \kitem{sg\_ubab}   Computes maximum wave bottom velocity and
+%   excursion from wind induced wave amplitude and period by
+%   solving the linear wave dispersion relation for a given
+%   wave number.
+%   \end{klist}
 \end{klist}
 
 \subsection{C preprocessor variables}
@@ -816,7 +855,7 @@ explicit \code{\#define} command or with a command line option to
 application-specific include file, except for some
 machine-dependent ones, which are defined in the \code{makefile}.
 These variables allow you to conditionally compile sections of the
-code. For instance, if \code{MASKING} is not defined then the masking
+code. For instance, if \code{MASKING} is not defined, the masking
 code will not be seen by the compiler, and the masking variables will
 not be declared. These \code{cpp} variables can be grouped into
 several categories:
@@ -825,7 +864,8 @@ several categories:
 The default horizontal advection is 3rd-order upstream bias for
 3D momentum and 4th-order centered for 2D momentum. The default
 vertical advection is 4th-order centered for 3D momentum. If this
-is the case, no flags for momentum advection need to be activated.
+is the case, no flags for momentum advection need to be activated except
+for \code{UV\_ADV}.
 
 The 3rd-order upstream split advection (\code{UV\_U3ADV\_SPLIT}) can be used
 to correct for the spurious mixing of the advection operator in
@@ -837,7 +877,7 @@ plus biharmonic viscosity to correct for spurious mixing.
   \begin{klist}
     \kitem{UV\_ADV}     Define to compute the momentum advection terms.
     \kitem{CURVGRID}    Define to compute the extra
-  non-linear terms which arise when using curvilinear coordinates.
+  non-linear advection terms which arise when using curvilinear coordinates.
     \kitem{UV\_COR}     Define to compute the Coriolis term.
     \kitem{UV\_U3ADV\_SPLIT} Define for 3rd-order upstream split
   momentum advection.
@@ -880,7 +920,8 @@ operator.
 advection.
     \kitem{TS\_C4HADVECTION} Define for 4rd-order centered horizontal
 advection.
-    \kitem{TS\_MPDATA} Define for recursive MPDATA 3D advection.
+    \kitem{TS\_MPDATA} Define for recursive MPDATA 3D advection
+    (\cite{Margolin_98}).
     \kitem{TS\_U3HADVECTION} Define for 3nd-order upstream horizontal advection.
     \kitem{TS\_A4VADVECTION} Define for 4nd-order Akima vertical advection.
     \kitem{TS\_C2VADVECTION} Define for 2nd-order centered vertical
@@ -898,7 +939,7 @@ advection.
   calculation in which the tracer fields do not change in time.
     \kitem{T\_PASSIVE}  Define for passive tracers.
     \kitem{SALINITY}      Define if salinity is used as one of the
-  tracers.
+  active tracers.
     \kitem{NONLIN\_EOS} Define to use the nonlinear
   equation of state.
     \kitem{QCORRECTION}  Define to use the net heat
@@ -926,8 +967,8 @@ step is done and in the monotonicity constraining algorithms.
   (\cite{SS2003}).
     \kitem{DJ\_GRADPS}  Define for weighted density Jacobian
   (\cite{Song98}).
-    \kitem{ATM\_PRESS}  Define to impose atmospheric pressure onto the sea
-  surface.
+    \kitem{ATM\_PRESS}  Define to impose atmospheric sea-level pressure
+  onto the sea surface.
   \end{klist}
   \kitem{atmospheric boundary layer}
    There are three ways to provide longwave radiation in the atmospheric
@@ -960,8 +1001,8 @@ step is done and in the monotonicity constraining algorithms.
   roughness (\cite{Oost_2002}).
     \kitem{DEEPWATER\_WAVES} Define to use deep water waves approximation.
     \kitem{ALBEDO} Define to use albedo equation for shortwave radiation.
-    \kitem{DIURNAL\_SRFLUX} Define to impose shortwave radiation local
-  diurnal cycle.
+    \kitem{DIURNAL\_SRFLUX} Define to impose the local diurnal cycle
+    onto the shortwave radiation.
   \end{klist}
   \kitem{general model configuration} \mbox{}
   \begin{klist}
@@ -970,7 +1011,7 @@ step is done and in the monotonicity constraining algorithms.
     \kitem{MASKING}   Define if there is land in the domain to be
    masked out.
     \kitem{BODYFORCE}   Define to apply the surface
-  stresses as a body force.
+  stress as a body force.
     \kitem{PROFILE}     Define for time profiling.
     \kitem{AVERAGES}    Define to write out time-averaged
   model fields.
@@ -1027,7 +1068,7 @@ step is done and in the monotonicity constraining algorithms.
   conditions.
     \kitem{ANA\_MASK}    Define for an analytic mask.
     \kitem{ANA\_PAIR}    Define for an analytic surface air pressure.
-    \kitem{ANA\_PASSIVE} Define for analytic initial condtions for
+    \kitem{ANA\_PASSIVE} Define for analytic initial conditions for
   inert tracers.
     \kitem{ANA\_PERTURB} Define for analytic perturbation of initial
   conditions.
@@ -1182,13 +1223,13 @@ step is done and in the monotonicity constraining algorithms.
       \end{klist}
   \end{klist}
  \kitem{ICE\_MODEL} Define to use ice component of the model (see
-       \S\ref{Iphys}.
+    \S\ref{Iphys}).
       \begin{klist}
         \kitem{ICE\_THERMO} Define for ice thermodynamics.
         \kitem{ICE\_MK} Define for Mellor-Kantha (\cite{Mellor89})
 	ice thermodynamics---this is the only choice.
 	\kitem{ice\_SMOOTH} Define to smooth some ice fields.
-	\kitem{ICE\_ALB\_EC92} Define for albedo computions from Ebert
+	\kitem{ICE\_ALB\_EC92} Define for albedo computations from Ebert
 	and Curry (\cite{Ebert93}).
 	\kitem{ice\_MOMENTUM} Define for momentum component of the ice.
 	\kitem{ice\_MOM\_BULK} Define for alternate ice-water stress
@@ -1205,11 +1246,11 @@ step is done and in the monotonicity constraining algorithms.
   \kitem{boundary conditions} \mbox{}
   \begin{klist}
      \kitem{EW\_PERIODIC}  Define for periodic boundaries in the
-   \code{i} direction.
+   $\xi$-direction.
      \kitem{SPONGE}      Define to use SSH climatology as 2D inflow
    data.
      \kitem{NS\_PERIODIC}  Define for periodic boundaries in the
-   \code{j} direction.
+   $\eta$-direction.
      \kitem{RADIATION\_2D}  Define for tangential phase speed in
      radiation conditions.
      \kitem{EASTERN\_WALL}  Define for closed boundaries to the east.
@@ -1262,7 +1303,7 @@ similar} \mbox{}
    enforcement.
   \end{klist}
   \kitem{tides} \mbox{}
-The tidal data is processed in terms of tidal components, classified by
+The tidal data is processed in terms of tidal constituents, classified by
 period. The tidal forcing is computed for the full horizontal grid.
 If requested, the tidal forcing is added to the processed open
 boundary data.
@@ -1356,7 +1397,8 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
   \end{klist}
   \kitem{sediment transport model} \mbox{}
   \begin{klist}
-    \kitem{SEDIMENT} Define to activate sediment transport model.
+    \kitem{SEDIMENT} Define to activate sediment transport model
+    (\cite{Warner_2008}).
     \kitem{BEDLOAD\_MPM} Define to activate Meyer-Peter-Mueller bed load.
     \kitem{BEDLOAD\_SOULSBY} Define to activate Soulsby wave/current
     bed load.
