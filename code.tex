@@ -860,7 +860,7 @@ code will not be seen by the compiler, and the masking variables will
 not be declared. These \code{cpp} variables can be grouped into
 several categories:
 \begin{klist}
-  \kitem{momentum terms}  \mbox{}
+  \kitem{Momentum terms}  \mbox{}
 The default horizontal advection is 3rd-order upstream bias for
 3D momentum and 4th-order centered for 2D momentum. The default
 vertical advection is 4th-order centered for 3D momentum. If this
@@ -898,7 +898,7 @@ plus biharmonic viscosity to correct for spurious mixing.
     \kitem{UV\_PSOURCE} Define for point sources/sinks.
     \kitem{Q\_PSOURCE}  Define for mass point sources/sinks.
   \end{klist}
-  \kitem{tracers} \mbox{}
+  \kitem{Tracers} \mbox{}
 The default horizontal and vertical advection is 4th-order centered.
 
 The 3rd-order upstream split advection (\code{TS\_U3ADV\_SPLIT}) can be used
@@ -950,7 +950,7 @@ advection.
   freshwater flux.
     \kitem{TS\_PSOURCE} Define for point sources/sinks.
   \end{klist}
-  \kitem{pressure gradient options} \mbox{}
+  \kitem{Pressure gradient options} \mbox{}
 If no option is selected, the pressure gradient term is computed using
 standard density Jacobian algorithm. Notice that there are two
 quartic pressure Jacobian options. They differ on how the WENO
@@ -970,7 +970,7 @@ step is done and in the monotonicity constraining algorithms.
     \kitem{ATM\_PRESS}  Define to impose atmospheric sea-level pressure
   onto the sea surface.
   \end{klist}
-  \kitem{atmospheric boundary layer}
+  \kitem{Atmospheric boundary layer}
    There are three ways to provide longwave radiation in the atmospheric
  boundary layer: (1) Compute the net longwave radiation internally
  using the Berliand (1952) equation (\code{LONGWAVE}) as function of
@@ -1004,7 +1004,7 @@ step is done and in the monotonicity constraining algorithms.
     \kitem{DIURNAL\_SRFLUX} Define to impose the local diurnal cycle
     onto the shortwave radiation.
   \end{klist}
-  \kitem{general model configuration} \mbox{}
+  \kitem{General model configuration} \mbox{}
   \begin{klist}
     \kitem{SOLVE3D}     Define to solve the 3-D primitive
   equations.
@@ -1046,7 +1046,7 @@ step is done and in the monotonicity constraining algorithms.
     \kitem{DEBUGGING}  Define to suppress timestamps for easier
     comparisons between files.
   \end{klist}
-  \kitem{analytic fields} \mbox{}
+  \kitem{Analytic fields} \mbox{}
   \begin{klist}
     \kitem{ANA\_BIOLOGY} Define for analytic biology initial conditions.
     \kitem{ANA\_BPFLUX}  Define for an analytic bottom passive tracer flux.
@@ -1101,7 +1101,7 @@ step is done and in the monotonicity constraining algorithms.
     \kitem{ANA\_WWAVE}   Define for an analytic wind induced wave
   field.
   \end{klist}
-  \kitem{horizontal mixing of momentum} \mbox{}
+  \kitem{Horizontal mixing of momentum} \mbox{}
   \begin{klist}
      \kitem{MIX\_GEO\_UV}  Define for viscosity along constant $z$
    (geopotential) surfaces.
@@ -1110,7 +1110,7 @@ step is done and in the monotonicity constraining algorithms.
      \kitem{VISC\_GRID}   Define for horizontally variable viscosity
      coefficient.
   \end{klist}
-  \kitem{horizontal mixing of tracers} \mbox{}
+  \kitem{Horizontal mixing of tracers} \mbox{}
   \begin{klist}
      \kitem{DIFF\_GRID}   Define for horizontally variable diffusion
      coefficient.
@@ -1123,7 +1123,7 @@ step is done and in the monotonicity constraining algorithms.
      \kitem{CLIMA\_TS\_MIX}  Define for diffusion of tracer perturbation
      $T-Tclm$
   \end{klist}
-  \kitem{vertical mixing} \mbox{}
+  \kitem{Vertical mixing} \mbox{}
   \begin{klist}
      \kitem{BVF\_MIXING}  Define to activate Brunt-V\"ais\"al\"a
    frequency mixing.
@@ -1181,7 +1181,7 @@ step is done and in the monotonicity constraining algorithms.
      \kitem{RI\_VERAVG}  Define for vertical Richardson number
    smoothing.
   \end{klist}
-  \kitem{bottom boundary layer} \mbox{}
+  \kitem{Bottom boundary layer} \mbox{}
   The Options \code{MB\_Z0BL} and \code{MB\_Z0RIP} should be activated concurrently.
     \begin{klist}
      \kitem{MB\_BBL}  Define to activate Meinte Blaas BBL closure.
@@ -1222,28 +1222,31 @@ step is done and in the monotonicity constraining algorithms.
         \kitem{SSW\_Z0RIP} Define for bedform roughness for ripples.
       \end{klist}
   \end{klist}
- \kitem{ICE\_MODEL} Define to use ice component of the model (see
+ \kitem{Sea ice} \mbox{}
+    \begin{klist}
+   \kitem{ICE\_MODEL} Define to use ice component of the model (see
     \S\ref{Iphys}).
       \begin{klist}
         \kitem{ICE\_THERMO} Define for ice thermodynamics.
         \kitem{ICE\_MK} Define for Mellor-Kantha (\cite{Mellor89})
 	ice thermodynamics---this is the only choice.
-	\kitem{ice\_SMOOTH} Define to smooth some ice fields.
+	\kitem{ICE\_SMOOTH} Define to smooth some ice fields.
 	\kitem{ICE\_ALB\_EC92} Define for albedo computations from Ebert
 	and Curry (\cite{Ebert93}).
-	\kitem{ice\_MOMENTUM} Define for momentum component of the ice.
-	\kitem{ice\_MOM\_BULK} Define for alternate ice-water stress
+	\kitem{ICE\_MOMENTUM} Define for momentum component of the ice.
+	\kitem{ICE\_MOM\_BULK} Define for alternate ice-water stress
 	computation.
-	\kitem{ice\_EVP} Define for elastic-viscous-plastic rheology
+	\kitem{ICE\_EVP} Define for elastic-viscous-plastic rheology
 	(\cite{Hunke97} and \cite{Hunke_2001}).
-	\kitem{ice\_ADVECT} Define for advection of ice tracers.
-	\kitem{ice\_SMOLAR} Define to use MPDATA for ice tracers (no
+	\kitem{ICE\_ADVECT} Define for advection of ice tracers.
+	\kitem{ICE\_SMOLAR} Define to use MPDATA for ice tracers (no
 	other option).
-	\kitem{ice\_UPWIND} Define for upwind advection (not available).
-	\kitem{ice\_BULK\_FLUXES} Define for ice part of bulk flux
+	\kitem{ICE\_UPWIND} Define for upwind advection (not available).
+	\kitem{ICE\_BULK\_FLUXES} Define for ice part of bulk flux
 	computation.
       \end{klist}
-  \kitem{boundary conditions} \mbox{}
+  \end{klist}
+  \kitem{Boundary conditions} \mbox{}
   \begin{klist}
      \kitem{EW\_PERIODIC}  Define for periodic boundaries in the
    $\xi$-direction.
@@ -1253,13 +1256,13 @@ step is done and in the monotonicity constraining algorithms.
    $\eta$-direction.
      \kitem{RADIATION\_2D}  Define for tangential phase speed in
      radiation conditions.
-     \kitem{EASTERN\_WALL}  Define for closed boundaries to the east.
-     \kitem{WESTERN\_WALL}  Define for closed boundaries to the west.
-     \kitem{SOUTHERN\_WALL}  Define for closed boundaries to the south.
-     \kitem{NORTHERN\_WALL}  Define for closed boundaries to the north.
+%     \kitem{EASTERN\_WALL}  Define for closed boundaries to the east.
+%     \kitem{WESTERN\_WALL}  Define for closed boundaries to the west.
+%     \kitem{SOUTHERN\_WALL}  Define for closed boundaries to the south.
+%     \kitem{NORTHERN\_WALL}  Define for closed boundaries to the north.
   \end{klist}
-  \kitem{detailed eastern open boundary conditions---other sides have
-similar} \mbox{}
+  \kitem{Detailed eastern open boundary conditions} Other sides have
+similar. If none of these are defined, it is assumed to be a closed wall.
   \begin{klist}
      \kitem{EAST\_FSCHAPMAN}  Define for a Chapman
    condition on the free surface.
@@ -1302,7 +1305,7 @@ similar} \mbox{}
      \kitem{EAST\_VOLCONS}  Define for Eastern edge mass conservation
    enforcement.
   \end{klist}
-  \kitem{tides} \mbox{}
+  \kitem{Tides} \mbox{}
 The tidal data is processed in terms of tidal constituents, classified by
 period. The tidal forcing is computed for the full horizontal grid.
 If requested, the tidal forcing is added to the processed open
@@ -1327,7 +1330,7 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
      \kitem{TIDES\_ASTRO} Define to add contributions from the
      long-period tides as done by Foreman.
   \end{klist}
-  \kitem{climatology} \mbox{}
+  \kitem{Climatology} \mbox{}
   \begin{klist}
      \kitem{M2CLIMATOLOGY} Define for processing the 2-D momentum
    climatology arrays.
@@ -1346,7 +1349,7 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
      \kitem{ZCLM\_NUDGING}     Define for nudging to sea surface height
    climatology.
   \end{klist}
-  \kitem{ecosystem models} \mbox{}
+  \kitem{Ecosystem models} \mbox{}
   \begin{klist}
     \kitem{BIO\_FENNEL} Define for Fennel (\cite{Fennel_2006})
     nitrogen-based model.
@@ -1395,7 +1398,7 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
        algorithm.
     \end{klist}
   \end{klist}
-  \kitem{sediment transport model} \mbox{}
+  \kitem{Sediment transport model} \mbox{}
   \begin{klist}
     \kitem{SEDIMENT} Define to activate sediment transport model
     (\cite{Warner_2008}).
@@ -1409,7 +1412,7 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
     \kitem{SED\_MORPH} Define to allow bottom model elevation to evolve.
     \kitem{SUSPLOAD} Define to activate suspended load transport.
   \end{klist}
-  \kitem{nearshore options} \mbox{}
+  \kitem{Nearshore options} \mbox{}
   \begin{klist}
     \kitem{WET\_DRY} Define to allow wetting and drying of cells.
     \kitem{NEARSHORE\_MELLOR} Define for radiation stress terms from
@@ -1437,7 +1440,7 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
 \label{Parms}
 The following is a list of the important parameters in the model. These
 are in \code{mod\_param.F} and many of them are read from the standard
-input file.
+input file as described in \S\ref{ASCII_in}.
 \begin{klist}
   \kitem{Lm} Number of interior grid points in the $\xi$-direction.
   \kitem{Mm} Number of interior grid points in the $\eta$-direction.
@@ -1449,13 +1452,447 @@ input file.
   \kitem{NST} Number of sediment tracers.
   \kitem{NPT} Number of passive tracers.
   \kitem{NT} Total number of tracer fields. NT = NAT+NBT+NST+NPT
-  \kitem{Nfloats} Number of Lagrangian floats to follow.
+  \kitem{Nfloats} Number of Lagrangian floats to track.
   \kitem{Nstation} Number of stations for station output.
   \kitem{MTC} Maximum number of tidal constituents.
   \kitem{NtileI} Number of tiles in the $\xi$-direction.
   \kitem{NtileJ} Number of tiles in the $\eta$-direction.
 \end{klist}
 
-%\subsection{Parallel domain decomposition}
-%\label{Tiles}
+\subsection{Domain decomposition}
+\label{Tiles}
 
+ROMS supports serial, OpenMP, and MPI computations, with the user
+choosing between them at compile time. The serial code can also take
+advantage of multiple small
+tiles which can be sized to fit in cache. All are accomplished
+through domain decomposition in the horizontal. All of the
+horizontal operations are explicit with a relatively small
+footprint, so the tiling is a logical choice. Some goals in the
+parallel design of ROMS were:
+\begin{itemize}
+  \item Minimize code changes.
+  \item Don't hard-code the number of processes.
+  \item MPI and OpenMP share the same basic structure.
+  \item Don't break the serial optimizations.
+  \item Same result as serial code for any number of processes.
+  \item Portability---able to run on any (Unix) system.
+\end{itemize}
+First, some \code{cpp} options. If we're compiling for \code{MPI},
+the option \code{-DMPI} gets added to the argument list for
+\code{cpp}. Then, in \code{globaldefs.h}, we have:
+\begin{verbatim}
+#if defined MPI
+# define DISTRIBUTE
+#endif
+\end{verbatim}
+The rest of the code uses \code{DISTRIBUTE} to identify distributed
+memory jobs. The OpenMP case is more straightforward, with
+\code{-D\_OPENMP} getting passed to \code{cpp} and \code{\_OPENMP}
+being the tag to check within ROMS.
+
+The whole horizontal ROMS grid is shown in Fig.\ \ref{fwgr}. The
+computations are done over the cells inside the darker line;
+the cells are numbered 1 to \code{Lm} in the $xi$-direction and
+1 to \code{Mm} in the $\eta$-direction. Those looking ahead to
+running in parallel would be wise to include factors of two in
+their choice of \code{Lm} and \code{Mm}. ROMS will run in
+parallel with any values of \code{Lm} and \code{Mm}, but the computations
+might not be load-balanced.
+
+\begin{figure}[tp]
+\setlength{\unitlength}{6mm}
+  \begin{picture}(25,27)(-3.0,-7)
+\thicklines
+  \put(3.975,4){\line(0,1){12}}
+  \put(4.025,4){\line(0,1){12}}
+  \put(21.975,4){\line(0,1){12}}
+  \put(22.025,4){\line(0,1){12}}
+  \put(4,3.975){\line(1,0){18}}
+  \put(4,4.025){\line(1,0){18}}
+  \put(4,15.975){\line(1,0){18}}
+  \put(4,16.025){\line(1,0){18}}
+\thinlines
+  \multiput(7,4)(3,0){5}{\line(0,1){12}}
+  \multiput(4,7)(0,3){3}{\line(1,0){18}}
+\thicklines
+  \put(16.3,-2.6){$\times$}
+  \put(16.4,-3.5){\framebox(.2,.2){}}
+  \put(16.5,-4.4){\circle{.3}}
+%  \put(16.5,-5.4){\circle*{.3}}
+  \put(16.9,-2.6){-- $u$ points}
+  \put(16.9,-3.6){-- $v$ points}
+  \put(16.9,-4.6){-- $\rho$ points}
+%  \put(16.9,-5.6){-- $\psi$ points}
+%  \multiput(4,4)(3,0){7}{\circle*{.3}}
+%  \multiput(4,7)(3,0){7}{\circle*{.3}}
+%  \multiput(4,10)(3,0){7}{\circle*{.3}}
+%  \multiput(4,13)(3,0){7}{\circle*{.3}}
+%  \multiput(4,16)(3,0){7}{\circle*{.3}}
+  \multiput(2.5,2.5)(3,0){8}{\circle{.3}}
+  \multiput(2.5,5.5)(3,0){8}{\circle{.3}}
+  \multiput(2.5,8.5)(3,0){8}{\circle{.3}}
+  \multiput(2.5,11.5)(3,0){8}{\circle{.3}}
+  \multiput(2.5,14.5)(3,0){8}{\circle{.3}}
+  \multiput(2.5,17.5)(3,0){8}{\circle{.3}}
+  \multiput(2.4,3.9)(3,0){8}{\framebox(.2,.2){}}
+  \multiput(2.4,6.9)(3,0){8}{\framebox(.2,.2){}}
+  \multiput(2.4,9.9)(3,0){8}{\framebox(.2,.2){}}
+  \multiput(2.4,12.9)(3,0){8}{\framebox(.2,.2){}}
+  \multiput(2.4,15.9)(3,0){8}{\framebox(.2,.2){}}
+  \multiput(3.76,2.4)(3,0){7}{$\times$}
+  \multiput(3.76,5.4)(3,0){7}{$\times$}
+  \multiput(3.76,8.4)(3,0){7}{$\times$}
+  \multiput(3.76,11.4)(3,0){7}{$\times$}
+  \multiput(3.76,14.4)(3,0){7}{$\times$}
+  \multiput(3.76,17.4)(3,0){7}{$\times$}
+  \put(-1,-1){\vector(1,0){10}}
+  \put(-1,-1){\vector(0,1){10}}
+  \put(7,-2){$\xi$}
+  \put(-2,7){$\eta$}
+  \put(1.5,1.2){$i=0$}
+  \put(.3,2.4){$j=0$}
+  \put(1.2,3.85){1}
+  \put(1.2,5.35){1}
+  \put(1.2,6.85){2}
+  \put(1.2,8.35){2}
+  \put(1.2,10.6){$\vdots$}
+  \put(0.8,12.85){\code{Mm}}
+  \put(0.8,14.35){\code{Mm}}
+  \put(1.2,15.85){\code{M}}
+  \put(1.2,17.35){\code{M}}
+  \put(3.85,1.2){1}
+  \put(5.35,1.2){1}
+  \put(6.85,1.2){2}
+  \put(8.35,1.2){2}
+  \put(9.85,1.2){3}
+  \put(11.35,1.2){3}
+  \put(15.1,1.2){$\cdots$}
+  \put(18.85,1.2){\code{Lm}}
+  \put(20.35,1.2){\code{Lm}}
+  \put(21.85,1.2){\code{L}}
+  \put(23.35,1.2){\code{L}}
+  \end{picture}
+  \caption{The whole grid. Note that there are \code{Lm} by \code{Mm}
+  interior computational points. The points on the thick outer line and
+  those outside it are provided by the boundary conditions.}
+\label{fwgr}
+\end{figure}
+
+\subsubsection{ROMS internal numbers}
+
+A domain with tiles is shown in Fig.\ \ref{ftile2}. The overlap
+areas are known as ghost points or halo points. Each tile is an
+MPI process, an OpenMP thread, or a discrete unit of
+computation in a serial run. The tile contains enough
+information to time-step all the interior points, so the number
+of ghost points is dictated by the footprint of the algorithm
+using the largest number of neighbor points. In ROMS, the halo area
+would be two grids points wide unless the MPDATA advection
+scheme is used, in which case it needs three. The variable
+\code{GHOST\_POINTS} is set accordingly:
+\begin{verbatim}
+    #if defined TS_MPDATA || defined UV_VIS4
+    # define GHOST_POINTS 3
+    # if defined DISTRIBUTE || defined EW_PERIODIC || defined NS_PERIODIC
+    #   define THREE_GHOST
+    # endif
+    #else
+    # define GHOST_POINTS 2
+    #endif
+\end{verbatim}
+
+The number of tiles is set in the input file as \code{NtileI}
+and \code{NtileJ}. For an MPI job, the product of the two must
+equal the number of MPI processes. For an OpenMP job, the
+number of threads must be a multiple of the number of tiles.
+For instance, for \code{NtileI}$=4$ and \code{NtileJ}$=6$, you
+must have 24 MPI processes while 2, 3, 4, 6, 8, 12 and 24 are all valid
+numbers of OpenMP threads. Also, a serial run could have 24
+tiles and would just compute them sequentially.
+
+Once the input file
+has been read, we can compute the tile sizes:
+\begin{verbatim}
+     ChunkSizeI = (Lm+NtileI-1)/NtileI
+     ChunkSizeJ = (Mm+NtileJ-1)/NtileJ
+     MarginI = (NtileI*ChunkSizeI-Lm)/2
+     MarginJ = (NtileJ*ChunkSizeJ-Mm)/2
+\end{verbatim}
+Some internal ROMS numbers are shown in Fig.\ \ref{ftile2} and
+are in the \code{BOUNDS} structure in \code{mod\_param.F}.
+\code{MarginI} and \code{MarginJ} are zero if the numbers work
+out perfectly, i.e.\ \code{Lm}/\code{NtileI} and
+\code{Mm}/\code{NtileJ} are integers. The tile numbers match
+the MPI process numbers.
+
+\begin{figure}[t]
+\setlength{\unitlength}{10mm}
+\begin{picture}(0,10)(-2.35,0)
+\includegraphics[height=100mm]{pics/tile3}
+  \end{picture}
+  \caption{A tiled grid with some ROMS tile variables.}
+  \label{ftile2}
+\end{figure}
+
+In picking a numbering scheme for indices within a tile, there
+are two common choices, as shown in Fig.\ \ref{fdecomp1}. Each
+tile can be numbered from 1 to \code{ChunksizeI} or it can retain the
+numbering it would have in the whole grid. We have chosen this
+second option for ease when debugging features such as river
+inputs which apply to specific locations on the grid. It is
+simple to do using Fortran 90 dynamic memory allocation.
+
+\begin{figure}[t]
+\setlength{\unitlength}{10mm}
+\begin{picture}(0,7)(0,0)
+\includegraphics[width=165mm]{pics/numbering}
+  \end{picture}
+  \caption{A choice of numbering schemes: (a) each tile is numbered
+the same, and (b) each tile retains the numbering of the parent
+domain.}
+  \label{fdecomp1}
+\end{figure}
+
+With the tile sizes known, we can assign beginning and ending
+indices for each tile. Some of the details depend on whether or
+not the domain is periodic in that direction, as shown in Fig.\
+\ref{ftile3}.
+
+\begin{figure}[tb]
+\setlength{\unitlength}{10mm}
+\begin{picture}(0,9)(0,0)
+\includegraphics[width=165mm]{pics/Istr}
+  \end{picture}
+  \caption{Some ROMS variables for tiles, for both a periodic and
+  non-periodic case. Shown are the variables in the
+  \code{i}-direction, the \code{j}-direction is similar.}
+  \label{ftile3}
+\end{figure}
+
+\subsubsection{MPI exchange}
+
+For MPI jobs, the ghost points need to be updated between
+interior point computations. The routines
+\code{mp\_exchange2d}, \code{mp\_exchange3d} and
+\code{mp\_exhcnage4d} can be used to update the halo points of
+up to four arrays at a time. Each of these routines call
+\code{tile\_neighbors} to figure out which tiles are neighboring and
+whether or not there really is a neighboring tile on each side. The
+\code{mp\_exchangexd} routines then call:
+\begin{verbatim}
+    mpi_irecv
+    mpi_send
+    mpi_wait
+\end{verbatim}
+The exchanges happen first in the east-west direction, then in the
+north-south direction, saving the need for diagonal exchanges. A figure
+with interior points colored by tile and grey halo points needing an
+update is shown in Fig.\ \ref{fex_2d1}(a). The updated halo points are
+shown in Fig.\ \ref{fex_2d1}(b).
+
+\begin{figure}[p]
+\setlength{\unitlength}{10mm}
+\begin{picture}(0,22)(-2.8,0)
+\includegraphics[height=220mm]{pics/ex_2d}
+  \end{picture}
+  \caption{A tiled grid with out-of-date halo regions shown in
+  grey and the interior points color-coded by tile: (a) before an
+  exchange and (b) after an exchange.} \label{fex_2d1}
+\end{figure}
+
+\subsubsection{Code syntax}
+
+In \code{main3d}, many function calls are surrounded by
+OpenMP parallel code such as:
+\begin{verbatim}
+    !$OMP PARALLEL DO PRIVATE(thread,subs,tile) SHARED(ng,numthreads)
+        DO thread=0,numthreads-1
+          subs=NtileX(ng)*NtileE(ng)/numthreads
+          DO tile=subs*thread,subs*(thread+1)-1,+1
+            CALL set_data (ng, TILE)
+          END DO
+        END DO
+    !$OMP END PARALLEL DO 
+\end{verbatim}
+What isn't obvious from this is that the argument \code{TILE} means
+different things depending on if we're using OpenMP or MPI:
+\begin{verbatim}
+    #ifdef DISTRIBUTE
+    # define TILE MyRank
+    #else
+    # define TILE tile
+    #endif
+\end{verbatim}
+In other words, for MPI, \code{TILE} becomes the process number and
+the loop is only executed once.
+
+In looking at a typical routine that's called from \code{main3d},
+the routine is usually quite short, calling a \code{\_tile}
+version of itself in which the actual work happens:
+\begin{verbatim}
+    SUBROUTINE set_data (ng, tile)
+    # include "tile.h"
+      CALL set_data_tile (ng, tile,                        &
+     &                    LBi, UBi, LBj, UBj,              &
+     &                    IminS, ImaxS, JminS, JmaxS)
+      RETURN
+      END SUBROUTINE set_data
+\end{verbatim}
+Here, there are two sets of array lower and upper bounds, those
+in the \code{LBi} family and those in the \code{IminS} family. Both
+depend on the \code{Istr} family shown in Fig.\ \ref{ftile3}. The
+\code{IminS} family is for work arrays that are local to an MPI
+process or to an OpenMP thread, also local to a \code{\_tile}
+routine. They are initialized:
+\begin{verbatim}
+      IminS=BOUNDS(ng)%Istr(tile)-3
+      ImaxS=BOUNDS(ng)%Iend(tile)+3
+      JminS=BOUNDS(ng)%Jstr(tile)-3
+      JmaxS=BOUNDS(ng)%Jend(tile)+3
+\end{verbatim}
+and used:
+\begin{verbatim}
+      real(r8), dimension(IminS:ImaxS,JminS:JmaxS) ::  work1
+      real(r8), dimension(IminS:ImaxS,JminS:JmaxS) ::  work2
+\end{verbatim}
+The \code{Istr} and \code{LBi} families are dimensioned by the number
+of tiles once it is known by \code{inp\_par}:
+\begin{verbatim}
+        DO ng=1,Ngrids
+          Ntiles=NtileI(ng)*NtileJ(ng)-1
+          allocate ( BOUNDS(ng) % LBi  (-1:Ntiles) )
+                          :
+          allocate ( BOUNDS(ng) % Jend (-1:Ntiles) )
+        END DO
+\end{verbatim}
+They are then initialized in calls to the routines in
+\code{get\_bounds.F}. If a tile is on the ``western'' edge
+(\code{Itile}$=0$), then \code{UBi} is set to \code{LOWER\_BOUND\_I}.
+\begin{verbatim}
+      Imin=LOWER_BOUND_I
+              :
+      IF ((Itile.eq.-1).or.(Itile.eq.0)) THEN
+        LBi=Imin
+      ELSE
+        LBi=Istr-Nghost
+      END IF
+\end{verbatim}
+Tracking the origins of \code{LOWER\_BOUND\_I}, we find it in
+\code{globaldefs.h}:
+\begin{verbatim}
+    #ifdef EW_PERIODIC
+    #  define LOWER_BOUND_I -GHOST_POINTS
+    #else
+    #  define LOWER_BOUND_I 0
+    #endif
+\end{verbatim}
+
+In the case of \code{set\_data}, we are simply passing array indices
+for the tiled arrays. To access the tiled arrays from within
+\code{set\_data\_tile}, we need to \code{use} the relevant modules
+and then refer to the array with its full name:
+\begin{verbatim}
+      USE mod_forces
+            :
+      CALL set_2dfld_tile (ng, tile, iNLM, idCfra,             &
+     &                     LBi, UBi, LBj, UBj,                 &
+     &                     FORCES(ng)%cloudG,                  &
+     &                     FORCES(ng)%cloud,                   &
+     &                     update)
+\end{verbatim}
+In other cases, the parent routine would have the \code{use}, then
+would pass the relevant array to the \code{\_tile} routine:
+\begin{verbatim}
+      USE mod_grid
+          :
+      CALL prsgrd_tile (ng, tile,                              &
+          :
+     &                  GRID(ng) % Hz,                         &
+          :
+      SUBROUTINE prsgrd_tile (ng, tile,                        &
+          :
+     &                        Hz, z_r, z_w,                    &
+          :
+      real(r8), intent(in) :: Hz(LBi:,LBj:,:)
+\end{verbatim}
+This allows the \code{\_tile} routine to use \code{Hz} with the same
+syntax as the pre-parallel, pre-module code once had.
+
+\subsubsection{Input/output}
+
+In ROMS, the distributed memory I/O is all happening on the master process
+(0) unless you specifically ask it to use MPI-I/O, which requires both the
+\code{NETCDF4} and \code{PARALLEL\_IO} \code{cpp} flags to be defined.
+If you do this, you will be reading and writing \code{HDF5} files and
+will need to update your pre- and post-processiong tools accordingly. I
+have tentatively tried the parallel I/O and found it to be exceedingly
+slow---I've been told since that this is the fault of the \code{NetCDF-4}
+layer sitting on top of \code{HDF5}---\code{HDF5} alone should be fast.
+
+In the case of having all the I/O pass through the master process,
+we can still read and write classic NetCDF-3 files. Care must be
+taken though, in the event of an error. ROMS has been cleaned up so
+that the master process will broadcast its return state to the other
+processes and they can all die gracefully together when there is a
+problem.
+
+An example of a routine which reads from disk is \code{get\_grid},
+called from \code{initial}. Each MPI process calls \code{get\_grid}:
+\begin{verbatim}
+        CALL get_grid (ng, iNLM)
+# ifdef DISTRIBUTE
+        CALL mp_bcasti (ng, iNLM, exit_flag)
+# endif
+        if (exit_flag.ne.NoError) RETURN
+\end{verbatim}
+If any one of the processes has trouble, it will enter into the
+\code{exit\_flag} which is then shared by all.
+
+To read in an array variable, all processes in \code{get\_grid} uses
+\code{nf\_fread2d} and friends:
+\begin{verbatim}
+            status=nf_fread2d(ng, model, ncname, ncGRDid(ng),      &
+     &                        var_name(it), var_id(it),            &
+     &                        0, gtype, Vsize,                     &
+     &                        LBi, UBi, LBj, UBj,                  &
+     &                        Fscl, Fmin, Fmax,                    &
+     &                        GRID(ng) % rmask,                    &
+     &                        GRID(ng) % rmask)
+            IF (status.ne.nf90_noerr) THEN
+              exit_flag=2
+              ioerror=status
+              EXIT
+            END IF
+\end{verbatim}
+Within \code{nf\_fread2d}, we get to a call to the NetCDF library
+from just the master process:
+\begin{verbatim}
+      IF (InpThread) THEN
+        status=nf90_get_var(ncid, ncvarid, wrk, start, total)
+            :
+      END IF
+# ifdef DISTRIBUTE
+      CALL mp_bcasti (ng, model, status)
+# endif
+      IF (status.ne.nf90_noerr) THEN
+        exit_flag=2
+        ioerror=status
+        nf_fread2d=status
+        RETURN
+      END IF
+\end{verbatim}
+At this point, the master process has the entire 2-D array stored in
+\code{wrk}. This then needs to be divvied out to the various tiles
+to their copy of the array in question (stored in the \code{A}
+argument to \code{nf\_fread2d}):
+\begin{verbatim}
+    # ifdef DISTRIBUTE
+            CALL mp_scatter2d (ng, model, LBi, UBi, LBj, UBj,         &
+         &                     Nghost, MyType, Amin, Amax,            &
+    #  if defined READ_WATER && defined MASKING
+         &                     NWpts, SCALARS(ng)%IJwater(:,wtype),   &
+    #  endif
+         &                     Npts, wrk, A)
+\end{verbatim}
+Something similar happens when writing to output files.

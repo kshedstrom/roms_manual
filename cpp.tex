@@ -116,17 +116,14 @@ although \code{\#elif} is newer and is not supported by all versions of
 \code{cpp}.  An example using \code{\#else} and \code{\#elif} is
 shown:
 \begin{verbatim}
-#if defined BASIN
-      parameter (L=181, M=141, N=12, NT=1)
-#elif defined CANYON_A
-      parameter (L=66, M=49, N=10, NT=1)
-#elif defined CANYON_B
-      parameter (L=66, M=49, N=15, NT=1)
-           :
-#elif defined UPWELLING
-      parameter (L=42, M=81, N=16, NT=2)
+#ifdef SOLITON
+        real(r8) :: g = 1.0_r8                  ! non-dimensional
+# elif defined WBC_1 || defined WBC_2 || defined WBC_3
+        real(r8) :: g = 9.8_r8                  ! m/s2
+# elif defined CIRCLE
+        real(r8) :: g = 3.92e-2_r8                  ! m/s2
 #else
-      parameter (L=???, M=???, N=??, NT=?)
+        real(r8) :: g = 9.81_r8                 ! m/s2
 #endif
 \end{verbatim}
 
