@@ -1,8 +1,14 @@
 \section{Plotting Programs for Postprocessing}
 \label{Plothist}
-Hernan Arango has provided ROMS with some programs for creating plots
-from the NetCDF history and restart files. Some example plots are shown
-in \S\ref{Wave}. There are four plotting programs:
+
+Hernan Arango has provided ROMS with some \code{Fortran} programs for
+creating plots from the NetCDF history and restart files. Some example
+plots are shown in \S\ref{Wave}. Other plotting options are available
+via \code{Matlab}, \code{Python} and \code{NCL}. Here we describe
+only the \code{Fortran} programs available via \code{svn} from
+\code{myroms.org}.
+
+There are four plotting programs:
 \begin{klist}
    \kitem{cnt} creates black-and-white plots of the horizontal fields,
 including constant depth plots of the 3-D fields.
@@ -19,7 +25,7 @@ All of these program come with example input files.  For instance, the
 input file for \code{ccnt} is called \code{ccnt.in} and is as follows:
 \begin{verbatim}
 1996 -1  :  year and starting year-day (use yearday<0, for no time label)
-SCRUM 3.0
+ROMS 3.2
 Coarse Arctic ocean with Budgell ice dynamics
 ice thermodynamics
 
@@ -136,8 +142,7 @@ c
 As you can see, there are comments describing what needs to be
 done.  Please see the variable ID file for the complete list of fields
 which can be plotted---this list changes as Hernan adds the ability to
-plot new fields. Also, check your default.cnt file for other vector and
-contour parameters. The palette file includes two number systems, one
-in the scale from 0 to 255 and the other from 0 to 1.
-The ROMS plotting uses the first while the SEOM plotting uses the
-second.
+plot new fields. Also, check your \code{default.cnt} file for other
+vector and contour parameters. The palette file includes two number
+systems, one in the scale from 0 to 255 and the other from 0 to 1.
+The ROMS plotting uses the first while the SEOM plotting uses the second.

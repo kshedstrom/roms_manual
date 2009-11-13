@@ -20,7 +20,7 @@ The directories shown here are:
   analytic formulations for fields computed in the model rather than
   read from files (bottom heat flux of zero, for instance), and ASCII
   input files read by ROMS on startup to set things such as forcing file
-  names and model timestep. Some of these applications are:
+  names and model time-step. Some of these applications are:
 \begin{klist}
   \kitem{Bering} This is a 4 km grid of the Bering Sea, aligned with
   the Northeast Pacific grid but at three times the resolution.
@@ -563,7 +563,7 @@ described as follows:
   \kitem{wvelocity} computes the physical vertical velocity for the
   model output.
   \kitem{set\_zeta} sets the surface elevation to the time-mean over the
-  last baroclinic timestep.
+  last baroclinic time-step.
   \kitem{set\_diags} accumulates the time-average of the diagnostics
   fields.
   \kitem{set\_filter} accumulates a weighted sum using a Lanczos filter
@@ -580,10 +580,10 @@ described as follows:
   kinetic energy prognostic variables, \code{tke} and \code{gls}.
   \kitem{gls\_prestep} computes the predictor step for turbulent
   kinetic energy prognostic variables, \code{tke} and \code{gls}.
-  \kitem{step2d} computes the depth-integrated timestep. It is called in
-  a loop over all the short timesteps, first as a predictor step, then
+  \kitem{step2d} computes the depth-integrated time-step. It is called in
+  a loop over all the short time-steps, first as a predictor step, then
   as a corrector step.
-  \kitem{step3d\_uv} completes the timestep for the three-dimensional
+  \kitem{step3d\_uv} completes the time-step for the three-dimensional
   velocities.
   \kitem{omega} computes the $\Omega$ vertical velocity.
   \kitem{my25\_corstep} performs the corrector step for turbulent kinetic
@@ -597,10 +597,10 @@ described as follows:
   model.
   \kitem{sediment} computes changes to the sediment tracers
   (\cite{Warner_2008}).
-  \kitem{step3d\_t} completes the tracer timestep.
+  \kitem{step3d\_t} completes the tracer time-step.
   \kitem{ice\_frazil} computes the frazil ice growth, if any. Not in the
   trunk code.
-  \kitem{step\_floats} timesteps the Lagrangian floats.
+  \kitem{step\_floats} time-steps the Lagrangian floats.
 \end{klist}
 
 \subsection{Initialization}
@@ -720,14 +720,14 @@ variables. The complete list is:
     time.
   \kitem{mod\_scalars.F} This contains a large number of scalars, i.e. values
     which don't have spatial dependence. Some are fixed constants such
-    as \code{itemp} refering to the temperature tracer. Others could
+    as \code{itemp} referring to the temperature tracer. Others could
     have a different value on each grid.
   \kitem{mod\_sediment.F} If either \code{SEDIMENT} or \code{BBL\_MODEL}
     is defined, this contains parameters for the respective model.
   \kitem{mod\_sources.F} If one of \code{UV\_PSOURCE}, \code{TS\_PSOURCE}
     or \code{Q\_PSOURCE} is defined, this contains the variables used
     for point sources.
-  \kitem{mod\_stepping.F} This contains the timestepping variables used to
+  \kitem{mod\_stepping.F} This contains the time-stepping variables used to
     point to the relevant time level.
   \kitem{mod\_storage.F} If \code{PROPAGATOR} is
     defined, this module defines the work space for the Generalized
@@ -1493,7 +1493,7 @@ being the tag to check within ROMS.
 
 The whole horizontal ROMS grid is shown in Fig.\ \ref{fwgr}. The
 computations are done over the cells inside the darker line;
-the cells are numbered 1 to \code{Lm} in the $xi$-direction and
+the cells are numbered 1 to \code{Lm} in the $\xi$-direction and
 1 to \code{Mm} in the $\eta$-direction. Those looking ahead to
 running in parallel would be wise to include factors of two in
 their choice of \code{Lm} and \code{Mm}. ROMS will run in
@@ -1602,6 +1602,15 @@ scheme is used, in which case it needs three. The variable
     #endif
 \end{verbatim}
 
+\begin{figure}[t]
+\setlength{\unitlength}{10mm}
+\begin{picture}(0,10)(-2.35,0)
+\includegraphics[height=100mm]{pics/tile3}
+  \end{picture}
+  \caption{A tiled grid with some ROMS tile variables.}
+  \label{ftile2}
+\end{figure}
+
 The number of tiles is set in the input file as \code{NtileI}
 and \code{NtileJ}. For an MPI job, the product of the two must
 equal the number of MPI processes. For an OpenMP job, the
@@ -1625,15 +1634,6 @@ are in the \code{BOUNDS} structure in \code{mod\_param.F}.
 out perfectly, i.e.\ \code{Lm}/\code{NtileI} and
 \code{Mm}/\code{NtileJ} are integers. The tile numbers match
 the MPI process numbers.
-
-\begin{figure}[t]
-\setlength{\unitlength}{10mm}
-\begin{picture}(0,10)(-2.35,0)
-\includegraphics[height=100mm]{pics/tile3}
-  \end{picture}
-  \caption{A tiled grid with some ROMS tile variables.}
-  \label{ftile2}
-\end{figure}
 
 In picking a numbering scheme for indices within a tile, there
 are two common choices, as shown in Fig.\ \ref{fdecomp1}. Each
@@ -1675,7 +1675,7 @@ not the domain is periodic in that direction, as shown in Fig.\
 For MPI jobs, the ghost points need to be updated between
 interior point computations. The routines
 \code{mp\_exchange2d}, \code{mp\_exchange3d} and
-\code{mp\_exhcnage4d} can be used to update the halo points of
+\code{mp\_exchange4d} can be used to update the halo points of
 up to four arrays at a time. Each of these routines call
 \code{tile\_neighbors} to figure out which tiles are neighboring and
 whether or not there really is a neighboring tile on each side. The
@@ -1825,7 +1825,7 @@ In ROMS, the distributed memory I/O is all happening on the master process
 (0) unless you specifically ask it to use MPI-I/O, which requires both the
 \code{NETCDF4} and \code{PARALLEL\_IO} \code{cpp} flags to be defined.
 If you do this, you will be reading and writing \code{HDF5} files and
-will need to update your pre- and post-processiong tools accordingly. I
+will need to update your pre- and post-processing tools accordingly. I
 have tentatively tried the parallel I/O and found it to be exceedingly
 slow---I've been told since that this is the fault of the \code{NetCDF-4}
 layer sitting on top of \code{HDF5}---\code{HDF5} alone should be fast.

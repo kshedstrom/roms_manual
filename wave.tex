@@ -262,7 +262,7 @@ and some other fields, which are computed by \code{rho\_eos} as well.
 \label{Bcs}
 The horizontal boundary conditions are provided by the subroutines
 in \code{u3dbc\_im}, \code{v3dbc\_im}, \code{u2dbc\_im}, \code{v2dbc\_im},
-\code{t3dbc\_im}, and \code{zetabc}.  They are called every timestep
+\code{t3dbc\_im}, and \code{zetabc}.  They are called every time-step
 and provide the boundary values for the fields $u, v, \overline{u},
 \overline{v}$, all tracers, and $\zeta$, respectively. They are currently
 configured for a closed basin, a periodic channel, a doubly periodic
@@ -327,7 +327,7 @@ file read by \code{get\_data}, set \code{TCLM\_NUDGING} in
 There is also more than one way to force with tides. One way is to
 provide boundary conditions with enough temporal resolution to
 resolve the tides. Another is to provide ROMS with the tidal
-consituents at all grid points and to have ROMS reconstruct the
+constituents at all grid points and to have ROMS reconstruct the
 tidal currents (\code{UV\_TIDES})  and/or elevations (\code{SSH\_TIDES})
 for any given time. An example of such a tidal forcing file is in
 \code{Data/ROMS/Forcing/test\_head\_frc.nc}.
@@ -388,8 +388,8 @@ The input parameters are in groups, as follows:
      \end{klist}
    \kitem{Grid-dimension parameters} \mbox{}
      \begin{klist}
-       \kitem{Lm} Number of I-direction INTERIOR RHO-points.
-       \kitem{Mm} Number of J-direction INTERIOR RHO-points.
+       \kitem{Lm} Number of $i$-direction INTERIOR RHO-points.
+       \kitem{Mm} Number of $j$-direction INTERIOR RHO-points.
        \kitem{N} Number of vertical levels.
        \kitem{Nbed} Number of sediment bed layers.
        \kitem{NAT} Number of active tracers (usually 2).
@@ -397,21 +397,21 @@ The input parameters are in groups, as follows:
        \kitem{NCS} Number of cohesive (mud) sediment tracers.
        \kitem{NNS} Number of non-cohesive (sand) sediment tracers.
      \end{klist}
-   \kitem{Domain-docomposition parameters} \mbox{}
+   \kitem{Domain-decomposition parameters} \mbox{}
      \begin{klist}
-       \kitem{NtileI} Number of I-direction partitions
-       \kitem{NtileJ} Number of J-direction partitions
+       \kitem{NtileI} Number of $i$-direction partitions.
+       \kitem{NtileJ} Number of $j$-direction partitions.
      \end{klist}
    \kitem{Time-stepping parameters} \mbox{}
      \begin{klist}
-       \kitem{NTIMES}    Number of timesteps to evolve the 3-D
+       \kitem{NTIMES}    Number of time-steps to evolve the 3-D
        equations in the current run.  This is actually the total
      number, including any previous segments of the same run.  For
      instance, if you already did a three-month run and wish to
      continue for another three months, set \code{NTIMES} to the
      number of steps needed for six months.
-       \kitem{DT}        Timestep in seconds for the 3-D equations.
-       \kitem{NDTFAST}   Number of timesteps for the 2-D equations
+       \kitem{DT}        Time-step in seconds for the 3-D equations.
+       \kitem{NDTFAST}   Number of time-steps for the 2-D equations
      to be executed each \code{dt}.
      \end{klist}
    \kitem{Model iteration loops parameters} \mbox{}
@@ -425,34 +425,36 @@ The input parameters are in groups, as follows:
      \end{klist}
    \kitem{Generalized Stability Theory (GST) parameters} \mbox{}
      \begin{klist}
-       \kitem{NEV} Number of eigenvalues
-       \kitem{NCV} Number of eigenvectors
+       \kitem{NEV} Number of eigenvalues.
+       \kitem{NCV} Number of eigenvectors.
      \end{klist}
-   \kitem{Input/Output parameters}  ROMS has several
-   possible output files.  The output files can
+   \kitem{Input/Output parameters} \mbox{}
+
+   ROMS has several possible output files. The output files can
    include a restart file, a history file, an averages file, and a
    station file, for instance.  The restart file often contains
    only two records with the older record being overwritten during
    the next write.  The history file can contain a subset of the
    restart fields, for instance just the surface elevation and the
    surface temperature.  The averages file contains time-averages
-   of the model fields, for instance montly means, or yearly means,
+   of the model fields, for instance daily or monthly means,
    depending on \code{NAVG}.  The station file contains timeseries
    for specified points, possibly quite frequently since each record
    is small. For some, machinery is in place to write multiple
    files, numbering them \_0001, \_0002, etc.
      \begin{klist}
        \kitem{NRREC}     Record number of the restart file to read
-     as the initial conditions. Set to -1 to read the latest record.
+     as the initial conditions. Set to 0 at the beginning of the
+     run, -1 to read the latest record.
        \kitem{LcycleRST} Logical, true to cycle between two records
      of the restart file.
-       \kitem{NRST}      Number of timesteps between writing of
+       \kitem{NRST}      Number of time-steps between writing of
      restart fields.
-       \kitem{NSTA}      Number of timesteps between writing fields
+       \kitem{NSTA}      Number of time-steps between writing fields
      into the stations file.
-       \kitem{NFLT}      Number of timesteps between writing fields
+       \kitem{NFLT}      Number of time-steps between writing fields
      into the floats file.
-       \kitem{NINFO}     Number of timesteps between calling
+       \kitem{NINFO}     Number of time-steps between calling
        \code{diag} to write some global information and check for
        NaN values. 
      \end{klist}
@@ -461,38 +463,37 @@ The input parameters are in groups, as follows:
        \kitem{LDEFOUT} True for creating new output files for
        stations, history, floats, etc. If false, output is appended
        to these files.
-       \kitem{NHIS}  Number of timesteps between writing history
+       \kitem{NHIS}  Number of time-steps between writing history
        records.
-       \kitem{NDEFHIS}  Number of timesteps between starting new history
+       \kitem{NDEFHIS}  Number of time-steps between starting new history
        files.
-       \kitem{NTSAVG}    Starting timestep for the accumulation of
+       \kitem{NTSAVG}    Starting time-step for the accumulation of
      output time-averaged data.  For instance, you might want to average
      over the last day of a thirty-day run.
-       \kitem{NAVG}      Number of timesteps between writing
+       \kitem{NAVG}      Number of time-steps between writing
      time-averaged data into the averages file.
-       \kitem{NDEFAVG}      Number of timesteps between starting
+       \kitem{NDEFAVG}      Number of time-steps between starting
      new averages files.
-       \kitem{NTSDIA}    Starting timestep for the accumulation of
+       \kitem{NTSDIA}    Starting time-step for the accumulation of
      output diagnostics data.  For instance, you might want to write
      diagnostics for the last day of a thirty-day run.
-       \kitem{NDIA}      Number of timesteps between writing
+       \kitem{NDIA}      Number of time-steps between writing
      diagnostics data into the diagnostics file.
-       \kitem{NDEFDIA}      Number of timesteps between starting
+       \kitem{NDEFDIA}      Number of time-steps between starting
      new diagnostics files.
      \end{klist}
-    \kitem{Tangent lienar and adjoint output parameters} \mbox{}
+    \kitem{Tangent linear and adjoint output parameters} \mbox{}
      \begin{klist}
        \kitem{LcycleTLM} Logical, true to cycle between two records
-       \kitem{NTLM}      Number of timesteps between writing
+       \kitem{NTLM}      Number of time-steps between writing
      tangent linear data.
-       \kitem{NDEFTLM}      Number of timesteps between starting
+       \kitem{NDEFTLM}      Number of time-steps between starting
      new tangent linear files.
-     of the restart file.
        \kitem{LcycleADJ} Logical, true to cycle between two records
      of the restart file.
-       \kitem{NADJ}      Number of timesteps between writing
+       \kitem{NADJ}      Number of time-steps between writing
      adjoint data.
-       \kitem{NDEFADJ}      Number of timesteps between starting
+       \kitem{NDEFADJ}      Number of time-steps between starting
      new adjoint files.
        \kitem{NSFF}     Number of time-steps between 4DVAR adjustment of
        surface forcing fluxes.
@@ -501,9 +502,9 @@ The input parameters are in groups, as follows:
      \end{klist}
     \kitem{Check-pointing GST restart parameters} \mbox{}
      \begin{klist}
-       \kitem{LrstGST} GST restart switch
-       \kitem{MaxIterGST} Maximum number of iterations
-       \kitem{NGST} Check-pointing interval
+       \kitem{LrstGST} GST restart switch.
+       \kitem{MaxIterGST} Maximum number of iterations.
+       \kitem{NGST} Check-pointing interval.
      \end{klist}
     \kitem{Ritz GST parameter} \mbox{}
      \begin{klist}
@@ -555,7 +556,7 @@ The input parameters are in groups, as follows:
        \kitem{GLS\_N}   Turbulent length scale exponent.
        \kitem{GLS\_Kmin}  Minimum value of specific turbulent kinetic
        energy.
-       \kitem{GLS\_Pmin}  Minimum Value of dissipation.
+       \kitem{GLS\_Pmin}  Minimum value of dissipation.
        \kitem{GLS\_CMU0}   Stability coefficient.
        \kitem{GLS\_C1}   Shear production coefficient.
        \kitem{GLS\_C2}   Dissipation coefficient.
@@ -566,7 +567,7 @@ The input parameters are in groups, as follows:
        \kitem{GLS\_SIGP}  Constant Schmidt number (non-dimensional) for
        turbulent generic statistical field, ``psi''.
      \end{klist}
-   \kitem{Contants used in surface TKE flux computation} \mbox{}
+   \kitem{Constants used in surface TKE flux computation} \mbox{}
      \begin{klist}
        \kitem{CHARNOK\_ALPHA} Charnok surface roughness.
        \kitem{ZOS\_HSIG\_ALPHA} Roughness from wave amplitude.
@@ -597,7 +598,7 @@ The input parameters are in groups, as follows:
        \kitem{LEVSFRC}  Deepest level to apply surface momentum
      stresses as a body force.
             Used when the C-preprocessor option BODYFORCE is defined.
-       \kitem{LEVBFRC}  Shallowest level to apply bottom momemtum
+       \kitem{LEVBFRC}  Shallowest level to apply bottom momentum
     stresses as a body force.
             Used when the C-preprocessor option BODYFORCE is defined.
      \end{klist}
@@ -639,9 +640,9 @@ The input parameters are in groups, as follows:
        \kitem{ZNUDG}    Time scale (days) of nudging towards
      free surface climatology at the interior and at the boundaries.
        \kitem{M2NUDG}    Time scale (days) of nudging towards
-     2-D momenum climatology at the interior and at the boundaries.
+     2-D momentum climatology at the interior and at the boundaries.
        \kitem{M3NUDG}    Time scale (days) of nudging towards
-     3-D momenum climatology at the interior and at the boundaries.
+     3-D momentum climatology at the interior and at the boundaries.
      \end{klist}
    \kitem{Open boundary factor} \mbox{}
      \begin{klist}
@@ -676,10 +677,10 @@ The input parameters are in groups, as follows:
    \kitem{Adjoint sensitivity logical parameters} \mbox{}
      \begin{klist}
        \kitem{Lstate(isFsur)} Free surface.
-       \kitem{Lstate(isUbar)} 2D U-momentum.
-       \kitem{Lstate(isVbar)} 2D V-momentum.
-       \kitem{Lstate(isUvel)} 3D U-momentum.
-       \kitem{Lstate(isVvel)} 3D V-momentum.
+       \kitem{Lstate(isUbar)} 2D $u$-momentum.
+       \kitem{Lstate(isVbar)} 2D $v$-momentum.
+       \kitem{Lstate(isUvel)} 3D $u$-momentum.
+       \kitem{Lstate(isVvel)} 3D $v$-momentum.
        \kitem{Lstate(isTvar)} Tracers (NT values expected).
      \end{klist}
    \kitem{Stochastic optimals time scale} \mbox{}
@@ -687,16 +688,16 @@ The input parameters are in groups, as follows:
        \kitem{SO\_decay}  Stochastic optimals time decorrelation
        scale (days) assumed for red noise processes.
      \end{klist}
-   \kitem{Logicals for stochatic optimals} \mbox{}
+   \kitem{Logicals for stochastic optimals} \mbox{}
      \begin{klist}
-       \kitem{SOstate(isUstr)}  Surface U-stress.
-       \kitem{SOstate(isVstr)}  Surface V-stress.
+       \kitem{SOstate(isUstr)}  Surface $u$-stress.
+       \kitem{SOstate(isVstr)}  Surface $v$-stress.
        \kitem{Lstate(isTsur)} Surface tracer flux (NT values expected).
      \end{klist}
    \kitem{Stochastic optimals surface standard deviations} \mbox{}
      \begin{klist}
-       \kitem{SO\_sdev(isUstr)} Surface U-stress.
-       \kitem{SO\_sdev(isVstr)} Surface V-stress.
+       \kitem{SO\_sdev(isUstr)} Surface $u$-stress.
+       \kitem{SO\_sdev(isVstr)} Surface $v$-stress.
        \kitem{SO\_sdev(isTsur)} Surface tracer flux (NT values
        expected).
      \end{klist}
@@ -715,40 +716,40 @@ The input parameters are in groups, as follows:
        \kitem{Hout(idTvar)}     Tracer type variables: potential
     temperature, salinity, etc.
 \vspace{2 mm}
-       \kitem{Hout(idUsms)}   Surface U-stress.
-       \kitem{Hout(idVsms)}   Surface V-stress.
-       \kitem{Hout(idUbms)}   Bottom U-stress.
-       \kitem{Hout(idVbms)}   Bottom V-stress.
+       \kitem{Hout(idUsms)}   Surface $u$-stress.
+       \kitem{Hout(idVsms)}   Surface $v$-stress.
+       \kitem{Hout(idUbms)}   Bottom $u$-stress.
+       \kitem{Hout(idVbms)}   Bottom $v$-stress.
 \vspace{2 mm}
-       \kitem{Hout(idUbrs)}   Bottom U-current stress.
-       \kitem{Hout(idVbrs)}   Bottom V-current stress.
-       \kitem{Hout(idUbws)}   Bottom U-wave stress.
-       \kitem{Hout(idVbws)}   Bottom V-wave stress.
-       \kitem{Hout(idUbcs)}   Bottom max wave-current U-stress.
-       \kitem{Hout(idVbcs)}   Bottom max wave-current V-stress.
+       \kitem{Hout(idUbrs)}   Bottom $u$-current stress.
+       \kitem{Hout(idVbrs)}   Bottom $v$-current stress.
+       \kitem{Hout(idUbws)}   Bottom $u$-wave stress.
+       \kitem{Hout(idVbws)}   Bottom $v$-wave stress.
+       \kitem{Hout(idUbcs)}   Bottom max wave-current $u$-stress.
+       \kitem{Hout(idVbcs)}   Bottom max wave-current $v$-stress.
 \vspace{2 mm}
-       \kitem{Hout(idUbot)}   Bed wave orbital U-velocity.
-       \kitem{Hout(idVbot)}   Bed wave orbital V-velocity.
-       \kitem{Hout(idUbur)}   Bottom max wave-current U-stress.
-       \kitem{Hout(idVbur)}   Bottom max wave-current V-stress.
+       \kitem{Hout(idUbot)}   Bed wave orbital $u$-velocity.
+       \kitem{Hout(idVbot)}   Bed wave orbital $v$-velocity.
+       \kitem{Hout(idUbur)}   Bottom max wave-current $u$-stress.
+       \kitem{Hout(idVbur)}   Bottom max wave-current $v$-stress.
 \vspace{2 mm}
-       \kitem{Hout(idW2xx)}  2D radiation stress, Sxx component.
-       \kitem{Hout(idW2xy)}  2D radiation stress, Sxy component.
-       \kitem{Hout(idW2yy)}  2D radiation stress, Syy component.
-       \kitem{Hout(idU2rs)}  2D V-radiation stress.
-       \kitem{Hout(idV2rs)}  2D V-radiation stress.
-       \kitem{Hout(idU2Sd)}  2D V-Stokes velocity.
-       \kitem{Hout(idV2Sd)}  2D V-Stokes velocity.
+       \kitem{Hout(idW2xx)}  2D radiation stress, $S_{xx}$ component.
+       \kitem{Hout(idW2xy)}  2D radiation stress, $S_{xy}$ component.
+       \kitem{Hout(idW2yy)}  2D radiation stress, $S_{yy}$ component.
+       \kitem{Hout(idU2rs)}  2D $u$-radiation stress.
+       \kitem{Hout(idV2rs)}  2D $v$-radiation stress.
+       \kitem{Hout(idU2Sd)}  2D $u$-Stokes velocity.
+       \kitem{Hout(idV2Sd)}  2D $v$-Stokes velocity.
 \vspace{2 mm}
-       \kitem{Hout(idW3xx)}  3D radiation stress, Sxx component.
-       \kitem{Hout(idW3xy)}  3D radiation stress, Sxy component.
-       \kitem{Hout(idW3yy)}  3D radiation stress, Syy component.
-       \kitem{Hout(idW3zx)}  3D radiation stress, Szx component.
-       \kitem{Hout(idW3zy)}  3D radiation stress, Szy component.
-       \kitem{Hout(idU3rs)}  3D V-radiation stress.
-       \kitem{Hout(idV3rs)}  3D V-radiation stress.
-       \kitem{Hout(idU3Sd)}  3D V-Stokes velocity.
-       \kitem{Hout(idV3Sd)}  3D V-Stokes velocity.
+       \kitem{Hout(idW3xx)}  3D radiation stress, $S_{xx}$ component.
+       \kitem{Hout(idW3xy)}  3D radiation stress, $S_{xy}$ component.
+       \kitem{Hout(idW3yy)}  3D radiation stress, $S_{yy}$ component.
+       \kitem{Hout(idW3zx)}  3D radiation stress, $S_{zx}$ component.
+       \kitem{Hout(idW3zy)}  3D radiation stress, $S_{zy}$ component.
+       \kitem{Hout(idU3rs)}  3D $u$-radiation stress.
+       \kitem{Hout(idV3rs)}  3D $v$-radiation stress.
+       \kitem{Hout(idU3Sd)}  3D $u$-Stokes velocity.
+       \kitem{Hout(idV3Sd)}  3D $v$-Stokes velocity.
 \vspace{2 mm}
        \kitem{Hout(idWamp)}  Wave height.
        \kitem{Hout(idWlen)}  Wave length.
@@ -776,8 +777,8 @@ The input parameters are in groups, as follows:
      \end{klist}
    \kitem{Ice fields} \mbox{}
      \begin{klist}
-       \kitem{Hout(idUice)}    Ice U-velocity.
-       \kitem{Hout(idVice)}    Ice V-velocity.
+       \kitem{Hout(idUice)}    Ice $u$-velocity.
+       \kitem{Hout(idVice)}    Ice $v$-velocity.
        \kitem{Hout(idAice)}    Ice concentration.
        \kitem{Hout(idHice)}    Ice thickness.
        \kitem{Hout(idTice)}    Ice surface temperature.
@@ -958,9 +959,6 @@ direct \code{cppdefs.h} to include the file \code{upwelling.h}:
 
         #ifdef BIO_UMAINE
         # define OXYGEN
-        # if defined OXYGEN
-        #  define xygen_bottom_layer_treatment
-        # endif
         # undef CARBON
         #endif
 
@@ -977,13 +975,13 @@ Here we have declared that we want a periodic channel
 There is salinity but we're using a linear equation of state.
 The momentum equations have advection, Coriolis force and pressure
 gradients. There is both horizontal viscosity and diffusion, but
-they are along constant $\sigma$ surfaces and if you check the input
+they are along constant $\sigma$-surfaces and if you check the input
 file, you find that the horizontal diffusion is set to zero.
 
 There are ifdefs for various biology cases, none of which
 have been defined. Likewise, we are using the default of
 \code{ANA\_VMIX} as distributed. We are asking for many other
-analytic functions too, including the grid. We are however asking
+analytic functions too, including the grid. We are asking
 for diagnostic output with the \code{DIAGNOSTICS\_TS} and
 \code{DIAGNOSTICS\_UV}.
 
@@ -1000,20 +998,19 @@ the input file:
 \end{verbatim}
 
 \subsubsection{\code{ana\_grid}}
-For this geometry one has a choice of using the external grid-generation
-programs or of using \code{ana\_grid} to create the grid analytically.
-The code in \code{ana\_grid.h} was
-modified to produce a bathymetry with a shelf on both walls of the
-channel when \code{UPWELLING} is defined.  The fluid depth ranges from
-27 $m$ on the shelves to 150 $m$ in the center of the channel.
-The horizontal grid spacing is uniform at 1 $km$ and the
-Coriolis parameter $f$ is set to a constant value suitable for
-Sydney, Australia.
+For this geometry one has a choice of using one of the external
+grid-generation programs or of using \code{ana\_grid} to create the grid
+analytically. The code in \code{ana\_grid.h} was modified to produce a
+bathymetry with a shelf on both walls of the channel when \code{UPWELLING}
+is defined. The fluid depth ranges from 27 $m$ on the shelves to 150 $m$
+in the center of the channel.  The horizontal grid spacing is uniform
+at 1 $km$ and the Coriolis parameter $f$ is set to a constant value
+suitable for Sydney, Australia.
 
 \subsubsection{Initial conditions and the equation of state}
 We would like the initial conditions to be a motionless fluid with an
-exponential stratification.  \code{ana\_initial.h} is configured
-accordingly.
+exponential stratification. The \code{UPWELLING} section of
+\code{ana\_initial.h} is configured accordingly.
 
 The stratification can be provided by either $T$ or $S$, or by both
 $T$ and $S$.  For
@@ -1038,8 +1035,10 @@ of \code{S0}, though it could be left out entirely if we undefine
 \code{SALINITY} and set \code{NAT} to 1.
 
 \subsubsection{Boundary conditions}
-The periodic channel options have already been chosen in
-\code{upwelling.h}.  We do not have to do anything else.
+The option \code{EW\_PERIODIC} has been chosen for the eastern and
+western edges. None of the open boundary options have been selected
+for the Northern and Southern edges; they are both then given the
+default wall conditions and no boundary values are required.
 
 \subsubsection{Model forcing}
 In this problem we want to resolve the
@@ -1060,8 +1059,8 @@ explicitly setting anything for \code{UPWELLING}. However, we do set
 the biology models.
 
 \subsubsection{ocean.in}
-The model has been set up to run for five days with an internal timestep
-of 300 $s$ and an external timestep of 10 $s$.
+The model has been set up to run for five days with an internal time-step
+of 300 $s$ and an external time-step of 10 $s$.
 \begin{verbatim}
       NTIMES == 1440
           DT == 300.0d0
@@ -1476,7 +1475,7 @@ such plots are shown in Fig.\ \ref{fsm1} to \ref{fsm2}.
 
 \begin{figure}
 \setlength{\unitlength}{10mm}
-\begin{picture}(0,16)(0,0)
+\begin{picture}(0,16)(-3.65,0)
 \includegraphics{pics/up1}
 \end{picture}
 \caption{The upwelling/downwelling bathymetry.}
@@ -1485,7 +1484,7 @@ such plots are shown in Fig.\ \ref{fsm1} to \ref{fsm2}.
 
 \begin{figure}
 \setlength{\unitlength}{10mm}
-\begin{picture}(0,16)(0,0)
+\begin{picture}(0,16)(-3.75,0)
 \includegraphics{pics/up2}
   \end{picture}
 \caption{Surface velocities after one day, showing the flow to the
@@ -1495,7 +1494,7 @@ left of the wind (southern hemisphere).}
 \begin{figure}
 \setlength{\unitlength}{10mm}
 \begin{picture}(0,16)(0,0)
-\includegraphics{pics/up3}
+\includegraphics[width=6.5in]{pics/up3}
   \end{picture}
 \caption{Constant $\xi$ slices of the $u, v, T$ and $w$ fields
 at day 1.}
@@ -1504,7 +1503,7 @@ at day 1.}
 \begin{figure}
 \setlength{\unitlength}{10mm}
 \begin{picture}(0,16)(0,0)
-\includegraphics{pics/up4}
+\includegraphics[width=6.5in]{pics/up4}
   \end{picture}
 \caption{Constant $\xi$ slices of the $u, v, T$, and $w$ fields
 at day 5.}
@@ -1810,7 +1809,7 @@ fifth generation grid file. The header include file then becomes
 # undef  BIO_SEDIMENT
 #endif
 \end{verbatim}
-Here, we have declared that we want a two open sides, two closed
+Here, we have declared that we want two open sides and two closed
 walls. For each open side, we're using a Chapman/Flather combination
 on the 2D flow and a radiation/nudging combination on the 3D flow.
 We've got masking, salinity, and the non-linear equation of state.
@@ -1904,14 +1903,13 @@ find that the timescale for nudging is the same as that used for the
 open boundary conditions. That isn't quite what I want, so there's
 this change to \code{set\_vbc.F}:
 \begin{verbatim}
-#   elif defined SRELAXATION
-          stflx(i,j,isalt)=-Tnudg(isalt,ng)*Hz(i,j,N(ng))*
-&
-#ifdef NEP5   
-!  60 days from Tnudg of 360 days
-     &                     6.0_r8*
-&       #endif
-     &                     (t(i,j,N(ng),nrhs,isalt)-sss(i,j))
+    #   elif defined SRELAXATION
+              stflx(i,j,isalt)=-Tnudg(isalt,ng)*Hz(i,j,N(ng))*      &
+    #ifdef NEP5   
+    !  60 days from Tnudg of 360 days
+         &                     6.0_r8*                              &
+    #endif
+         &                     (t(i,j,N(ng),nrhs,isalt)-sss(i,j))
 \end{verbatim}
 There is also a kludge in \code{step\_floats.F} for a yet-untested
 float reuse strategy. Having a handy tag like \code{NEP5} allows me
@@ -1920,44 +1918,44 @@ to search for these little hacks later. The file
 \code{NEP5}, but the location means that it will be used to set up
 the sponge layers for this domain:
 \begin{verbatim}
-!
-! Northeast Pacific sponge areas
-!
-      Iwrk = 10
-#  if defined UV_VIS2
-      DO i=IstrR,IendR
-        DO j=JstrR,MIN(Iwrk,JendR)
-          cff = 250.*0.5_r8*(1.0_r8+COS(pi*REAL(j,r8)/REAL(Iwrk,r8)))
-          visc2_r(i,j) = max(cff, visc2_r(i,j))
-          visc2_p(i,j) = max(cff, visc2_p(i,j))
-        END DO
-      END DO
-      DO i=IstrR,MIN(Iwrk,IendR)
-        DO j=MAX(JstrR,i),JendR
-          cff = 250.*0.5_r8*(1.0_r8+COS(pi*REAL(i,r8)/REAL(Iwrk,r8)))
-          visc2_r(i,j) = max(cff, visc2_r(i,j))
-          visc2_p(i,j) = max(cff, visc2_p(i,j))
-        END DO
-      END DO
-        :
-#   if defined TS_DIF2
-      DO itrc=1,NT(ng)
-        DO j=JstrR,MIN(Iwrk,JendR)
-          cff = 100. * (1.0_r8+COS(pi*REAL(j,r8)/REAL(Iwrk,r8)))
+    !
+    ! Northeast Pacific sponge areas
+    !
+          Iwrk = 10
+    #  if defined UV_VIS2
           DO i=IstrR,IendR
-            diff2(i,j,itrc)=max(cff, diff2(i,j,itrc))
+            DO j=JstrR,MIN(Iwrk,JendR)
+              cff = 250.*0.5_r8*(1.0_r8+COS(pi*REAL(j,r8)/REAL(Iwrk,r8)))
+              visc2_r(i,j) = max(cff, visc2_r(i,j))
+              visc2_p(i,j) = max(cff, visc2_p(i,j))
+            END DO
           END DO
-        END DO
-        DO i=IstrR,MIN(Iwrk,IendR)
-          DO j=MAX(JstrR,i),JendR
-            cff = 100. * (1.0_r8+COS(pi*REAL(i,r8)/REAL(Iwrk,r8)))
-            diff2(i,j,itrc) = max(cff, diff2(i,j,itrc))
+          DO i=IstrR,MIN(Iwrk,IendR)
+            DO j=MAX(JstrR,i),JendR
+              cff = 250.*0.5_r8*(1.0_r8+COS(pi*REAL(i,r8)/REAL(Iwrk,r8)))
+              visc2_r(i,j) = max(cff, visc2_r(i,j))
+              visc2_p(i,j) = max(cff, visc2_p(i,j))
+            END DO
           END DO
-        END DO
+            :
+    #   if defined TS_DIF2
+          DO itrc=1,NT(ng)
+            DO j=JstrR,MIN(Iwrk,JendR)
+              cff = 100. * (1.0_r8+COS(pi*REAL(j,r8)/REAL(Iwrk,r8)))
+              DO i=IstrR,IendR
+                diff2(i,j,itrc)=max(cff, diff2(i,j,itrc))
+              END DO
+            END DO
+            DO i=IstrR,MIN(Iwrk,IendR)
+              DO j=MAX(JstrR,i),JendR
+                cff = 100. * (1.0_r8+COS(pi*REAL(i,r8)/REAL(Iwrk,r8)))
+                diff2(i,j,itrc) = max(cff, diff2(i,j,itrc))
+              END DO
+            END DO
 \end{verbatim}
 
 \subsubsection{Model domain}
-A large number of horizontal grid points was chosen to resolve the
+A number of horizontal grid points was chosen to resolve the
 domain at roughly 10 km. Values for \code{Lm}, \code{Mm}, and
 \code{N} are:
 \begin{verbatim}
@@ -1986,13 +1984,13 @@ initial and boundary conditions from the SODA files.
 We are using the CORE forcing files (\cite{Large_08}) and computing the
 momentum, heat and salt fluxes from the atmospheric conditions and the
 model's surface temperature. There are two options, one provided by
-\code{bulk\_flux.F} and the other provided by \code{ccsm\_flux}. We
+\code{bulk\_flux.F} and the other provided by \code{ccsm\_flux.F}. We
 are opting to use the second. With minimal fussing, the CORE files
 can be used as is, on their native grid, then interpolated by ROMS
 internally to the domain at hand.
 
 \subsubsection{ocean.in}
-We use an internal timestep of 200 $s$ and an external timestep of 10
+We use an internal time-step of 200 $s$ and an external time-step of 10
 $s$. The horizontal viscosity and diffusion is:
 \begin{verbatim}
         TNU2 == 5.0d0  5.0d0                    ! m2/s
@@ -2010,7 +2008,7 @@ these files; some examples are shown in Fig.\
 
 \begin{figure}
 \setlength{\unitlength}{10mm}
-\begin{picture}(0,16)(0,0)
+\begin{picture}(0,16)(-1.1,0)
 \includegraphics{pics/zeta_NEP5}
   \end{picture}
 \caption{Surface elevation after 200 days showing tides. This is
@@ -2021,7 +2019,7 @@ detided.}
 
 \begin{figure}
 \setlength{\unitlength}{10mm}
-\begin{picture}(0,16)(0,0)
+\begin{picture}(0,16)(-1.1,0)
 \includegraphics{pics/aice_NEP5}
   \end{picture}
 \caption{Ice concentration averaged over the month of April, 1959.}
@@ -2029,7 +2027,7 @@ detided.}
 
 \begin{figure}
 \setlength{\unitlength}{10mm}
-\begin{picture}(0,16)(0,0)
+\begin{picture}(0,16)(-0.2,0)
 \includegraphics{pics/tslice_NEP5}
   \end{picture}
 \caption{Vertical slice if temperature, averaged over the month of
