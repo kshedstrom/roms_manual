@@ -1724,6 +1724,14 @@ different things depending on if we're using OpenMP or MPI:
     # define TILE tile
     #endif
 \end{verbatim}
+Likewise, \code{NtileX} also depends on whether or not we're using MPI:
+\begin{verbatim}
+    #ifdef DISTRIBUTE
+            NtileX(1:Ngrids)=1
+    #else
+            NtileX(1:Ngrids)=NtileI(1:Ngrids)
+    #endif
+\end{verbatim}
 In other words, for MPI, \code{TILE} becomes the process number and
 the loop is only executed once.
 
