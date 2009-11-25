@@ -88,6 +88,8 @@ higher-order, quasi-monotone advection algorithms.
 ROMS now comes with a full suite of advanced data assimilation
 routines; these options are beyond the scope of this document.
 
+Chapter \ref{Starting} has some information on getting started with
+ROMS.
 Chapters \ref{Phys} and \ref{Num} describe the model physics and
 numerical techniques and contain information from Shchepetkin and
 McWilliams \cite{SS2008b} and Haidvogel et al.\
@@ -107,91 +109,3 @@ Chapter \ref{Plothist} describes Hernan Arango's plotting
 programs \code{cnt}, \code{ccnt}, \code{sec}, and \code{csec}.
 %while chapter
 %\ref{Userice} describes the ice subroutines and the coupling procedure.
-
-\subsection{myroms.org}
-\label{Svn}
-We maintain an electronic home for ROMS users at
-\href{http://www.myroms.org}{www.myroms.org}. Go to register,
-which gives you access to the subversion server for the code and to
-the  discussion forum for all things ROMS. There is also a wiki,
-a bug tracking system, and even a developer blog.
-
-The wiki contains parts of this manual, but the nature of wikis is that
-they can be more fluid, with more authors, than a static document such
-as this. Dave Robertson (robertson@marine.rutgers.edu) is the one to
-talk to if you care to contribute to the wiki.
-
-\subsubsection{Acquiring the ROMS code}
-The version of the model described in this document is a merger between
-ROMS 3.2 and a sea-ice model. The main ROMS code is available for
-download via \code{svn} at
-\href{https://www.myroms.org/svn/src/}{https://www.myroms.org/svn/src/}.
-The sea ice code is a branch off a different repository and requires
-special access---contact Dave Robertson (as above) for more information.
-
-\subsection{Getting started}
-Starting off with ROMS is not the easiest thing to do. There are
-some resources, however:
-\begin{itemize}
-   \item You may be best served by going to the 
-\href{https://www.myroms.org/wiki/}{ROMS wiki} which includes
-sections called Getting Started and Tutorials.
-   \item Don't be afraid to use the forum. It has everything from
-employment opportunities to debugging help. Posting there can get
-you help from one of several people, improving your odds of success
-over private emails. Registered users get an email once a day about
-new postings, so you might have to wait a day (or more) for a reply.
-   \item There have been ROMS meetings and classes in which a tutorial
-session is included as part of the program. There are various resources
-from these online---I've heard good things about the
-\href{http://eros.eas.gatech.edu/ROMS-Tutorial/tutorials.html}{tutorials}
-from Manu Di Lorenzo.
-   \item ROMS comes with several cases all ready to go at the flip
-of a switch. Try these out first and get to understand how they
-are set up.
-    \begin{itemize}
-      \item \S\ref{Build} describes how to pick the cases and set up
-      the build environment.
-      \item \S\ref{Cpp1} lists all the ROMS options that can be
-      added to your case.
-      \item \S\ref{Functionals} lists the fields which can be
-      provided to ROMS via analytic expressions.
-      \item \S\ref{ASCII_in} lists the input parameters ROMS reads
-      from a text file at run time.
-      \item \S\ref{Code} and \S\ref{Wave} are meant to be
-      informative for the simple and not-so-simple cases. If that
-      isn't the case, please let me know.
-    \end{itemize}
-\end{itemize}
-
-\subsection{Warnings and bugs}
-ROMS is not a large program by some standards, but it is still complex
-enough to require some effort to use effectively.
-Some specific things to be wary of include:
-\begin{itemize}
-  \item It is recommended that you use 64 bits of precision rather
-than 32 bits.
-  \item The code must be run through the C preprocessor before it
-is compiled.  This can occasionally be dangerous, especially with
-the newer ANSI C versions of \code{cpp}.  Potential problems are listed
-in Appendix \ref{Cpp}. The gnu \code{cpp} with the \code{-traditional} flag
-is known to work well.
-  \item The vertical $\sigma$-coordinate was chosen as being a sensible
-way to handle variations in the water depth as seen in the coastal
-oceans. Changes to the code have allowed us to expand the well-behaved
-range of depths and the range of values for \code{THETA\_S}, plus
-there are some new vertical coordinate options I haven't tried. I am
-therefore not comfortable with providing concrete limits as I have in
-the past.
-  \item Nevertheless, for realistic problems we often fail to resolve the
-bathymetric slopes and we then resort to bathymetric smoothing.
-This in turn changes the shape of the basin and leads to its own set of
-problems, such as altered sill depths. Also, the currents will react to
-the change in shelf slope---you are now solving a different problem.
-You may want to explore a matlab tool for minimally smoothing
-the bathymetry found at:
-
-\href{http://www.liga.ens.fr/~dutour/Bathymetry/index.html}{http://www.liga.ens.fr/$\sim$dutour/Bathymetry/index.html}.
-  \item There remain bugs in ROMS. If you find any, please report
-them on the forum and/or the bug tracking system at myroms.org.
-\end{itemize}
