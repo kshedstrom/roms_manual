@@ -2,7 +2,7 @@
 \label{Starting}
 
 \subsection{myroms.org}
-\label{Svn}
+\label{Myroms}
 Starting off with ROMS is not the easiest thing to do, and it just
 seems to be getting more complex as time goes by. There are
 some resources, however, beginning with the
@@ -15,50 +15,45 @@ a bug tracking system, and even a developer blog.
 The wiki contains parts of this manual, but the nature of wikis is that
 they can be more fluid, with more authors, than a static document such
 as this. Dave Robertson (robertson@marine.rutgers.edu) is the one to
-talk to if you care to contribute to the wiki.
+talk to if you would like to contribute to the wiki.
 
 \subsection{Prerequisites}
-As mentioned in \S\ref{Introduction}, ROMS has some external
+As mentioned in Chapter \ref{Intro}, ROMS has some external
 requirements. These are:
 \begin{itemize}
     \item UNIX or UNIX-like environment, such as
       \href{http://www.redhat.com/services/custom/cygwin/}{Cygwin}.
+    \item A Fortran 90 compiler.
     \item The
       \href{http://www.unidata.ucar.edu/software/netcdf/index.html}{NetCDF
-      library}.
+      library} compiled with the above compiler, including the
+      Fortran 90 interface.
     \item \href{http://subversion.tigris.org}{svn}, the subversion
-      revision control software. See the
+      revision control software. See Appendix \ref{Svn} and the
       \href{https://www.myroms.org/wiki/index.php/Subversion}{ROMS wiki}.
     \item \href{http://www.gnu.org/software/make/}{Gnu make} version
-      3.81 or higher.
-    \item \href{http://en.wikipedia.org/wiki/C_preprocessor}{C
+      3.81 or higher. Appendix \ref{Gmake} contains more than you
+      ever wanted to know about this software.
+    \item A \href{http://en.wikipedia.org/wiki/C_preprocessor}{C
       preprocessor}---the one from gnu with the \code{-traditional}
       flag works well. See Appendix \ref{Cpp}.
-    \item \href{http://www.perl.org}{Perl} scripting language.
+    \item The \href{http://www.perl.org}{Perl} scripting language.
+    \item \href{http://www.mathworks.com/products/matlab/}{Matlab} is
+      optional, but it is a common tool for pre- and post-processing
+      of ROMS files.
 \end{itemize}
+Make sure you've got the right environment before attempting to
+download or compile ROMS.
+
 \subsection{Acquiring the ROMS code}
-The version of the model described in this document is a merger between
-ROMS 3.2 and a sea-ice model. The main ROMS code is available for
-download via \code{svn} at
+The main ROMS code is available for download via \code{svn} at
 \href{https://www.myroms.org/svn/src/}{https://www.myroms.org/svn/src/}.
+The version of the model described in this document is a merger between
+ROMS 3.2 and a sea-ice model.
 The sea ice code is a branch off a different repository and requires
 special access---contact Dave Robertson (as above) for more information.
 
-\begin{itemize}
-   \item You may be best served by going to the 
-\href{https://www.myroms.org/wiki/}{ROMS wiki} which includes
-sections called Getting Started and Tutorials.
-   \item Don't be afraid to use the forum. It has everything from
-employment opportunities to debugging help. Posting there can get
-you help from one of several people, improving your odds of success
-over private emails. Registered users get an email once a day about
-new postings, so you might have to wait a day (or more) for a reply.
-   \item There have been ROMS meetings and classes in which a tutorial
-session is included as part of the program. There are various resources
-from these online---I've heard good things about the
-\href{http://eros.eas.gatech.edu/ROMS-Tutorial/tutorials.html}{tutorials}
-from Manu Di Lorenzo.
-   \item ROMS comes with several cases all ready to go at the flip
+ROMS comes with several cases all ready to go at the flip
 of a switch. Try these out first and get to understand how they
 are set up.
     \begin{itemize}
@@ -70,11 +65,237 @@ are set up.
       provided to ROMS via analytic expressions.
       \item \S\ref{ASCII_in} lists the input parameters ROMS reads
       from a text file at run time.
-      \item \S\ref{Code} and \S\ref{Wave} are meant to be
+      \item Chapters \ref{Code} and \ref{Wave} are meant to be
       informative for the simple and not-so-simple cases. If that
       isn't the case, please let me know.
     \end{itemize}
+In addition to this manual, there are some other ROMS resources:
+\begin{itemize}
+   \item You may be best served by going to the 
+\href{https://www.myroms.org/wiki/}{ROMS wiki} which includes
+sections called Getting Started and Tutorials.
+   \item Don't be afraid to use the forum. It has everything from
+employment opportunities to debugging help. Posting there can get
+you help from one of several people, improving your odds of success
+over private emails. Registered users get an email once a day about
+new postings, so you might have to wait a day (or more) for a reply.
+   \item There have been ROMS meetings and classes in which a tutorial
+session is included as part of the program.
+   \item There are various resources
+from these online---I've heard good things about the
+\href{http://eros.eas.gatech.edu/ROMS-Tutorial/tutorials.html}{tutorials}
+from Manu Di Lorenzo.
 \end{itemize}
+
+\subsection{Compiling ROMS}
+\label{Build}
+
+\subsubsection{Environment Variables for \code{make}}
+\label{make_var}
+
+ROMS has a growing list of choices the user must make about the
+compilation before starting the compile process,
+set in user-defined variables. Since we now use \code{gnu make}, it is
+possible to set the value of these variables in the Unix environment,
+rather than necessarily inside the \code{Makefile} (see \S\ref{Gmake}).
+The user-definable variables understood by the ROMS \code{makefile} are:
+\begin{klist}
+
+\kitem{ROMS\_APPLICATION} Set the \code{cpp} option defining the particular
+application. This is used for setting up options inside the code
+specific to this application and also determines the name of the
+\code{.h} header file for it. This can be either a predefined
+case, such as \code{BENCHMARK}, or one of your own, such as \code{NEP5}.
+
+\kitem{MY\_HEADER\_DIR} Sets the path to the user's header file, if
+any. It can be left empty for the standard cases, where \code{benchmark.h}
+and the like are found in \code{ROMS/Include}, which is already in
+the search path. In the case of \code{NEP5}, this is set to
+\code{Apps/NEP} where \code{nep5.h} resides.
+
+\kitem{MY\_ANALYTICAL\_DIR} Sets the path to the user's analytic files
+described in \S\ref{Functionals}, if any. This can be \code{User/Functionals}
+or some other location. I tend to place both the header file and the
+functionals in the same directory, one directory per application.
+
+\kitem{MY\_CPP\_FLAGS} Set tunable \code{cpp} options. Sometimes it is desirable
+to activate one or more \code{cpp} options to run different variants of the
+same application without modifying its header file. If this is the
+case, specify each option here using the \code{-D} syntax. Notice that
+you need to use the shell's quoting syntax (either single or double
+quotes) to enclose the definition if you are using one of the build
+scripts below.
+
+\kitem{NestedGrids} Integer number of grids in the setup, usually 1.
+
+\kitem{Compiler-specific Options} These flags are used by the files
+inside the \code{Compilers} directory.
+\begin{klist}
+  \kitem{USE\_DEBUG} Set this to \code{on} to turn off optimization
+and turn on the \code{-g} flag for debugging.
+
+  \kitem{USE\_MPI} Set this if running an MPI parallel job.
+  \kitem{USE\_OpenMP} Set this if running an OpenMP parallel job.
+  \kitem{USE\_MPIF90} I'm frankly not sure about this one. I suppose
+  if you have both mpich and some other MPI for a given
+  compiler/system pair, this could be used to switch between them.
+  \kitem{USE\_LARGE}  Some systems support both 32-bit and 64-bit
+  options. Select this to get 64-bit addressing, usually used for
+  programs need more than 2 GB of memory.
+  \kitem{NETCDF\_INCDIR} The location of the \code{netcdf.mod} and
+  \code{typesizes.mod} files.
+  \kitem{NETCDF\_LIBDIR} The location of the NetCDF library.
+  \kitem{USE\_NETCDF4} Set this if linking against the NetCDF4
+  library, which needs the HDF5 library and therefore:
+  \kitem{HDF5\_LIBDIR} The location of the HDF5 library.
+\end{klist}
+
+\kitem{FORT} A shorthand name for the compiler to be used when
+selecting which system-compiler file is to be included from the
+\code{Compilers} directory. See section \S\ref{Inc_fort} and
+\S\ref{make_env}.
+
+\kitem{Local File Options}
+\begin{klist}
+  \kitem{BINDIR} Directory in which to place the binary executable.
+The default is ``\code{.}'', the current (top) directory.
+
+  \kitem{SCRATCH\_DIR} Put the \code{.f90} and the temporary binary files
+in a build directory to avoid clutter. The default is \code{Build}
+under the top directory. It can also point to differing places if you want
+to keep these files for multiple projects at the same time, each in
+their own directory.
+\end{klist}
+\end{klist}
+
+\subsubsection{Providing the Environment}
+\label{make_env}
+
+Before compiling, you will need to find out some background information:
+\begin{itemize}
+ \item What is the name of your compiler?
+ \item What is returned by \code{uname -s} on your system?
+ \item Is there a working NetCDF library?
+ \item Where is it?
+ \item Was it built with the above compiler?
+ \item Do you have access to MPI or OpenMP?
+\end{itemize}
+As described more fully in \S\ref{Inc_fort}, the \code{makefile} will be
+looking for a file in the \code{Compilers} directory with the
+combination of your operating system and your compiler. For
+instance, using Linux and the Pathscale compiler, the file would be
+called \code{Linux-path.mk}. Is the corresponding file for your
+system and compiler in the \code{Compilers} directory? If not, you
+will have to create it following the existing examples there.
+
+Next, there are two ways to provide the location for the NetCDF
+files (and optional HDF5 library). One is by editing the corresponding
+lines in your system-compiler file. Another way is through the
+Unix environment variables. If you are always going to be using
+the same compiler on each system, you can edit your \code{.profile}
+or \code{.login} files to globally set them. Here is an example for
+\code{tcsh}:
+\begin{verbatim}
+setenv NETCDF_INCDIR /usr/local/netcdf4/include
+setenv NETCDF_LIBDIR /usr/local/netcdf4/lib
+setenv HDF5_LIBDIR /usr/local/hdf5/lib
+\end{verbatim}
+The \code{ksh/bash} equivalent is:
+\begin{verbatim}
+export NETCDF_INCDIR=/usr/local/netcdf4/include
+export NETCDF_LIBDIR=/usr/local/netcdf4/lib
+export HDF5_LIBDIR=/usr/local/hdf5/lib
+\end{verbatim}
+
+\subsubsection{Build scripts}
+
+If you have more than one application (or more than one compiler),
+you will get tired of editing the \code{makefile}.
+One option is to have a \code{makefile} for each configuration, then
+type:
+\begin{verbatim}
+    make -f makefile.circle_pgi
+\end{verbatim}
+for instance. Another option of keeping track of the user-defined
+choices in a \code{build script}. The advantage is that updates
+to the \code{build scripts} are less frequent than updates to the
+\code{makefile}. There are now two of these scripts in the \code{ROMS/Bin}
+directory: \code{build.sh} (which is surprisingly a \code{csh} script)
+and \code{build.bash}.  The \code{build scripts} use environment variables
+to provide values for the list above, overwriting those found in the ROMS
+\code{makefile}. Just as in the multiple \code{makefile} option, you will
+need as many copies of the build script as you have applications. The
+scope of these variables is local to the build script, allowing you to
+compile different applications at the same time from the same sources
+as long as each \code{\$(SCRATCH\_DIR)} is unique.
+
+Both scripts have the same options:
+\begin{klist}
+  \kitem{-j \code{[N]}} Compile in parallel using \code{N} cpus,
+  omit argument for all available CPUs.
+  \kitem{-noclean}    Do not clean already compiled objects.
+\end{klist}
+Note that the default is to compile serially and to issue a
+``\code{make clean}'' before compiling. It is left as an exercise
+for the user if they prefer different default behavior.
+
+There are also a few variables which are not recognized by the ROMS
+\code{makefile}, but are used locally inside the build script. These
+are:
+\begin{klist}
+\kitem{MY\_PROJECT\_DIR} This is used in setting
+\code{\$(SCRATCH\_DIR)} and \code{\$(BINDIR)}.
+
+\kitem{MY\_ROMS\_SRC} Set the path to the user's local current ROMS source
+code. This is used so that the script can be run from any directory,
+not necessarily only from the top ROMS directory.
+\end{klist}
+
+\subsection{Running ROMS}
+\label{Running}
+ROMS expects to read a number of variables from an ASCII file
+(details of the file are in \S\ref{ASCII_in}).
+For serial or OpenMP execution, the syntax is:
+\begin{verbatim}
+       oceanS (or oceanO) < ocean.in > roms.out &
+\end{verbatim}
+while MPI execution requires:
+\begin{verbatim}
+       oceanM ocean.in > roms.out &
+\end{verbatim}
+so that each process can read the file.
+
+Realistically, you would only want to run relatively small
+applications such as \code{UPWELLING} interactively on the command
+line as shown here. Also, for either of the parallel options, you
+will have to provide some information to ROMS and to the operating
+system about how many threads or processes to use. Parallel
+computers may also have some sort of batch queuing system in place
+in which you would submit a job script. I have easy access to two
+Linux clusters with differing details in the systems,
+requiring different job scripts. Some MPI environments
+require that you submit your job with:
+\begin{verbatim}
+     cd $PBS_O_WORKDIR
+     mpirun -np 32 ./oceanM ocean_benchmark3.in
+\end{verbatim}
+while others need:
+\begin{verbatim}
+     aprun -np 32 ./oceanM ocean_benchmark3.in
+\end{verbatim}
+You just have to find out from the locals.
+
+If all goes according to plan, ROMS will create both a collection
+of NetCDF files and a verbose text file on standard out. Chapter
+\ref{Plothist} describes one way to view the gridded NetCDF files.
+Other tools that have been used include
+\href{http://www.mathworks.com/products/matlab/}{Matlab},
+\href{http://www.ncl.ucar.edu/}{NCL}, and
+\href{http://www.python.org/}{Python}.
+
+If things don't go according to plan, the text output file is your
+friend. Examine it carefully. If it fails on the \code{UPWELLING}
+problem, you can compare your output to that in \S\ref{Output}.
 
 \subsection{Warnings and bugs}
 ROMS is not a large program by some standards, but it is still complex
@@ -91,18 +312,19 @@ is known to work well.
   \item The vertical $\sigma$-coordinate was chosen as being a sensible
 way to handle variations in the water depth as seen in the coastal
 oceans. Changes to the code have allowed us to expand the well-behaved
-range of depths and the range of values for \code{THETA\_S}, plus
-there are some new vertical coordinate options I haven't tried. I am
-therefore not comfortable with providing concrete limits as I have in
-the past.
-  \item Nevertheless, for realistic problems we often fail to resolve the
-bathymetric slopes and we then resort to bathymetric smoothing.
-This in turn changes the shape of the basin and leads to its own set of
-problems, such as altered sill depths. Also, the currents will react to
-the change in shelf slope---you are now solving a different problem.
-You may want to explore a matlab tool for minimally smoothing
-the bathymetry found at:
-
+range of depths and the range of values for \code{THETA\_S}, plus there
+are some new vertical coordinate options. I used to give guidelines on
+``reasonable'' values for \code{THETA\_S}, but I no longer know
+what's reasonable.
+  \item $\sigma$-coordinates have long had a bad reputation
+because errors in the pressure gradient terms can lead to spurious
+currents. These errors are must less troublesome than in the past due
+to code improvements and can also be controlled with some smoothing
+of the bathymetry. This in turn changes the shape of the basin and
+leads to its own set of problems, such as altered sill depths. Also, the
+currents will react to the change in shelf slope---you are now solving a
+different problem. You may want to explore a matlab tool for minimally
+smoothing the bathymetry found at:
 \href{http://www.liga.ens.fr/~dutour/Bathymetry/index.html}{http://www.liga.ens.fr/$\sim$dutour/Bathymetry/index.html}.
   \item There remain bugs in ROMS. If you find any, please report
 them on the forum and/or the bug tracking system at myroms.org.

@@ -347,18 +347,9 @@ These too can be specified in a forcing file if not provided via
 
 \subsubsection{\code{ocean.in}}
 \label{ASCII_in}
-ROMS expects to read a number of variables from an ASCII file.
-For serial or OpenMP execution, the syntax is:
-\begin{verbatim}
-       oceanS (or oceanO) < ocean.in > roms.out &
-\end{verbatim}
-while MPI execution requires:
-\begin{verbatim}
-       oceanM ocean.in > roms.out &
-\end{verbatim}
-so that each process can read the file.
-
-Example files are in \code{ROMS/External} with names like
+ROMS expects to read a number of variables from an ASCII file as described
+in \S\ref{Running}.
+Example input files are in \code{ROMS/External} with names like
 \code{ocean\_grav\_adj.in}, where ``grav\_adj'' refers to the name of
 the application. Lines beginning with ``!'' are comments and will be
 ignored by ROMS on reading them.
@@ -1100,6 +1091,7 @@ The vertical stretching is set to a modest value of
 \end{verbatim}
 
 \subsubsection{Output}
+\label{Output}
 The model writes some information to standard out, after setting
 \code{ninfo} to 72:
 \begin{verbatim}

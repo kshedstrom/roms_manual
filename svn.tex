@@ -1,0 +1,231 @@
+\section{Subversion}
+\label{Svn}
+
+The ROMS source code is distributed using
+\href{http://subversion.tigris.org}{Subversion} (svn). There are svn
+clients available for nearly every operating system and many
+resources available, including an O'Reilly book \cite{SVN}. I'll
+just cover a few basics here, taken in part from the
+\href{https://www.myroms.org/wiki/index.php/Subversion}{ROMS wiki}.
+
+If you wish to maintain your own copy of ROMS in a source code
+repository, you may want to investigate \href{http://git-scm.com/}{git},
+which has the ability to download from an svn server. It too has
+an O'Reilly book (\cite{GIT2}), plus I enjoyed Swicegood's book
+(\cite{GIT1}).
+
+\subsection{Overview}
+Subversion is a tool for managing software development that keeps
+track of who modified what and allows the return to a previous
+version if changes don't work as expected. All the ROMS/TOMS files
+are stored in a SVN repository on www.myroms.org with access
+controlled by requiring authentication with the same ROMS
+Username/Password combination assigned to registered users of the
+ROMS Forum.
+
+This svn repository is the official version of the code which only
+the developers are allowed to change. Users should download the ROMS
+code to their local machines using an svn client. Don't attempt to
+use a regular web browser to browse or download files from the svn
+repository - there are much better tools for interacting with the
+code repository.
+
+We strongly recommend that users always check out the current {\em trunk}
+version since this has the most recent updates and bug fixes. The
+tags version is kept largely as an historical record of stable
+releases at the conclusion of major code upgrades.
+
+Below is a general description of how subversion works. Please look
+at the svn book (\cite{SVN}) for more detailed information and the wiki
+for more on some available GUI clients.
+
+\subsection{Checking out the code}
+WARNING: It is strongly suggested that you checkout the ROMS source
+code using the same operating system you wish to compile and run
+ROMS on. If you download the code on a Windows machine and wish to
+run it on a non-Windows machine you will need convert the line
+endings with a utility like dos2unix or recode. Even with these
+utilities you may still have problems compiling ROMS.
+
+In order download source code from a Subversion repository, svn
+client software must be installed on your local machine. If you are
+compiling subversion on your own be sure to build it with SSL
+support or you will not be able to download the ROMS source code.
+Most Linux distributions come with subversion (the command name is
+svn), so shell commands may be used without installing additional
+software. If your username on your local computer is not the same as
+your ROMS username you will need to pass the --username <username>
+option to svn; an example is given below. The general form of
+subversion commands is: 
+\begin{verbatim}
+     svn action from to {optional_qualifiers} 
+\end{verbatim}
+To check-out the files from the ROMS repository trunk:
+\begin{verbatim}
+    svn checkout https://www.myroms.org/svn/src/trunk MyDir
+\end{verbatim}
+where MyDir is the destination directory on your local computer.
+Note the https rather than http. If your username on your local
+computer is not the same as your ROMS username you will need to pass
+the --username option to svn:
+\begin{verbatim}
+   svn checkout --username joe_roms https://www.myroms.org/svn/src/trunk MyDir
+\end{verbatim}
+You only check out once, after that, a hidden directory called .svn
+exists to keep track of the source, destination and a bunch of other
+information. Your username and password will also be saved.
+
+\subsection{Updates}
+Now and again, you might feel the urge to get up to speed with the
+latest changes that have been made to the ROMS repository. When that
+happens, simply go to the directory that was ``MyDir'' above and
+type:
+\begin{verbatim}
+    svn update
+\end{verbatim}
+Subversion will remember where you checked out from before and
+see if a newer revision exists. If so, it will download and apply
+all the relevant changes.
+
+\subsection{Code changes}
+As you use ROMS, you may find yourself adding new files and new chunks of
+code to existing files. Unless you are a developer with write access to the
+repository at www.myroms.org, you have no easy way to save your changes
+within the svn framework, since any one directory can only point to one
+repository. To keep getting updates from the trunk, you must keep using the
+svn server at myroms.org. At the very least, saving a tarball before
+fetching major updates is a prudent step.
+
+\subsection{Conflicts}
+Sometimes when you make changes to your copy of the ROMS code, those changes
+will conflict with changes made to the repository. This means that the
+changes from the server overlapped with your own, and now you have to
+manually choose between them.
+
+Whenever a conflict occurs, three things typically occur to assist you in
+resolving that conflict:
+\begin{itemize}
+        \item Subversion halts during the update, offering you several choices,
+and remembers that the file is in a state of conflict if you don't clear it
+right then.
+        \item If Subversion considers the file to be mergeable, it places
+conflict markers (special strings of text which delimit the “sides” of the
+conflict, usually ``<'' and ``>'' characters) into the file to visibly
+demonstrate the overlapping areas.
+        \item For every conflicted file, Subversion places three extra
+unversioned (not under Subversion control) files in your working copy: 
+\begin{itemize}
+            \kitem{filename.mine}: This is your file as it existed
+      in your working copy (local copy) before you updated your working
+      copy. This file has only your latest changes in it. (If Subversion
+      considers the file to be unmergeable, then the .mine file isn't
+      created, since it would be identical to the working file.)
+            \kitem{filename.rOLDREV}: This is the file that was the
+      BASE revision before you updated your working copy. That is,
+      the file that you checked out before you made your latest edits.
+            \kitem{filename.rNEWREV}: This is the file that your
+      Subversion client just received from the server when you updated
+      your working copy. This file corresponds to the HEAD (latest)
+      revision of the repository.
+  \end{itemize}
+\end{itemize}
+For example, let's say you checked out revision 280 and made some changes
+to \code{User/Functionals/ana\_hmixcoef.h}. Now you want to update your
+ROMS source code to take advantage of a new algorithm but when you run
+svn update your \code{ana\_hmixcoef.h} is now in conflict with the new
+version in the repository.
+\begin{verbatim}
+    > svn update
+    U Version
+    U ROMS/Modules/mod_mixing.F
+    U ROMS/Functionals/ana_hmixcoef.h
+    C User/Functionals/ana_hmixcoef.h
+    Updated to revision 291.
+
+    >
+\end{verbatim}
+The above is with an older version of svn. The latest, greatest does this:
+\begin{verbatim}
+    Conflict discovered in 'ROMS/Utility/inp_par.F'.
+    Select: (p) postpone, (df) diff-full, (e) edit,
+    (mc) mine-conflict, (tc) theirs-conflict,
+    (s) show all options:
+\end{verbatim}
+Selecting (p) will behave as the old version.
+
+If you get a conflict, you need to do one of three things:
+\begin{itemize}
+        \item Merge the conflicted text “by hand” by examining and
+     editing the conflict markers within the file.
+        \item Copy one of the temporary files on top of your working file.
+        \item Run svn revert <filename> to throw away all of your local
+     changes.
+\end{itemize}
+Once you've resolved the conflict, you need to let Subversion know by
+running ``svn resolved''. This removes the three temporary files and
+Subversion no longer considers the file to be in a state of conflict. More
+on this below.
+
+\subsubsection{Merging conflicts by hand}
+To merge your changes with those from the latest revision in the repository,
+open \code{User/Functionals/ana\_hmixcoef.h} in your favorite editor and
+look for a string of ``<'' characters. You should see something like this:
+\begin{verbatim}
+    <<<<<<< .mine
+    #ifndef DISTRIBUTE
+    IF (Lanafile.and.(tile.eq.0)) THEN
+    #else
+    IF (Lanafile) THEN
+    #endif
+    =======
+    #ifdef DISTRIBUTE
+    IF (Lanafile) THEN
+    #else
+    IF (Lanafile.and.(tile.eq.0)) THEN
+    #endif
+    >>>>>>> .r291
+\end{verbatim}
+After comparing the two code blocks (separated by the ``='' symbols), you
+decide that you prefer the logic from the repository so you remove the
+conflict markers and your code so the section now looks like this:
+\begin{verbatim}
+    #ifdef DISTRIBUTE
+    IF (Lanafile) THEN
+    #else
+    IF (Lanafile.and.(tile.eq.0)) THEN
+    #endif
+\end{verbatim}
+
+Now you can save the file and let Subversion know that you have resolved the
+conflict:
+\begin{verbatim}
+    > svn resolved User/Functionals/ana_hmixcoef.h
+    Resolved conflicted state of 'User/Functionals/ana_hmixcoef.h'
+\end{verbatim}
+
+\subsubsection{Copying a file onto your working file}
+If you get a conflict and decide that you want to throw out your changes,
+you can merely copy one of the temporary files created by Subversion over
+the file in your working copy. Let's say you want to use the new revision
+from the repository:
+\begin{verbatim}
+    > cd User/Functionals
+    > ls ana_hmixcoef.h*
+    ana_hmixcoef.h ana_hmixcoef.h.mine ana_hmixcoef.h.r280
+    ana_hmixcoef.h.r291
+
+    > cp ana_hmixcoef.h.r291 ana_hmixcoef.h
+    > svn resolved ana_hmixcoef.h
+    Resolved conflicted state of 'ana_hmixcoef.h'
+\end{verbatim}
+
+\subsubsection{Punting: Using svn revert}
+If you get a conflict, and upon examination decide that you want to throw
+out your changes and start your edits again, just revert your changes:
+\begin{verbatim}
+    > cd User/Functionals
+    > svn revert ana_hmixcoef.h
+    Reverted 'ana_hmixcoef.h'
+\end{verbatim}
+Note that when you revert a conflicted file, you don't have to run
+``svn resolved''.
