@@ -931,14 +931,31 @@ alter the flow.
 
 \input{mixing}
 
-\subsection{Open boundary conditions}
-Need update for ROMS here...
+\subsection{Boundary Conditions}
+ROMS comes with a variety of boundary conditions, including open,
+closed, and periodic. See Marchesiello et al.\
+\cite{Marchesiello2001} for a more thorough exploration of the
+options. Some options require a value for the boundary points
+from either an included analytic expression (\S\ref{Functionals})
+or from an external NetCDF file. Here, $\phi^{\rm ext}$ represents
+the exterior value of a quantity $\phi$.
 
 \subsubsection{Gradient boundary condition}
 This boundary condition is extremely simple and consists of setting the
 gradient of a field to zero at the edge. The outside value is set equal
-to the closest interior value. It is probably too simple to be useful
-in realistic problems.
+to the closest interior value. This is the correct conditions for
+tracers at a closed wall.
+
+\subsubsection{Wall boundary condition}
+ROMS now assumes a wall condition if no other boundary condition is
+chosen. This is a zero gradient condition for tracers and zero flow
+for the normal velocity. For tangential velocities, the wall is
+treated as either no-slip or free-slip, depending on the value of
+\code{gamma2} chosen by the user.
+
+\subsubsection{Clamped boundary condition}
+Almost as simple is setting the boundary value to a known exterior
+value.
 
 \subsubsection{Radiation boundary condition}
 In realistic domains, open boundary conditions can be extremely
@@ -951,7 +968,7 @@ propagating normal to the boundary, but has problems when waves
 approach the boundary at an angle. Raymond and Kuo \cite{Raymond84}
 have modified the scheme to account for propagation in all three
 directions. In ROMS, only the two horizontal directions are accounted
-for:
+for (with the recommended \code{RADIATION_2D} option):
 \begin{equation}
    \frac{\partial C}{\partial t} = - \left( C_x \frac{\partial
    C}{\partial \xi} + C_y \frac{\partial C}{\partial \eta}) \right)
@@ -978,3 +995,29 @@ one-sided differences.
 The radiation approach is appropriate for waves leaving the domain. A
 check is made to see which way the phase velocity is headed. If it is
 entering the domain, a zero gradient condition is applied.
+
+\subsubsection{Mixed radiation-nudging boundary condition}
+As described in Marchesiello et al., ROMS has an option for providing
+radiation conditions on outflow and nudging to a known exterior
+value on inflow. This is implemented as a variation on the radiation
+condition, requiring two timescales: the inflow timescale and the
+outflow timescale. These timescales are provided in the input to
+ROMS (\S\ref{ASCII_in}).
+
+\subsubsection{Flather boundary condition}
+For the normal component of the barotropic velocity, one option is
+to radiate out at the speed of the external gravity waves (Flather,
+\cite{Flather76}):
+\begin{equation}
+  \overline{u} = \overline{u}^{\rm ext} - \sqrt{\frac{g}{h}} \,
+  (\zeta - \zeta^{\rm ext})
+\end{equation}
+The exterior values are often used to provide tidal
+boundary contitions to the barotropic mode. However, there are times
+when only the tidal elevation is known. A reduced physics option
+is available for estimating $\overline{u}^{\rm ext}$ in that case.
+
+\subsubsection{Chapman boundary condition}
+The corresponding tangential boundary condition was developed by
+Chapman (\cite{Chapman85}), equivalent to a reduced physics
+boundary condition.
