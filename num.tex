@@ -943,32 +943,63 @@ the exterior value of a quantity $\phi$.
 \subsubsection{Gradient boundary condition}
 This boundary condition is extremely simple and consists of setting the
 gradient of a field to zero at the edge. The outside value is set equal
-to the closest interior value. This is the correct conditions for
-tracers at a closed wall.
+to the closest interior value.
 
 \subsubsection{Wall boundary condition}
 ROMS now assumes a wall condition if no other boundary condition is
-chosen. This is a zero gradient condition for tracers and zero flow
-for the normal velocity. For tangential velocities, the wall is
-treated as either no-slip or free-slip, depending on the value of
-\code{gamma2} chosen by the user.
+chosen. This is a zero gradient condition for tracers and the
+surface elevation and zero flow for the normal velocity. For
+tangential velocities, the wall is treated as either no-slip or
+free-slip, depending on the value of \code{gamma2} chosen by the
+user.
 
 \subsubsection{Clamped boundary condition}
 Almost as simple is setting the boundary value to a known exterior
 value.
+\begin{equation}
+   \phi = \phi^{\rm ext}
+\end{equation}
+
+\subsubsection{Flather boundary condition}
+For the normal component of the barotropic velocity, one option is
+to radiate out at the speed of the external gravity waves (Flather,
+\cite{Flather76}):
+\begin{equation}
+  \overline{u} = \overline{u}^{\rm ext} - \sqrt{gD} \,
+  (\zeta - \zeta^{\rm ext})
+\end{equation}
+The exterior values are often used to provide tidal
+boundary contitions to the barotropic mode. However, there are times
+when only the tidal elevation is known. A reduced physics option
+is available for estimating $\overline{u}^{\rm ext}$ in that case.
+
+\subsubsection{Chapman boundary condition}
+The corresponding condition for surface elevation was investigated
+by Chapman (\cite{Chapman85}), assuming all outgoing signals leave
+at the shallow-water wave speed of $\sqrt{gD}. This can be useful
+in combination with the Flather condition on the 2-D momentum equations.
+\begin{equation}
+  \frac{\partial \zeta}{\partial t} = \pm \sqrt{\frac{g}{h}} \,
+  \frac{\partial \zeta}{\partial \xi}
+\end{equation}
+The time derivative here can be handled either explicitly or
+implicitly. The model uses an implicit timestep, with the term
+$\frac{\partial \zeta}{\partial \xi}$ being evaluated at the new
+timestep.
 
 \subsubsection{Radiation boundary condition}
 In realistic domains, open boundary conditions can be extremely
-difficult to get right. There can be situations where incoming flow and
-outgoing flow happen along the same boundary or even at the same
-horizontal location. Orlanski \cite{Orlanski76} proposed a radiation
-scheme in which a local phase velocity is computed and used to radiate
-things out (if it is indeed going out). This works well for a wave
-propagating normal to the boundary, but has problems when waves
-approach the boundary at an angle. Raymond and Kuo \cite{Raymond84}
-have modified the scheme to account for propagation in all three
-directions. In ROMS, only the two horizontal directions are accounted
-for (with the recommended \code{RADIATION_2D} option):
+difficult to get right. There are situations in which incoming flow and
+outgoing flow happen along the same boundary or even at different
+depths at the same horizontal location. Orlanski \cite{Orlanski76}
+proposed a radiation scheme in which a local phase velocity is
+computed and used to radiate things out (if it is indeed going out).
+This works well for a wave propagating normal to the boundary, but
+has problems when waves approach the boundary at an angle. Raymond
+and Kuo \cite{Raymond84} have modified the scheme to account for
+propagation in all three directions. In ROMS, only the two horizontal
+directions are accounted for (with the recommended \code{RADIATION_2D}
+option):
 \begin{equation}
    \frac{\partial C}{\partial t} = - \left( C_x \frac{\partial
    C}{\partial \xi} + C_y \frac{\partial C}{\partial \eta}) \right)
@@ -1000,24 +1031,6 @@ entering the domain, a zero gradient condition is applied.
 As described in Marchesiello et al., ROMS has an option for providing
 radiation conditions on outflow and nudging to a known exterior
 value on inflow. This is implemented as a variation on the radiation
-condition, requiring two timescales: the inflow timescale and the
-outflow timescale. These timescales are provided in the input to
+condition, requiring two timescales: the inflow nudging timescale and the
+outflow nudging timescale. These timescales are provided in the input to
 ROMS (\S\ref{ASCII_in}).
-
-\subsubsection{Flather boundary condition}
-For the normal component of the barotropic velocity, one option is
-to radiate out at the speed of the external gravity waves (Flather,
-\cite{Flather76}):
-\begin{equation}
-  \overline{u} = \overline{u}^{\rm ext} - \sqrt{\frac{g}{h}} \,
-  (\zeta - \zeta^{\rm ext})
-\end{equation}
-The exterior values are often used to provide tidal
-boundary contitions to the barotropic mode. However, there are times
-when only the tidal elevation is known. A reduced physics option
-is available for estimating $\overline{u}^{\rm ext}$ in that case.
-
-\subsubsection{Chapman boundary condition}
-The corresponding tangential boundary condition was developed by
-Chapman (\cite{Chapman85}), equivalent to a reduced physics
-boundary condition.
