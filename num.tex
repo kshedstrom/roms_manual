@@ -962,8 +962,8 @@ value.
 
 \subsubsection{Flather boundary condition}
 For the normal component of the barotropic velocity, one option is
-to radiate out at the speed of the external gravity waves (Flather,
-\cite{Flather76}):
+to radiate out deviations from exterior values at the speed of the external
+gravity waves (Flather, \cite{Flather76}):
 \begin{equation}
   \overline{u} = \overline{u}^{\rm ext} - \sqrt{gD} \,
   (\zeta - \zeta^{\rm ext})
@@ -976,8 +976,8 @@ is available for estimating $\overline{u}^{\rm ext}$ in that case.
 \subsubsection{Chapman boundary condition}
 The corresponding condition for surface elevation was investigated
 by Chapman (\cite{Chapman85}), assuming all outgoing signals leave
-at the shallow-water wave speed of $\sqrt{gD}. This can be useful
-in combination with the Flather condition on the 2-D momentum equations.
+at the shallow-water wave speed of $\sqrt{gD}$. This can be useful
+when using the Flather condition on the 2-D momentum equations.
 \begin{equation}
   \frac{\partial \zeta}{\partial t} = \pm \sqrt{\frac{g}{h}} \,
   \frac{\partial \zeta}{\partial \xi}
@@ -992,25 +992,25 @@ In realistic domains, open boundary conditions can be extremely
 difficult to get right. There are situations in which incoming flow and
 outgoing flow happen along the same boundary or even at different
 depths at the same horizontal location. Orlanski \cite{Orlanski76}
-proposed a radiation scheme in which a local phase velocity is
+proposed a radiation scheme in which a local normal phase velocity is
 computed and used to radiate things out (if it is indeed going out).
 This works well for a wave propagating normal to the boundary, but
 has problems when waves approach the boundary at an angle. Raymond
 and Kuo \cite{Raymond84} have modified the scheme to account for
 propagation in all three directions. In ROMS, only the two horizontal
-directions are accounted for (with the recommended \code{RADIATION_2D}
+directions are accounted for (with the recommended \code{RADIATION\_2D}
 option):
 \begin{equation}
-   \frac{\partial C}{\partial t} = - \left( C_x \frac{\partial
-   C}{\partial \xi} + C_y \frac{\partial C}{\partial \eta}) \right)
+   \frac{\partial C}{\partial t} = - \left( C_\xi \frac{\partial
+   C}{\partial \xi} + C_\eta \frac{\partial C}{\partial \eta}) \right)
 \label{eqrk}
 \end{equation}
 where
 \begin{align}
-   C_x & = \frac{F \frac{\partial C}{\partial \xi}}{
+   C_\xi & = \frac{F \frac{\partial C}{\partial \xi}}{
    \left( \frac{\partial C}{\partial \xi} \right)^2 +
    \left( \frac{\partial C}{\partial \eta} \right)^2 } \\
-   C_y & = \frac{F \frac{\partial C}{\partial \eta}}{
+   C_\eta & = \frac{F \frac{\partial C}{\partial \eta}}{
    \left( \frac{\partial C}{\partial \xi} \right)^2 +
    \left( \frac{\partial C}{\partial \eta} \right)^2 } \\
    F & = - \frac{\partial C}{\partial t}
@@ -1025,7 +1025,8 @@ one-sided differences.
 
 The radiation approach is appropriate for waves leaving the domain. A
 check is made to see which way the phase velocity is headed. If it is
-entering the domain, a zero gradient condition is applied.
+entering the domain, a zero gradient condition is applied unless the next
+option is also specified.
 
 \subsubsection{Mixed radiation-nudging boundary condition}
 As described in Marchesiello et al., ROMS has an option for providing
