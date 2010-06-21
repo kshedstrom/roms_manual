@@ -1001,19 +1001,19 @@ propagation in all three directions. In ROMS, only the two horizontal
 directions are accounted for (with the recommended \code{RADIATION\_2D}
 option):
 \begin{equation}
-   \frac{\partial C}{\partial t} = - \left( C_\xi \frac{\partial
-   C}{\partial \xi} + C_\eta \frac{\partial C}{\partial \eta}) \right)
+   \frac{\partial \phi}{\partial t} = - \left( \phi_\xi \frac{\partial
+   \phi}{\partial \xi} + \phi_\eta \frac{\partial \phi}{\partial \eta}) \right)
 \label{eqrk}
 \end{equation}
 where
 \begin{align}
-   C_\xi & = \frac{F \frac{\partial C}{\partial \xi}}{
-   \left( \frac{\partial C}{\partial \xi} \right)^2 +
-   \left( \frac{\partial C}{\partial \eta} \right)^2 } \\
-   C_\eta & = \frac{F \frac{\partial C}{\partial \eta}}{
-   \left( \frac{\partial C}{\partial \xi} \right)^2 +
-   \left( \frac{\partial C}{\partial \eta} \right)^2 } \\
-   F & = - \frac{\partial C}{\partial t}
+   \phi_\xi & = \frac{F \frac{\partial \phi}{\partial \xi}}{
+   \left( \frac{\partial \phi}{\partial \xi} \right)^2 +
+   \left( \frac{\partial \phi}{\partial \eta} \right)^2 } \\
+   \phi_\eta & = \frac{F \frac{\partial \phi}{\partial \eta}}{
+   \left( \frac{\partial \phi}{\partial \xi} \right)^2 +
+   \left( \frac{\partial \phi}{\partial \eta} \right)^2 } \\
+   F & = - \frac{\partial \phi}{\partial t}
 \end{align}
 These terms are evaluated at the closest interior point in a manner
 consistent with the time stepping scheme used. The phase velocities are
