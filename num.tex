@@ -832,8 +832,8 @@ the third-order upwind option is turned on:
 
 One advantage of UTOPIA over MPDATA is that it can be used on
 variables having both negative and positive values. Therefore,
-it can be used on velocity as well as scalars (is there a reference for
-this?). For the $u$-velocity, we have:
+it can be used on velocity as well as scalars.
+For the $u$-velocity, we have:
 \begin{align}
    F^\xi &= \left(u - \gamma \frac{\partial^2 u}{\partial \xi^2} \right)
    \left[ \frac{H_z u}{n} - \gamma \frac{\partial^2}{\partial \xi^2}
@@ -1029,7 +1029,7 @@ entering the domain, a zero gradient condition is applied unless the next
 option is also specified.
 
 \subsubsection{Mixed radiation-nudging boundary condition}
-As described in Marchesiello et al., ROMS has an option for providing
+As described in Marchesiello et al. (\cite{Marchesiello2001}), ROMS has an option for providing
 radiation conditions on outflow and nudging to a known exterior
 value on inflow. This is implemented as a variation on the radiation
 condition, requiring two timescales: the inflow nudging timescale and the

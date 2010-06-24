@@ -109,12 +109,12 @@ resolving that conflict:
 and remembers that the file is in a state of conflict if you don't clear it
 right then.
         \item If Subversion considers the file to be mergeable, it places
-conflict markers (special strings of text which delimit the “sides” of the
+conflict markers (special strings of text which delimit the ``sides'' of the
 conflict, usually ``<'' and ``>'' characters) into the file to visibly
 demonstrate the overlapping areas.
         \item For every conflicted file, Subversion places three extra
 unversioned (not under Subversion control) files in your working copy: 
-\begin{itemize}
+\begin{klist}
             \kitem{filename.mine}: This is your file as it existed
       in your working copy (local copy) before you updated your working
       copy. This file has only your latest changes in it. (If Subversion
@@ -127,13 +127,14 @@ unversioned (not under Subversion control) files in your working copy:
       Subversion client just received from the server when you updated
       your working copy. This file corresponds to the HEAD (latest)
       revision of the repository.
-  \end{itemize}
+  \end{klist}
 \end{itemize}
 For example, let's say you checked out revision 280 and made some changes
-to \code{User/Functionals/ana\_hmixcoef.h}. Now you want to update your
+to a file, for instance \code{User/Functionals/ana\_hmixcoef.h}.
+Now you want to update your
 ROMS source code to take advantage of a new algorithm but when you run
 svn update your \code{ana\_hmixcoef.h} is now in conflict with the new
-version in the repository.
+version in the repository:
 \begin{verbatim}
     > svn update
     U Version
@@ -155,7 +156,7 @@ Selecting (p) will behave as the old version.
 
 If you get a conflict, you need to do one of three things:
 \begin{itemize}
-        \item Merge the conflicted text “by hand” by examining and
+        \item Merge the conflicted text ``by hand'' by examining and
      editing the conflict markers within the file.
         \item Copy one of the temporary files on top of your working file.
         \item Run svn revert <filename> to throw away all of your local
@@ -168,7 +169,7 @@ on this below.
 
 \subsubsection{Merging conflicts by hand}
 To merge your changes with those from the latest revision in the repository,
-open \code{User/Functionals/ana\_hmixcoef.h} in your favorite editor and
+open \code{ana\_hmixcoef.h} in your favorite editor and
 look for a string of ``<'' characters. You should see something like this:
 \begin{verbatim}
     <<<<<<< .mine

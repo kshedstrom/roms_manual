@@ -2,25 +2,12 @@
 \label{Cpp}
 
 The C preprocessor, \code{cpp}, is a standalone program which comes
-with most C compilers.  On many UNIX systems it is not in the default
-path, but in \code{/lib} or in \code{/usr/lib}.  If you do not have a C
-preprocessor then there are several versions available via anonymous
-ftp.  For instance, \code{ftp.uu.net} has two in the
-\code{/published/oreilly/nutshell/imake} directory---I have built and
-used the one from Der Mouse on a Cray.  I have put this one in
-pub/util/cpp.tar.gz on the ahab.rutgers.edu ftp site since it supports
-the \code{\#elif} construct.  One also comes with \code{gcc},
-the \code{gnu} C compiler.  If you build this compiler, \code{cpp} will
-have a path such as
+with most C compilers. On older UNIX systems it was not in the default
+path, but in \code{/lib} or in \code{/usr/lib}. Most modern systems
+have some version of \code{gcc} which comes with a quite capable
+\code{cpp}. Just be sure to give it the \code{-traditional} flag.
 
-\begin{verbatim}
-       /usr/local/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/cpp
-\end{verbatim}
-where \code{sparc} is the architecture, \code{sun} is  the
-manufacturer, \code{solaris2.5} is the operating system and version,
-and \code{2.7.2} is \code{gcc}'s version number.
-
-This Appendix describes the C preprocessor as used in SCRUM with the
+This Appendix describes the C preprocessor as used in ROMS with the
 Fortran language.  A more complete description is given by
 Kernighan and Ritchie \cite{K&R}.  More practical advice on using
 \code{cpp} is given by Hazard \cite{Hazard}.
@@ -40,7 +27,7 @@ include statement:
       #include "file.h"
 \end{verbatim}
 We are using the C preprocessor style of include because many of the
-SCRUM include files are not pure Fortran and must be processed by
+ROMS include files are not pure Fortran and must be processed by
 \code{cpp}.
 
 \subsection{Macro substitution}
@@ -48,8 +35,8 @@ A macro definition has the form
 \begin{verbatim}
       #define    name           replacement text
 \end{verbatim}
-where \code{name} would be replaced with ``replacement text''
-throughout the rest of the file.  This is used in SCRUM as a
+where ``name'' would be replaced with ``replacement text''
+throughout the rest of the file.  This was used in SCRUM as a
 reasonably portable way to get 64-bit precision:
 \begin{verbatim}
       #define  BIGREAL     real*8
@@ -163,8 +150,8 @@ comment.
 
 \subsection{Potential problems}
 The use of the C preprocessor is not entirely free of problems, but
-many can be worked around or avoided by using the Der Mouse version of
-\code{cpp}.
+many can be worked around or avoided by using the \code{gnu} version of
+\code{cpp} with the \code{-traditional} flag.
    \begin{enumerate}
      \item Apostrophes in Fortran comments.  \code{cpp} does not
      know that it is in a comment and some versions will complain about
@@ -172,9 +159,6 @@ many can be worked around or avoided by using the Der Mouse version of
      \begin{verbatim}
   c  Some useful comment about Green's functions.
      \end{verbatim}
-     The \code{gnu} version of \code{cpp} (which comes with \code{gcc})
-     has a \code{-traditional} option which makes it more
-     appropriate for use with Fortran.
      \item \CC\ comments.  Some of the newer versions of
      \code{cpp} will remove \CC\ comments which go from '//' to
      the end of the line.  Some perfectly reasonable Fortran lines
@@ -183,7 +167,7 @@ many can be worked around or avoided by using the Der Mouse version of
         common // var1, var2
     44  format(//)
      \end{verbatim}
-     and the new Fortran 90 string concatenation:
+     and Fortran 90 string concatenation:
      \begin{verbatim}
         mystring = 'Hello, ' // 'World!'
      \end{verbatim}
@@ -202,18 +186,17 @@ many can be worked around or avoided by using the Der Mouse version of
 
      Also, make sure that your macros will not be found anywhere else
      in the code.  I used to use \code{\#define DOUBLE} for double
-     precision until it was pointed out to me that \code{DOUBLE 
-     PRECISION} is perfectly valid Fortran.  The macro processor would
-     turn this into \code{1 PRECISION} since something that is defined
-     has a value of 1.
+     precision until it was pointed out to me that \code{DOUBLE}
+     \code{PRECISION} is perfectly valid Fortran.  Since a string
+     that is simply ``defined'' becomes 1, the macro processor would
+     turn this into \code{1 PRECISION}.
   \end{enumerate}
 
 \subsection{Modern Fortran}
 I started working on these ocean models before 1990, much less before
-Fortran 90 compilers were generally available.  Fortran 90's
-\code{kind} feature would be a better way to handle the \code{BIGREAL}
+Fortran 90 compilers were generally available.  Fortran 90's \code{kind}
+feature as used in ROMS is a better way to handle the \code{BIGREAL}
 type declarations.  On the other hand, Fortran 90 does not include
 conditional compilation.  However, it is deemed useful enough that the
-Fortran 2000 committee has a draft document describing how Fortran
-might support conditional compilation.  We {\em might} start using this
-in about ten years.
+Fortran 2003 standard has the coco means of conditional compilation.
+We {\em might} start using this in about ten years.
