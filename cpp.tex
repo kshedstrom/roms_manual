@@ -148,6 +148,30 @@ with \code{/*} and ending with \code{*/} as in:
 When mixed with Fortran code, it is safer to use a Fortran
 comment.
 
+\subsection{A note on style}
+In ROMS, the style adopted is as shown above and here:
+\begin{verbatim}
+#define NEP5
+#if defined NEP5 || defined BERING
+        :
+# ifdef MASKING
+        :
+# endif
+#endif
+\end{verbatim}
+The \code{gnu} community has instead adopted this style:
+\begin{verbatim}
+#define NEP5  1
+#if NEP5 || BERING
+        :
+# if MASKING
+        :
+# endif
+#endif
+\end{verbatim}
+Both styles work and you should be aware that there's more than one
+way to do it.
+
 \subsection{Potential problems}
 The use of the C preprocessor is not entirely free of problems, but
 many can be worked around or avoided by using the \code{gnu} version of
