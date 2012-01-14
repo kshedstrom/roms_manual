@@ -29,7 +29,7 @@ air and water stress, and internal ice stress:
 \end{align}
 In this model, we neglect the nonlinear advection terms as well as
 the curvilinear terms in the internal ice stress.
-Nonlinear formulas are used for both the ocean-ice and air-ice surface
+Nonlinear formulae are used for both the ocean-ice and air-ice surface
 stress:
 \begin{align}
   \vec{\tau}_a & = \rho_a C_a | \vec{V}_{10} | \vec{V}_{10} \\
@@ -112,21 +112,22 @@ $S_s$ and $S_A$), which will be described in \S\ref{Growth}:
 The first two equations represent the conservation of ice and snow.
 Equation \ref{ist3b} is discussed in some detail in MK89, but
 represents the advection of ice blocks in which no ridging occurs as
-long as there is any open water. An optional ridging term can be added
-(Gray and Killworth \cite{Gray96}):
-\begin{equation}
-  \frac{\partial A }{ \partial t} =
-  - \frac{\partial (uA) }{ \partial x} - \frac{\partial (vA) }{ \partial y}
-  - A \alpha(A) \, \nabla \cdot \vec{v} \, H(-\nabla \cdot \vec{v})
-  + S_A + {\cal D}_A \qquad \qquad 0 \leq A \leq 1 .
-\end{equation}
-where $\alpha(A)$ is an arbitrary function such that $\alpha(0) = 0$,
-$\alpha(1) = 1$, and $0 \leq \alpha(A) \leq 1$. The ridging term leads
-to an increase in $h_i$ under convergent flow as would be produced by
-ridging. The function $\alpha(A)$ should be chosen so that it is near
-zero until the ice concentration is large enough that ridging is
-expected to occur, then should increase smoothly to one.
-
+long as there is any open water.
+%An optional ridging term can be added
+%(Gray and Killworth \cite{Gray96}):
+%\begin{equation}
+%  \frac{\partial A }{ \partial t} =
+%  - \frac{\partial (uA) }{ \partial x} - \frac{\partial (vA) }{ \partial y}
+%  - A \alpha(A) \, \nabla \cdot \vec{v} \, H(-\nabla \cdot \vec{v})
+%  + S_A + {\cal D}_A \qquad \qquad 0 \leq A \leq 1 .
+%\end{equation}
+%where $\alpha(A)$ is an arbitrary function such that $\alpha(0) = 0$,
+%$\alpha(1) = 1$, and $0 \leq \alpha(A) \leq 1$. The ridging term leads
+%to an increase in $h_i$ under convergent flow as would be produced by
+%ridging. The function $\alpha(A)$ should be chosen so that it is near
+%zero until the ice concentration is large enough that ridging is
+%expected to occur, then should increase smoothly to one.
+%
 The symbols used in these equations along with the values for the
 constants are listed in Table \ref{icemomvars}.
 
@@ -136,7 +137,7 @@ constants are listed in Table \ref{icemomvars}.
 \begin{tabular}{|c|c|l|} \hline
   Variable & Value & Description \\ \hline
   $A(x,y,t)$ && ice concentration \\
-  $\alpha(A)$ && ridging function \\
+%  $\alpha(A)$ && ridging function \\
   $C_a$ && nonlinear air drag coefficient \\
   $C_d$ & $2.2 \times 10^{-3}$ & air drag coefficient \\
   $C_w$ & $10 \times 10^{-3}$ & water drag coefficient \\
@@ -188,7 +189,7 @@ as well as frazil ice formation (Mellor and Kantha \cite{Mellor89}).
 Once the ice tracers are advected, the ice concentration and
 thickness are timestepped according to the terms on the right:
 
-(\ref{ist3a}) and (\ref{ist3b}) is:
+Equations (\ref{ist3a}) and (\ref{ist3b}) become:
 \begin{align}
   \frac{D A h_i }{D t}
 % + \frac{\partial (u A h_i) }{ \partial x} +
@@ -306,7 +307,7 @@ freezing can occur.}
   $Q_{s}$  && heat flux up through the snow \\
   $r$   && brine fraction in ice \\
   $\rho_i$ & 910 $m^3/kg$ & density of ice \\
-  $S_i$ & 5 PSU & salinity of the ice \\
+  $S_i$ & 3.2 PSU & salinity of the ice \\
   $SW\!\!\downarrow$ && incoming shortwave radiation \\
   $\sigma$ & $5.67 \times 10^{-8}$ W m$^{-2}$ K$^{-4}$ &
   Stefan-Boltzmann constant \\

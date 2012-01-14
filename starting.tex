@@ -43,15 +43,20 @@ requirements. These are:
       of ROMS files.
 \end{itemize}
 Make sure you've got the right environment before attempting to
-download or compile ROMS.
+download or compile ROMS. In particular, it's best to download ROMS
+using the same environment as will be used when compiling and
+running it.
 
 \subsection{Acquiring the ROMS code}
 The main ROMS code is available for download via \code{svn} at
 \href{https://www.myroms.org/svn/src/}{https://www.myroms.org/svn/src/}.
 The version of the model described in this document is a merger between
-ROMS 3.2 and a sea-ice model.
+ROMS 3.4 and a sea-ice model.
 The sea ice code is a branch off a different repository and requires
 special access---contact Dave Robertson (as above) for more information.
+Alternately, it is available at
+\href{https://kshedstrom@github.com/kshedstrom/roms.git}{https://kshedstrom@github.com/kshedstrom/roms.git}
+via git.
 
 ROMS comes with several cases all ready to go at the flip
 of a switch. Try these out first and get to understand how they
@@ -136,9 +141,11 @@ and turn on the \code{-g} flag for debugging.
 
   \kitem{USE\_MPI} Set this if running an MPI parallel job.
   \kitem{USE\_OpenMP} Set this if running an OpenMP parallel job.
-  \kitem{USE\_MPIF90} I'm frankly not sure about this one. I suppose
-  if you have both mpich and some other MPI for a given
-  compiler/system pair, this could be used to switch between them.
+  \kitem{USE\_MPIF90} \code{USE\_MPI} changes the \code{cpp} flags
+  for changing the source code. This flag changes the name of the
+  Fortran compiler to \code{mpif90} since \code{mpich} and others
+  provide a shell script of this name for finding the required MPI
+  files.
   \kitem{USE\_LARGE}  Some systems support both 32-bit and 64-bit
   options. Select this to get 64-bit addressing, usually used for
   programs need more than 2 GB of memory.
@@ -188,11 +195,14 @@ called \code{Linux-path.mk}. Is the corresponding file for your
 system and compiler in the \code{Compilers} directory? If not, you
 will have to create it following the existing examples there.
 
-Next, there are two ways to provide the location for the NetCDF
-files (and optional HDF5 library). One is by editing the corresponding
-lines in your system-compiler file. Another way is through the
-Unix environment variables. If you are always going to be using
-the same compiler on each system, you can edit your \code{.profile}
+Next, there are several ways to provide the location for the NetCDF
+files (and optional HDF5 library). The modern way is to take
+advantage of the \code{nc-config} program that comes with NetCDF 4.0.1
+and newer. The files in the \code{Compilers} directory will attempt
+to do this if \code{USE\_NETCDF4} is defined. Another is by editing the
+corresponding lines in your system-compiler file. Still another way is
+through the Unix environment variables. If you are always going to be
+using the same compiler on each system, you can edit your \code{.profile}
 or \code{.login} files to globally set them. Here is an example for
 \code{tcsh}:
 \begin{verbatim}
@@ -271,9 +281,9 @@ line as shown here. Also, for either of the parallel options, you
 will have to provide some information to ROMS and to the operating
 system about how many threads or processes to use. Parallel
 computers may also have some sort of batch queuing system in place
-in which you would submit a job script. I have easy access to two
-Linux clusters with differing details in the systems,
-requiring different job scripts. Some MPI environments
+in which you would submit a job script. I have had easy access to a
+number of systems over the years,
+each with its own style of job script. Some MPI environments
 require that you submit your job with:
 \begin{verbatim}
      cd $PBS_O_WORKDIR
@@ -290,8 +300,10 @@ of NetCDF files and a verbose text file on standard out. Chapter
 \ref{Plothist} describes one way to view the gridded NetCDF files.
 Other tools that have been used include
 \href{http://www.mathworks.com/products/matlab/}{Matlab},
-\href{http://www.ncl.ucar.edu/}{NCL}, and
-\href{http://www.python.org/}{Python}.
+\href{http://www.ncl.ucar.edu/}{NCL},
+\href{http://www.python.org/}{Python}, plus of course
+\href{http://meteora.ucsd.edu/\~pierce/ncview\_home\_page.html}{ncview}
+for a quick and dirty look at your files.
 
 If things don't go according to plan, the text output file is your
 friend. Examine it carefully. If it fails on the \code{UPWELLING}
@@ -313,13 +325,14 @@ is known to work well.
 way to handle variations in the water depth as seen in the coastal
 oceans. Changes to the code have allowed us to expand the well-behaved
 range of depths and the range of values for \code{THETA\_S}, plus there
-are some new vertical coordinate options. I used to give guidelines on
-``reasonable'' values for \code{THETA\_S}, but I no longer know
-what's reasonable.
+are some new vertical coordinate options.
   \item $\sigma$-coordinates have long had a bad reputation
 because errors in the pressure gradient terms can lead to spurious
 currents. These errors are must less troublesome than in the past due
-to code improvements and can also be controlled with some smoothing
+to code improvements and there are more improvements possible
+through an alternate equation of state (\cite{SS2008c}), though
+they are not yet in the myroms.org code. The pressure gradient
+errors can also be controlled with some smoothing
 of the bathymetry. This in turn changes the shape of the basin and
 leads to its own set of problems, such as altered sill depths. Also, the
 currents will react to the change in shelf slope---you are now solving a
