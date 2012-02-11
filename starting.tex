@@ -51,7 +51,7 @@ running it.
 The main ROMS code is available for download via \code{svn} at
 \href{https://www.myroms.org/svn/src/}{https://www.myroms.org/svn/src/}.
 The version of the model described in this document is a merger between
-ROMS 3.4 and a sea-ice model.
+ROMS 3.5 and a sea-ice model.
 The sea ice code is a branch off a different repository and requires
 special access---contact Dave Robertson (as above) for more information.
 Alternately, it is available at
@@ -148,7 +148,7 @@ and turn on the \code{-g} flag for debugging.
   files.
   \kitem{USE\_LARGE}  Some systems support both 32-bit and 64-bit
   options. Select this to get 64-bit addressing, usually used for
-  programs need more than 2 GB of memory.
+  programs needing more than 2 GB of memory on 32-bit systems.
   \kitem{NETCDF\_INCDIR} The location of the \code{netcdf.mod} and
   \code{typesizes.mod} files.
   \kitem{NETCDF\_LIBDIR} The location of the NetCDF library.
@@ -169,7 +169,7 @@ The default is ``\code{.}'', the current (top) directory.
 
   \kitem{SCRATCH\_DIR} Put the \code{.f90} and the temporary binary files
 in a build directory to avoid clutter. The default is \code{Build}
-under the top directory. It can also point to differing places if you want
+under the top directory. Set it to something else if you want
 to keep these files for multiple projects at the same time, each in
 their own directory.
 \end{klist}
@@ -247,7 +247,7 @@ Both scripts have the same options:
 \end{klist}
 Note that the default is to compile serially and to issue a
 ``\code{make clean}'' before compiling. It is left as an exercise
-for the user if they prefer different default behavior.
+for the user if you prefer different default behavior.
 
 There are also a few variables which are not recognized by the ROMS
 \code{makefile}, but are used locally inside the build script. These
@@ -298,7 +298,7 @@ You just have to find out from the locals.
 If all goes according to plan, ROMS will create both a collection
 of NetCDF files and a verbose text file on standard out. Chapter
 \ref{Plothist} describes one way to view the gridded NetCDF files.
-Other tools that have been used include
+Other tools include
 \href{http://www.mathworks.com/products/matlab/}{Matlab},
 \href{http://www.ncl.ucar.edu/}{NCL},
 \href{http://www.python.org/}{Python}, plus of course
@@ -328,7 +328,7 @@ range of depths and the range of values for \code{THETA\_S}, plus there
 are some new vertical coordinate options.
   \item $\sigma$-coordinates have long had a bad reputation
 because errors in the pressure gradient terms can lead to spurious
-currents. These errors are must less troublesome than in the past due
+currents. These errors are much less troublesome than in the past due
 to code improvements and there are more improvements possible
 through an alternate equation of state (\cite{SS2008c}), though
 they are not yet in the myroms.org code. The pressure gradient
