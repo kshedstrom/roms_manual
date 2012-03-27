@@ -22,11 +22,10 @@ The directories shown here are:
   input files read by ROMS on startup to set things such as forcing file
   names and model time-step. Some of these applications are:
 \begin{klist}
+  \kitem{Arctic} This is the curvilinear grid covering the whole Arctic
+  ocean, with 5 km resolution off Alaska, coarser to the far side.
   \kitem{Bering} This is a 4 km grid of the Bering Sea, aligned with
   the Northeast Pacific grid but at three times the resolution.
-  \kitem{Bering\_10k} This is a 10 km grid of the Bering Sea, a
-  subset of the Northeast Pacific domain, with the same extent as
-  the 4 km grid above.
   \kitem{CGOA} This is a 3 km grid of the Gulf of Alaska. It is a
   subset of the Northeast Pacific grid, but at four times the
   resolution.
@@ -38,7 +37,7 @@ The directories shown here are:
   viewed in a conformal conic projection with standard latitudes of
   40 and 60 N.
 \end{klist}
-  Paul Budgell's applications are also here. The application-specific
+  Other unsupported applications are also here. The application-specific
   files included in the main trunk ROMS are elsewhere.
   \kitem{Atmosphere} This directory is under development, not
   currently supported.
@@ -67,9 +66,9 @@ The directories shown here are:
 }}}}
 \put(3376,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}CGOA/}%
 }}}}
-\put(3376,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Bering\_10k/}%
+\put(3376,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Bering/}%
 }}}}
-\put(3376,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Bering/}%
+\put(3376,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Arctic/}%
 }}}}
 \put(4876,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Adjoint/}%
 }}}}
@@ -164,7 +163,7 @@ The directories shown here are:
 }}}}
 \put(1501,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Data/}%
 }}}}
-\put(1501,-3661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Libs/}%
+\put(1501,-3661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Lib/}%
 }}}}
 \put(1501,-3961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}makefile}%
 }}}}
@@ -237,7 +236,9 @@ The directories shown here are:
   \kitem{Utility} Here are utility functions used by the various
   ROMS routines, many dealing with I/O.
   \kitem{Version} A file containing the time and date of this
-  \code{svn} revision, also the \code{svn} URL.
+  \code{svn} revision, also the \code{svn} URL---if and only if you
+  check out with svn. At least the date in the file is kept current
+  by Hernan.
 \end{klist}
   \kitem{User} Some might choose to use this directory rather than
   the Apps directory. It serves the same purpose but is arranged
@@ -262,68 +263,58 @@ See Fig.\ \ref{focean_h}.
 \begin{center}
 \setlength{\unitlength}{3947sp}%
 %
-\begin{picture}(5655,2586)(1600,-3076)
-\put(6676,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{main3d} or
+\begin{picture}(5998,1749)(1501,-2548)
+{\color[rgb]{0,0,0}\put(2851,-1186){\line( 1, 0){750}}
+\put(3601,-1186){\line( 0, 1){375}}
+\put(3601,-811){\line( 1, 0){225}}
+}%
+{\color[rgb]{0,0,0}\put(3601,-1186){\line( 0,-1){900}}
+\put(3601,-2086){\line( 1, 0){225}}
+}%
+{\color[rgb]{0,0,0}\put(2476,-1486){\line( 1, 0){825}}
+\put(3301,-1486){\line( 0,-1){825}}
+\put(3301,-2311){\line( 1, 0){2100}}
+\put(5401,-2311){\line( 0, 1){1125}}
+\put(5401,-1186){\line( 1, 0){300}}
+}%
+{\color[rgb]{0,0,0}\put(2701,-1786){\line( 1, 0){300}}
+\put(3001,-1786){\line( 0,-1){750}}
+\put(3001,-2536){\line( 1, 0){2700}}
+\put(5701,-2536){\line( 0, 1){750}}
+\put(5701,-1786){\line( 1, 0){300}}
+}%
+{\color[rgb]{0,0,0}\put(5701,-2386){\line( 1, 0){300}}
+}%
+\put(1501,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{mpi\_init}}%
+}}}}
+\put(1501,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ROMS\_initialize}}%
+}}}}
+\put(1501,-1561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ROMS\_run}}%
+}}}}
+\put(1501,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ROMS\_finalize}}%
+}}}}
+\put(1501,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{mpi\_finalize}}%
+}}}}
+\put(3901,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{initialize\_parallel}}%
+}}}}
+\put(3901,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{inp\_par}}%
+}}}}
+\put(3901,-1561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{wclock\_on}}%
+}}}}
+\put(3901,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{mod\_arrays}}%
+}}}}
+\put(3901,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{initial}}%
+}}}}
+\put(5851,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{main3d} or
 \code{main2d}}%
 }}}}
-\put(1051,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ROMS\_initialize}}%
+\put(6151,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{wclock\_off}}%
 }}}}
-\put(1051,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ROMS\_run}}%
+\put(6151,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{close\_out}}%
 }}}}
-\put(1051,-1561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ROMS\_finalize}}%
+\put(6151,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0.82,.0}if (trouble)}%
 }}}}
-\put(1051,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{mpi\_finalize}}%
-}}}}
-\put(3676,-661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{initialize\_parallel}}%
-}}}}
-\put(3676,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{wclock\_on}}%
-}}}}
-\put(3676,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{inp\_par}}%
-}}}}
-\put(3676,-1561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{mod\_arrays}}%
-}}}}
-\put(3676,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{initial}}%
-}}}}
-\put(3676,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{get\_data}}%
-}}}}
-\put(6676,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0.82,0}if (trouble)}%
-}}}}
-\put(7651,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{wrt\_rst}}%
-}}}}
-\put(6676,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{wclock\_off}}%
-}}}}
-\put(6676,-3061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{close\_io}}%
-}}}}
-\thinlines
-{\color[rgb]{0,0,0}\put(2701,-886){\line( 1, 0){600}}
-\put(3301,-886){\line( 0, 1){300}}
-\put(3301,-586){\line( 1, 0){300}}
-}%
-{\color[rgb]{0,0,0}\put(3301,-886){\line( 0,-1){1200}}
-\put(3301,-2086){\line( 1, 0){300}}
-}%
-{\color[rgb]{0,0,0}\put(6601,-2386){\line(-1, 0){300}}
-\put(6301,-2386){\line( 0,-1){600}}
-\put(6301,-2986){\line( 1, 0){300}}
-}%
-{\color[rgb]{0,0,0}\put(2626,-1486){\line( 1, 0){ 75}}
-\put(2701,-1486){\line( 0,-1){1275}}
-\put(2701,-2761){\line( 1, 0){3600}}
-}%
-{\color[rgb]{0,0,0}\put(2176,-1186){\line( 1, 0){825}}
-\put(3001,-1186){\line( 0,-1){1275}}
-\put(3001,-2461){\line( 1, 0){2700}}
-\put(5701,-2461){\line( 0, 1){1575}}
-\put(5701,-886){\line( 1, 0){900}}
-}%
-{\color[rgb]{0,0,0}\put(6301,-886){\line( 0,-1){300}}
-\put(6301,-1186){\line( 1, 0){300}}
-}%
-\put(5776,-736){\makebox(0,0)[lb]{{{{\color[rgb]{0,0.82,0}<loop>}%
-}}}}
-\put(6676,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{get\_data}}%
-}}}}
-\put(1051,-661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{mpi\_init}}%
+\put(7046,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{wrt\_rst}}%
 }}}}
 \end{picture}%
 %
@@ -348,7 +339,10 @@ this is, then calls the following ROMS routines:
   sets up a few variables, including some for the built-in profiling.
   \kitem{wclock\_on} is in \code{timers.F} and initializes a timer for
   the built-in profiling.
-  \kitem{inp\_par} reads in the ASCII input file(s) used by ROMS.
+  \kitem{inp\_par} calls \code{read\_phypar} to read in the ASCII input
+  file(s) used by ROMS, sets up the parallel tiles, then calls
+  routines to read in the rest of the ASCII input for biology, ice,
+  etc.
   \kitem{mod\_arrays} allocates and initializes the dynamically sized
   arrays in ROMS based on the grid sizes read in by \code{inp\_par}.
   \kitem{initial} reads in the initial conditions from a NetCDF file or
@@ -397,115 +391,122 @@ described as follows:
 \begin{center}
 \setlength{\unitlength}{3947sp}%
 %
-\begin{picture}(4912,5022)(879,-4573)
+\begin{picture}(5242,5097)(1189,-5623)
 \thinlines
-{\color[rgb]{0,0,0}\put(3301,-3511){\line( 0,-1){750}}
-\put(3301,-4261){\line( 1, 0){1500}}
-\put(4801,-4261){\line( 0, 1){4350}}
-\put(4801, 89){\vector( 1, 0){600}}
+{\color[rgb]{0,0,0}\put(5251,-586){\line( 0,-1){4725}}
 }%
-\put(976,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{bblm}}%
-}}}}
-\put(976,-4261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{seaice}}%
-}}}}
-\put(976,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{cawdir\_eval}}%
-}}}}
-\put(976,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ccsm\_flux}}%
-}}}}
-\put(976,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{bulk\_flux}}%
-}}}}
-\put(976,-3061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ncep\_flux}}%
-}}}}
-\put(976,-3661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_vbc}}%
-}}}}
-\put(976,-3961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_tides}}%
-}}}}
-\put(976,239){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_data}}%
-}}}}
-\put(1276,-661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ini\_fields}}%
-}}}}
-\put(1276,-361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ini\_zeta}}%
-}}}}
-\put(976,-61){\makebox(0,0)[lb]{{{{\color[rgb]{0,.82,0}first step only:}%
-}}}}
-\put(976,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_massflux}}%
-}}}}
-\put(976,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{rho\_eos}}%
-}}}}
-\put(976,-1561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{diag}}%
-}}}}
-\put(3376,-811){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{hmixing}}%
-}}}}
-\put(3376,-1111){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{omega}}%
-}}}}
-\put(3376,-1411){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{wvelocity}}%
-}}}}
-\put(3376, 89){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ana\_vmix}}%
-}}}}
-\put(3376,-211){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{lmd\_vmix}}%
-}}}}
-\put(3376,-511){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{bvf\_mix}}%
-}}}}
-\put(3376,-1711){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_zeta}}%
-}}}}
-\put(3376,-2011){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_diags}}%
-}}}}
-\put(3376,-2911){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_avg2}}%
-}}}}
-\put(3376,-2611){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_avg}}%
-}}}}
-\put(3376,-2311){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_filter}}%
-}}}}
-\put(3376,-3211){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{output}}%
-}}}}
-\put(3376,-3511){\makebox(0,0)[lb]{{{{\color[rgb]{0,.82,0}exit if last}%
-}}}}
-\put(3526,-3811){\makebox(0,0)[lb]{{{{\color[rgb]{0,.82,0}step done}%
-}}}}
-\put(5476,-661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{gls\_prestep}}%
-}}}}
-\put(5476,-361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{my25\_prestep}}%
-}}}}
-\put(5476,-61){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{rhs3d}}%
-}}}}
-\put(5776,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{step2d}}%
-}}}}
-\put(5476,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{step3d\_uv}}%
-}}}}
-\put(5776,-1561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{step2d}}%
-}}}}
-\put(5476,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{omega}}%
-}}}}
-\put(5476,-4261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{step\_floats}}%
-}}}}
-\put(5476,-3961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ice\_frazil}}%
-}}}}
-\put(5476,-3661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{step3d\_t}}%
-}}}}
-\put(5476,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{sediment}}%
-}}}}
-\put(5476,-3061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{biology}}%
-}}}}
-\put(5476,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{gls\_corstep}}%
-}}}}
-\put(5476,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{my25\_corstep}}%
-}}}}
-\put(5476,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,.82,0}<loop>}%
-}}}}
-%\thicklines
-{\color[rgb]{0,0,0}\put(901,389){\line( 0,-1){4650}}
+{\color[rgb]{0,0,0}\put(1201,-736){\line( 0,-1){4875}}
+\put(1201,-5611){\line( 1, 0){1800}}
+\put(3001,-5611){\line( 0, 1){5025}}
+\put(3001,-586){\vector( 1, 0){450}}
 }%
-{\color[rgb]{0,0,0}\put(3301,239){\line( 0,-1){3750}}
+{\color[rgb]{0,0,0}\put(3451,-586){\line( 0,-1){5025}}
+\put(3451,-5611){\line( 1, 0){1350}}
+\put(4801,-5611){\line( 0, 1){5025}}
+\put(4801,-586){\vector( 1, 0){450}}
 }%
-{\color[rgb]{0,0,0}\put(5401, 89){\line( 0,-1){4350}}
-}%
-\thinlines
-{\color[rgb]{0,0,0}\put(901,-4261){\line( 0,-1){300}}
-\put(901,-4561){\line( 1, 0){1800}}
-\put(2701,-4561){\line( 0, 1){4800}}
-\put(2701,239){\vector( 1, 0){600}}
-}%
-\put(976,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{radiation\_stress}}%
+\put(5401,-661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{rhs3d}}%
+}}}}
+\put(5401,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{my25\_prestep}}%
+}}}}
+\put(5401,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{gls\_prestep}}%
+}}}}
+\put(5701,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{step2d}}%
+}}}}
+\put(5701,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{step2d}}%
+}}}}
+\put(5401,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_depth}}%
+}}}}
+\put(5401,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{step3d\_uv}}%
+}}}}
+\put(5401,-3061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{omega}}%
+}}}}
+\put(5401,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{my25\_corstep}}%
+}}}}
+\put(5401,-3661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{gls\_corstep}}%
+}}}}
+\put(5401,-3961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{biology}}%
+}}}}
+\put(5401,-4261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{sediment}}%
+}}}}
+\put(5401,-4561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{step3d\_t}}%
+}}}}
+\put(5401,-4861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ice\_frazil}}%
+}}}}
+\put(5401,-5161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{step\_floats}}%
+}}}}
+\put(5401,-1561){\makebox(0,0)[lb]{{{{\color[rgb]{0,.82,0}<loop>}%
+}}}}
+\put(1201,-661){\makebox(0,0)[lb]{{{{\color[rgb]{0,.82,0}<loop>}%
+}}}}
+\put(3601,-661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_vbc}}%
+}}}}
+\put(1401,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,.82,0}add dt to
+time}%
+}}}}
+\put(1401,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{get\_data}}%
+}}}}
+\put(1401,-1561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_data}}%
+}}}}
+\put(1401,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}first step
+only:}%
+}}}}
+\put(1701,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ini\_zeta}}%
+}}}}
+\put(1701,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_depth}}%
+}}}}
+\put(1701,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ini\_fields}}%
+}}}}
+\put(1401,-3061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_massflux}}%
+}}}}
+\put(1401,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{rho\_eos}}%
+}}}}
+\put(1401,-3661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{diag}}%
+}}}}
+\put(1401,-3961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{radiation\_stress}}%
+}}}}
+\put(1401,-4261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{cawdir\_eval}}%
+}}}}
+\put(1401,-4561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ccsm\_flux}}%
+}}}}
+\put(1401,-5161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ncep\_flux}}%
+}}}}
+\put(1401,-5461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{bblm}}%
+}}}}
+\put(1401,-4861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{bulk\_flux}}%
+}}}}
+\put(3601,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_tides}}%
+}}}}
+\put(3601,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{seaice}}%
+}}}}
+\put(3601,-1561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ana\_vmix}}%
+}}}}
+\put(3601,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{lmd\_vmix}}%
+}}}}
+\put(3601,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{bvf\_mix}}%
+}}}}
+\put(3601,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{hmixing}}%
+}}}}
+\put(3601,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{omega}}%
+}}}}
+\put(3601,-3061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{wvelocity}}%
+}}}}
+\put(3601,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_zeta}}%
+}}}}
+\put(3601,-3661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_diags}}%
+}}}}
+\put(3601,-3961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_filter}}%
+}}}}
+\put(3601,-4261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_avg}}%
+}}}}
+\put(3601,-4561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_avg2}}%
+}}}}
+\put(3601,-4861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{output}}%
+}}}}
+\put(3601,-5356){\makebox(0,0)[lb]{{{{\color[rgb]{0,.82,0}  is
+reached}%
+}}}}
+\put(3601,-5161){\makebox(0,0)[lb]{{{{\color[rgb]{0,.82,0}exit if time}%
 }}}}
 \end{picture}%
 \end{center}
@@ -531,7 +532,8 @@ described as follows:
   \kitem{cawdir\_eval} computes a 24-hour mean albedo at the marine
   surface. Not in the trunk code.
   \kitem{ccsm\_flux} computes the surface fluxes from the atmosphere
-  based on a marine boundary layer. This version comes from CCSM and is
+  based on a marine boundary layer. This version comes from CCSM
+  (\cite{Large_08}) and is
   reputed to do better outside of the tropics. Not in the trunk code.
   \kitem{bulk\_flux} computes the surface fluxes from the atmosphere
   based on a marine boundary layer. This version comes from COARE
