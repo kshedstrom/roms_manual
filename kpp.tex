@@ -3,7 +3,7 @@
 SCRUM contains a variety of methods for setting the vertical viscous and
 diffusive coefficients. The choices range from simply choosing fixed
 values to the KPP and Mellor-Yamada turbulence closure schemes.
-See Large \cite{Large98} for a review of surface ocean mixing schemes.
+See \cite{Large98} for a review of surface ocean mixing schemes.
 Many schemes have a background molecular value which is used when the
 turbulent processes are assumed to be small (such as in the interior).
 
@@ -26,7 +26,7 @@ $C_o = 1.0$, $C = 10^{-7}$, $\nu_{\min} = 3 \times 10^{-5}$ and
 $\nu_{\max} = 4 \times 10^{-4}$.
 
 \subsubsection{Pacanowski-Philander}
-Pacanowski and Philander \cite{Pacanowski81} developed a vertical
+\cite{Pacanowski81} developed a vertical
 mixing parameterization based on measurements in the equatorial oceans:
 \begin{align}
    K_m &= {\nu_o \over (1 + a Ri_g)^n} + K_{m_{\rm background}} \\
@@ -37,11 +37,11 @@ $K_m$ and $K_s$ can get very large for negative values of $Ri_g$, so we
 choose to limit these values to that obtained for $Ri_g = 0$.
 
 \subsubsection{Mellor-Yamada}
-One of the more popular closure schemes is that of Mellor and Yamada
+One of the more popular closure schemes is that of 
 \cite{Mellor74}, \cite{Mellor82}. They actually present a hierarchy of
 closures of increasing complexity. SCRUM provides only the
-``Level 2.5'' closure with the Galperin et al.\ \cite{Galperin88}
-modifications as described in Allen et al.\ \cite{Allen95}.
+``Level 2.5'' closure with the \cite{Galperin88}
+modifications as described in \cite{Allen95}.
 This closure scheme adds two prognostic equations, one
 for the turbulent kinetic energy (${1 \over 2} q^2$) and one for the
 turbulent kinetic energy times a length scale ($q^2l$).
@@ -170,8 +170,8 @@ is set to be no larger than $0.53q/N$.
 \subsection{The original Large, McWilliams and Doney parameterization}
 \label{sec:origLMD}
 
-The vertical mixing parameterization introduced by Large, McWilliams
-and Doney \cite{Large94} is a versatile first order scheme which has
+The vertical mixing parameterization introduced by
+\cite{Large94} is a versatile first order scheme which has
 been shown to perform well in open ocean settings.  Its design
 facilitates experimentation with additional or modified representations
 of specific turbulent processes.
@@ -252,7 +252,7 @@ diffusivity so that the empirical rule of convection is satisfied.
 \paragraph{turbulent velocity scale}
 To estimate $w_x$ (where $x$ is $m$ - momentum {\em or} $s$
 - any scalar) throughout the boundary layer surface layer similarity
-theory is utilized.  Following an argument by Troen and Mahrt
+theory is utilized.  Following an argument by
 \cite{TM86}, Large et al.\ estimate the velocity scale as
 
 \begin{equation}
@@ -347,8 +347,8 @@ diffusion term and is written as
 \end{equation}
 
 LMD base their formulation for non-local scalar transport on a
-parameterization for pure free convection from Mailh\^ot and
-Benoit \cite{Mailhot82}. They extend this parameterization to cover any
+parameterization for pure free convection from
+\cite{Mailhot82}. They extend this parameterization to cover any
 unstable surface forcing conditions to give,
 \begin{equation}
   \gamma_{T}=C_s\frac{\overline{wT_0}+
@@ -412,7 +412,7 @@ data LMD parameterize the salt fingering case ($R_{\rho}>1.0$)
 
 For diffusive convection ($0<R_{\rho}<1.0$) LMD suggest several
 formulations from the literature and choose the one with the most
-significant impact on mixing (Fedorov \cite{Fedorov88}).
+significant impact on mixing (\cite{Fedorov88}).
 
 \begin{equation}
 \nu_{\theta}^{d}=(1.5 \time 10^{-6})(0.909 \exp(4.6 \exp[-0.54(R_{\rho}^{-1}-1)])
@@ -430,8 +430,8 @@ for temperature.  For other scalars,
 \paragraph{Internal wave generated mixing}
 Internal wave generated mixing serves as the background mixing in the
 LMD scheme.  It is specified as a constant for both scalars and
-momentum.  Eddy diffusivity is estimated based on the data of Ledwell
-et al.\ \cite{LWL93}.  While Peters et al.\ \cite{Peters88} suggest
+momentum.  Eddy diffusivity is estimated based on the data of
+\cite{LWL93}.  While \cite{Peters88} suggest
 eddy viscosity should be 7 to 10 times larger than diffusivity for
 gradient Richardson numbers below approximately 0.7.  Therefore LMD use
 

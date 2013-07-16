@@ -4,7 +4,7 @@ One of the software development tools which comes with the UNIX
 operating system is called \code{make}. \code{Make} has many uses,
 but is most commonly used to keep track of how a large program
 should be compiled. ROMS now requires the \code{gnu} version of 
-\code{make}, sometimes known as \code{gmake} (Mecklenburg \cite{GMAKE}).
+\code{make}, sometimes known as \code{gmake} (\cite{GMAKE}).
 This appendix describes generic \code{make}, the \code{gnu}
 enhancements to \code{make}, as well as describing the
 \code{makefile} structure used in ROMS. This material first
@@ -328,7 +328,7 @@ built-in function is the substitution we do in:
 \end{verbatim}
 where we build our list of objects from the list of sources.
 There are quite a few other functions, plus the user can define
-their own. From the book\cite{GMAKE}:
+their own. From \cite{GMAKE}:
 \begin{quote}
 GNU make supports both built-in and user-defined functions.
 A function invocation looks much like a variable reference, but
@@ -761,7 +761,7 @@ to remove specific files there.
 
 \item ``\code{all}'' is the first target that gets seen by \code{make},
 making it the default \code{target}. In this case, we know there is only
-the one binary, whose name we know---the book\cite{GMAKE} shows what to
+the one binary, whose name we know---\cite{GMAKE} shows what to
 do with more than one binary. Both ``\code{all}'' and ``\code{clean}''
 are phony targets in that no files of those names get generated---make
 has the \code{.PHONY} designation for such targets. Also, the \code{clean}
@@ -853,7 +853,7 @@ need a newer version of \code{gnu make} than before (version 3.81,
 3.80 if you're lucky).
 Hence this stuff at the top of the \code{makefile}:
 \begin{verbatim}
-NEED_VERSION := 3.80 3.81
+NEED_VERSION := 3.80 3.81 3.82
 $(if $(filter $(MAKE_VERSION),$(NEED_VERSION)),,        \
  $(error This makefile requires one of GNU make version $(NEED_VERSION).))
 \end{verbatim}

@@ -94,7 +94,7 @@ all scalar concentration fields, including those for $T(x,y,z,t)$ and
 $S(x,y,z,t)$, are governed by the advective-diffusive equation
 (\ref{st3a}). The equation of state is given by
 equation (\ref{st3c}).  In the Boussinesq approximation, density
-variations are neglected in the momentum equations except in their
+variations are neglected in the momentum equations except for their
 contribution to the buoyancy force in the vertical momentum equation
 (\ref{st4}).  Under the hydrostatic approximation, it is further
 assumed that the vertical pressure gradient balances the buoyancy
@@ -164,7 +164,8 @@ although it is usually set to zero.
 As distributed, the model can easily be configured for a periodic
 channel, a doubly periodic domain, or a closed basin.  Code is also
 included for open boundaries which may or may not work for your
-particular application. Appropriate boundary conditions are
+particular application. Horizontal boundary conditions are
+described more fully in \S\ref{HBC} and are
 provided for $u,v,T,S,$ and $\zeta$.
 
 The model domain is logically rectangular, but it is possible to
@@ -190,7 +191,7 @@ convenient to introduce a stretched vertical coordinate system which
 essentially ``flattens out'' the variable bottom at $z = -h(x,y)$.
 Such ``$\sigma$'' coordinate systems have long been used, with slight
 appropriate modification, in both meteorology and oceanography
-(e.g., Phillips \cite{Phil} and Freeman et al.\ \cite{FHD}).
+(e.g., \cite{Phil} and \cite{FHD}).
 To proceed, we make the coordinate transformation:
 \[\begin{array}{c}
   \hat{x} = x \\
@@ -203,7 +204,7 @@ and
   \hat{t} = t.
 \]
 See Appendix \ref{Scoord} for the form of $\sigma$ used here.
-Also, see Shchepetkin and McWilliams, 2005 \cite{SS2005} for a
+Also, see \cite{SS2005} for a
 discussion about the nature of this form of $\sigma$ and how it
 differs from that used in SCRUM.
 
@@ -360,7 +361,7 @@ and
    \vec{v} \cdot \hat{\eta} = v
 \end{equation}
 the equations of motion (\ref{st6})-(\ref{st10}) can be re-written
-(see, e.g., Arakawa and Lamb \cite{AL}) as:
+(see, e.g., \cite{AL}) as:
 {\samepage
 \begin{multline}
    \frac{\partial}{\partial t} \left( \frac{H_z u}{mn} \right) + \frac

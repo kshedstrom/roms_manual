@@ -5,7 +5,7 @@ This user's manual for the Regional Ocean Modeling System (ROMS)
 describes the model equations and algorithms, as well as
 additional user configurations necessary for specific applications.
 This manual also describes the sea-ice model
-that we are using (Budgell \cite{Budgell05}).
+that we are using (\cite{Budgell05}).
 
 The principle attributes of the model are as follows:
 \begin{klist}
@@ -59,9 +59,10 @@ equation of state.
   \item Horizontal free-slip or no-slip boundaries.
   \item Vertical harmonic viscosity and diffusion with a spatially
     variable coefficient, with options to compute the coefficients
-    with Large et al.\ \cite{Large94}, Mellor-Yamada \cite{Mellor74},
+    via \cite{Large94}, \cite{Mellor74},
     or generic length scale (GLS) \cite{Umlauf2003} mixing schemes.
 \end{itemize}
+\newpage
 \kitem{Implementation} \mbox{}
 \begin{itemize}
   \item Dimensional in meter, kilogram, second (MKS) units.
@@ -92,9 +93,8 @@ routines; these options are beyond the scope of this document.
 Chapter \ref{Starting} has some information on getting started with
 ROMS.
 Chapters \ref{Phys} and \ref{Num} describe the model physics and
-numerical techniques and contain information from Shchepetkin and
-McWilliams \cite{SS2008b} and Haidvogel et al.\
-\cite{Haidvogel07}.
+numerical techniques and contain information from 
+\cite{SS2008b} and \cite{Haidvogel07}.
 Chapter \ref{Iphys} describes the ice equations and
 Chapter \ref{Code} lists the model subroutines and functions.
 %Chapter \ref{Progs} describes
@@ -106,7 +106,7 @@ described in Chapter \ref{Wave}, including a discussion of a few example
 applications.
 %Chapter \ref{Floats} describes the Lagrangian floats and
 %how to use them, including the plotting postprocessor \code{fltplt}.
-Chapter \ref{Plothist} describes Hernan Arango's plotting
-programs \code{cnt}, \code{ccnt}, \code{sec}, and \code{csec}.
+%Chapter \ref{Plothist} describes Hernan Arango's plotting
+%programs \code{cnt}, \code{ccnt}, \code{sec}, and \code{csec}.
 %while chapter
 %\ref{Userice} describes the ice subroutines and the coupling procedure.

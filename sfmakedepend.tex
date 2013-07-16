@@ -1,7 +1,7 @@
 \section{\code{sfmakedepend}}
 \label{sfm}
-The other \code{Perl} script I use with Fortran modifies the
-\code{Makefile} to include dependency information, much like the X11
+One \code{Perl} script I use with Fortran creates the
+dependency information, much like the X11
 program \code{makedepend}.  I originally wrote \code{fmakedepend} which
 was used with traditional Fortran include statements.
 I later wrote a variant of it for use with the C preprocessor,
@@ -75,16 +75,15 @@ compiling \code{foo.f90}.  When using the Cray, use \code{sfmakedepend
 -c} to get the dependency information:
 \begin{verbatim}
        foo.o: mod.o
-               $(CFT) $(FFLAGS) -c -p mod.o foo.f90
+               $(FC) $(FFLAGS) -c -p mod.o foo.f90
 \end{verbatim}
-\code{\$(CFT)} and \code{\$(FFLAGS)} are assumed to be previously
+\code{\$(FC)} and \code{\$(FFLAGS)} are assumed to be previously
 defined as the name of the compiler and the compiler options,
 respectively.
 
-{\bf Note:} These f90 module dependencies can confuse some versions of
-\code{make}, especially of the System V variety.  We use gnu
-\code{make} because it can follow these chained dependencies and do the
-right thing.
+{\bf Note:} Gnu \code{make} is robust enough to handle these chained
+dependencies. Some hasn't always been true of other old (very old now)
+versions of \code{make}.
 
 \code{sfmakedepend} assumes that all the files using and defining
 modules are in the same directory and are all in the list of
@@ -103,6 +102,12 @@ This program warns about include files it can't find, but
 not if there is a ``bogus'' on the same line.
 
 See the comments at the top of \code{sfmakedepend} for up-to-date
-information on the options.  I may someday get inspired to use a
-newer version of the \code{getopt} routine and rename the options
-to have names like \code{-SGI} and \code{-Cray}.
+information on the options. Compiler vendors have managed to more nearly
+standardize the Fortran module business and just about all work with
+these options to \code{sfmakedepend}:
+\begin{verbatim}
+       --cpp --fext=f90 --file=- --objdir=$(SCRATCH_DIR)
+\end{verbatim}
+%I may someday get inspired to use a
+%newer version of the \code{getopt} routine and rename the options
+%to have names like \code{-SGI} and \code{-Cray}.

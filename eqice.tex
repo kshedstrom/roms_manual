@@ -2,13 +2,12 @@
 \label{Iphys}
 
 The sea-ice component of ROMS is a combination of the
-elastic-viscous-plastic (EVP) rheology (Hunke and Dukowicz
-\cite{Hunke97}, Hunke \cite{Hunke_2001}) and simple one-layer
+elastic-viscous-plastic (EVP) rheology (
+\cite{Hunke97}, \cite{Hunke_2001}) and simple one-layer
 ice and snow thermodynamics with a molecular sublayer under the ice
-(Mellor and Kantha \cite{Mellor89}). It is tightly coupled, having
+(\cite{Mellor89}). It is tightly coupled, having
 the same grid (Arakawa-C) and timestep as the ocean and sharing the same
-parallel coding structure for use with MPI or OpenMP (Budgell
-\cite{Budgell05}).
+parallel coding structure for use with MPI or OpenMP (\cite{Budgell05}).
 
 \subsection{Dynamics}
 The momentum equations describe the change in ice/snow velocity due
@@ -42,7 +41,7 @@ The force due to
 the internal ice stress is given by the divergence of the stress
 tensor $\sigma$. The rheology is given by the stress-strain relation
 of the medium. We would like to emulate the viscous-plastic rheology
-of Hibler (1979) \cite{Hibler79}:
+of \cite{Hibler79}:
 \begin{equation}
   \sigma_{ij} = 2 \eta \dot \epsilon_{ij} + (\zeta - \eta) \dot
   \epsilon_{kk} \delta_{ij} - \frac{P }{ 2} \delta_{ij}
@@ -114,7 +113,7 @@ Equation \ref{ist3b} is discussed in some detail in MK89, but
 represents the advection of ice blocks in which no ridging occurs as
 long as there is any open water.
 %An optional ridging term can be added
-%(Gray and Killworth \cite{Gray96}):
+%(\cite{Gray96}):
 %\begin{equation}
 %  \frac{\partial A }{ \partial t} =
 %  - \frac{\partial (uA) }{ \partial x} - \frac{\partial (vA) }{ \partial y}
@@ -185,7 +184,7 @@ fraction of the gridbox.
 
 The thermodynamics is based on calculating how much ice grows and
 melts on each of the surface, bottom, and sides of the ice floes,
-as well as frazil ice formation (Mellor and Kantha \cite{Mellor89}).
+as well as frazil ice formation (\cite{Mellor89}).
 Once the ice tracers are advected, the ice concentration and
 thickness are timestepped according to the terms on the right:
 
@@ -211,7 +210,7 @@ the melt happens on the sides of the ice due to warming of the water in
 the leads.
 
 The heat fluxes through the ice are based on a simple one layer
-Semtner \cite{Semtner76a} type model with snow on top. The temperature is
+\cite{Semtner76a} type model with snow on top. The temperature is
 assumed to be linear within the snow and within the ice. The ice contains
 brine pockets for a total ice salinity of 3.2 or the surface salinity,
 whichever is less. The surface ocean temperature and salinity is half a
@@ -386,7 +385,7 @@ The surface flux to the air is:
 The incoming shortwave and longwave radiations are assumed to
 come from an atmospheric model. The formulae for sensible heat,
 latent heat, and outgoing longwave radiation are the same as in
-Parkinson and Washington \cite{Parkinson} and are shown in Appendix
+\cite{Parkinson} and are shown in Appendix
 \ref{shortwave}. The sensible heat is a function of $T_3$, as is the
 heat flux through the snow $Q_s$. Setting $Q_{ai} = Q_s$, we can solve
 for $T_3$ by setting $T_3^{n+1} = T_3^n + \Delta T_3$ and linearizing in
@@ -513,8 +512,7 @@ Variable & Value & Definition \\ \hline
 The surface ocean is assumed to be at the freezing temperature for the
 surface salinity ($T_0 = mS_0$) in the presense of ice. We also have $T$ and $S$ at the
 uppermost computed ocean point ${1 \over 2} dz$ below the surface.
-In order to solve for $T_0$ and $S_0$, we assume a Yaglom and Kader
-(\cite{Yaglom_1974})
+In order to solve for $T_0$ and $S_0$, we assume a (\cite{Yaglom_1974})
 logarithmic boundary layer. The upper ocean heat flux is:
 \begin{equation}
    \frac{F_T }{ \rho_o C_{po}} = -C_{T_z} (T_0 - T) \qquad z \rightarrow 0
@@ -541,7 +539,7 @@ The ocean model receives the following heat and salt fluxes:
    W_o & \equiv A W_{io} + (1-A) W_{ao}
 \end{align}
 
-Mellor and Kantha (\cite{Mellor89}) describe solving simultaneously for
+(\cite{Mellor89}) describe solving simultaneously for
 the five unknowns $W_o$, $T_0$, $S_0$, $F_T$ and $F_S$. Instead, we use
 the old value of $T_0$ to find $W_{io}$ and therefore $W_o$. Using the
 new value of $W_{io}$, solve for a new value of $S_0$ and then find the
@@ -569,7 +567,7 @@ only, not refreezing of melt ponds.
 \subsubsection{Frazil ice formation}
 \label{frazil}
 
-Following Steele et al.\ \cite{Steele89}, we check to see if any
+Following \cite{Steele89}, we check to see if any
 of the ocean temperatures are below freezing at the end of each
 timestep.  If so, frazil ice is formed, changing the local
 temperature and salinity.  The ice that forms is assumed to

@@ -27,7 +27,9 @@ requirements. These are:
     \item The
       \href{http://www.unidata.ucar.edu/software/netcdf/index.html}{NetCDF
       library} compiled with the above compiler, including the
-      Fortran 90 interface.
+      Fortran 90 interface
+      (\href{http://www.unidata.ucar.edu/downloads/netcdf/netcdf-fortran/}{NetCDF-Fortran}
+      is now a separate package).
     \item \href{http://subversion.tigris.org}{svn}, the subversion
       revision control software. See Appendix \ref{Svn} and the
       \href{https://www.myroms.org/wiki/index.php/Subversion}{ROMS wiki}.
@@ -49,13 +51,13 @@ running it.
 
 \subsection{Acquiring the ROMS code}
 The main ROMS code is available for download via \code{svn} at
-\href{https://www.myroms.org/svn/src/}{https://www.myroms.org/svn/src/}.
+\url{https://www.myroms.org/svn/src/}.
 The version of the model described in this document is a merger between
-ROMS 3.5 and a sea-ice model.
+ROMS 3.6 and a sea-ice model.
 The sea ice code is a branch off a different repository and requires
 special access---contact Dave Robertson (as above) for more information.
 Alternately, it is available at
-\href{https://kshedstrom@github.com/kshedstrom/roms.git}{https://kshedstrom@github.com/kshedstrom/roms.git}
+\href{https://kshedstrom@github.com/kshedstrom/roms.git}{github.com}
 via git.
 
 ROMS comes with several cases all ready to go at the flip
@@ -131,7 +133,7 @@ you need to use the shell's quoting syntax (either single or double
 quotes) to enclose the definition if you are using one of the build
 scripts below.
 
-\kitem{NestedGrids} Integer number of grids in the setup, usually 1.
+%\kitem{NestedGrids} Integer number of grids in the setup, usually 1.
 
 \kitem{Compiler-specific Options} These flags are used by the files
 inside the \code{Compilers} directory.
@@ -141,20 +143,23 @@ and turn on the \code{-g} flag for debugging.
 
   \kitem{USE\_MPI} Set this if running an MPI parallel job.
   \kitem{USE\_OpenMP} Set this if running an OpenMP parallel job.
-  \kitem{USE\_MPIF90} \code{USE\_MPI} changes the \code{cpp} flags
-  for changing the source code. This flag changes the name of the
-  Fortran compiler to \code{mpif90} since \code{mpich} and others
-  provide a shell script of this name for finding the required MPI
+  \kitem{USE\_MPIF90} This flag changes the name of the
+  Fortran compiler to \code{mpif90}, while
+  \code{USE\_MPI} changes the \code{cpp} flags
+  for changing the source code. \code{OpenMPI} and others
+  provide a shell script called \code{mpif90} for finding the required MPI
   files.
   \kitem{USE\_LARGE}  Some systems support both 32-bit and 64-bit
   options. Select this to get 64-bit addressing, usually used for
   programs needing more than 2 GB of memory on 32-bit systems.
-  \kitem{NETCDF\_INCDIR} The location of the \code{netcdf.mod} and
-  \code{typesizes.mod} files.
-  \kitem{NETCDF\_LIBDIR} The location of the NetCDF library.
   \kitem{USE\_NETCDF4} Set this if linking against the NetCDF4
-  library, which needs the HDF5 library and therefore:
-  \kitem{HDF5\_LIBDIR} The location of the HDF5 library.
+  library. If set, ROMS will use \code{nc-config} to locate the
+  libraries and module files.
+  \kitem{NC\_CONFIG} Set to the \code{nc-config} you wish to use.
+  \kitem{NETCDF\_INCDIR} If not using \code{nc-config}, set the
+  location of the \code{netcdf.mod} and \code{typesizes.mod} files.
+  \kitem{NETCDF\_LIBDIR} The location of the NetCDF library (again,
+  when not using \code{nc-config}).
 \end{klist}
 
 \kitem{FORT} A shorthand name for the compiler to be used when
@@ -165,7 +170,7 @@ selecting which system-compiler file is to be included from the
 \kitem{Local File Options}
 \begin{klist}
   \kitem{BINDIR} Directory in which to place the binary executable.
-The default is ``\code{.}'', the current (top) directory.
+The default is ``\code{.}'', the current directory.
 
   \kitem{SCRATCH\_DIR} Put the \code{.f90} and the temporary binary files
 in a build directory to avoid clutter. The default is \code{Build}
@@ -273,7 +278,7 @@ while MPI execution requires:
 \begin{verbatim}
        oceanM ocean.in > roms.out &
 \end{verbatim}
-so that each process can read the file.
+so that each process can read the ocean.in file.
 
 Realistically, you would only want to run relatively small
 applications such as \code{UPWELLING} interactively on the command
@@ -296,9 +301,11 @@ while others need:
 You just have to find out from the locals.
 
 If all goes according to plan, ROMS will create both a collection
-of NetCDF files and a verbose text file on standard out. Chapter
-\ref{Plothist} describes one way to view the gridded NetCDF files.
-Other tools include
+of NetCDF files and a verbose text file on standard out.
+%Chapter
+%\ref{Plothist} describes one way to view the gridded NetCDF files.
+Some plotting tools include
+\href{https://www.myroms.org/wiki/index.php/Plotting_Package_Installation}{Fortran},
 \href{http://www.mathworks.com/products/matlab/}{Matlab},
 \href{http://www.ncl.ucar.edu/}{NCL},
 \href{http://www.python.org/}{Python}, plus of course
@@ -338,7 +345,7 @@ leads to its own set of problems, such as altered sill depths. Also, the
 currents will react to the change in shelf slope---you are now solving a
 different problem. You may want to explore a matlab tool for minimally
 smoothing the bathymetry found at:
-\href{http://www.liga.ens.fr/~dutour/Bathymetry/index.html}{http://www.liga.ens.fr/$\sim$dutour/Bathymetry/index.html}.
+\url{http://www.liga.ens.fr/~dutour/Bathymetry/index.html}.
   \item There remain bugs in ROMS. If you find any, please report
 them on the forum and/or the bug tracking system at myroms.org.
 \end{itemize}

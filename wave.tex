@@ -3,12 +3,12 @@
 This chapter describes the parts of ROMS for which the user is
 responsible when configuring it for a given application.  Section
 \ref{User} describes the process in a generic fashion while
-\S\ref{UpDown} and \S\ref{NEP} step through the application of ROMS
-to upwelling/downwelling and wind-driven Northeast Pacific problems,
+\S\ref{UpDown} and \S\ref{ARCTIC} step through the application of ROMS
+to upwelling/downwelling and wind-driven Arctic problems,
 respectively.  As distributed, ROMS is ready to run quite a few
 examples, where the C preprocessor flags determine which is to be
-executed.  Some of these examples are described in Haidvogel and
-Beckmann \cite{Haidvogel99}, some are listed here:
+executed.  Some of these examples are described in
+\cite{Haidvogel99}, some are listed here:
 \begin{klist}
    \kitem{BASIN} This is a rectangular, flat-bottomed basin with
  double-gyre wind forcing. When run, it produces a western boundary
@@ -22,7 +22,7 @@ Beckmann \cite{Haidvogel99}, some are listed here:
 % periodic forcing which causes the water to oscillate along the
 % channel.  The rotation and the shelf lead to non-zero mean flows,
 % especially near the canyon.  Version A is homogeneous and can be
-% executed with a 2-D model.  See Haidvogel and Beckmann \cite{HB97} for
+% executed with a 2-D model.  See \cite{HB97} for
 % a description of the canyon problems and the gravitational adjustment
 % problem.
 %   \kitem{CANYON\_B} This is like Canyon A, except that it is
@@ -37,16 +37,15 @@ Beckmann \cite{Haidvogel99}, some are listed here:
  end and light water at the other. At time zero, the water is released
  and it generates two propagating fronts as the light water rushes to
  fill the top and the dense water rushes to fill the bottom. This
- configuration was used to test various advection schemes.
+ configuration can be used to test various advection schemes.
    \kitem{OVERFLOW}   This configuration is similar to the
  GRAV\_ADJ problem, but is initialized with dense water in the shallow
 part of a domain with a sloping bottom.
-   \kitem{SEAMOUNT}   The seamount test was used to test the pressure
+   \kitem{SEAMOUNT}   The seamount test has been used to test the pressure
  gradient errors.  It has an idealized seamount in a periodic channel.
- See Beckmann and Haidvogel \cite{BH93} and McCalpin \cite{McCalpin94}
- for more information.
+ See \cite{BH93} and \cite{McCalpin94} for more information.
    \kitem{UPWELLING}  The upwelling/downwelling example was
- contributed by Anthony Macks and Jason Middleton \cite{Macks93}
+ contributed by \cite{Macks93}
  and consists of a periodic channel with shelves on each side.
  There is along-channel wind forcing and the Coriolis term leads
  to upwelling on one side and downwelling on the other side. If
@@ -90,9 +89,9 @@ location of your choosing.
 The complete list of options to be set prior to compilation are listed in
 \S\ref{Cpp1}. Place those you need in the \code{wiki\_test.h} file. These
 include algorithm choices (e.g. advection and turbulence closure schemes),
-boundary conditions, output options (averages, diagnostics, stations,
-floats), and application modules (biology, sediments). Each line should
-be of the form:
+output options (averages, diagnostics, stations, floats), and
+application modules (biology, sediments). Each line should be of the
+form:
 \begin{verbatim}
         #define SOME_VAR
 \end{verbatim}
@@ -106,7 +105,7 @@ procedure.
 
 \subsubsection{Functionals}
 
-Some of the cpp Options have names beginning with \code{ANA\_}. For each one of
+Some of the cpp options have names beginning with \code{ANA\_}. For each one of
 these, you will be expected to provide an analytic expression for the field
 in question in the corresponding include file. These files
 are listed in \S\ref{Functionals} and their location is determined
@@ -133,7 +132,7 @@ add the appropriate code to \code{checkdefs.F}, such as:
             &   'Sleet falling on the ice option.'
              is=lenstr(Coptions)+1
              Coptions(is:is+7)=' SLEET,'
-       #endif /* ICE */
+       #endif /* SLEET */
 \end{verbatim}
 Note that the number ``7'' on the \code{Coptions} line must be set
 according to the length of the string you are adding.  In this case 7
@@ -143,6 +142,11 @@ since \code{checkdefs} will print whatever is in \code{MyAppCPP}.
 
 \subsubsection{Model domain}
 \label{Muddy}
+It is assumed in this manual that \code{Ngrids} will be set to 1.
+Having multiple grids talk to each other is brand new in ROMS 3.7,
+with documentation appearing on the ROMS wiki (and not currently
+supported in the ice model).
+
 One of the first things the user must decide is how many grid points
 to use, and can be afforded.  There are three parameters in
 \code{ocean.in} which specify the grid size and one parameter for the
@@ -166,8 +170,8 @@ The subroutine \code{get\_grid} or \code{ana\_grid} is called by
 Coriolis parameter.  Most of the simple test problems have their grid
 information specified in \code{ana\_grid.h} in the directory
 \code{ROMS/Functionals}.  More realistic problems require a NetCDF grid
-file, produced by the grid generation programs described in Wilkin and
-Hedstrom \cite{GRIDS}, by the Matlab \code{SeaGrid}, or by some
+file, produced by the grid generation programs described in
+\cite{GRIDS}, by the Matlab \code{SeaGrid}, or by some
 other method.  The variables which are read by \code{get\_grid} are:
 \begin{tabbing}
   Gnu \= \kill
@@ -239,7 +243,7 @@ pressure gradient.
 \subsubsection{Equation of state}
 The equation of state is defined in the subroutine \code{rho\_eos}.  Two
 versions are provided in ROMS: a nonlinear $\rho =
-\rho(T,S,z)$ from Jackett and McDougall \cite{Jackett} and a linear
+\rho(T,S,z)$ from \cite{Jackett} and a linear
 $\rho(T,S)$.  The linear form is
 $$
       \rho = \code{R0} - \code{Tcoef} \cdot (T-T0) +
@@ -267,10 +271,10 @@ and provide the boundary values for the fields $u, v, \overline{u},
 \overline{v}$, all tracers, and $\zeta$, respectively. They are currently
 configured for a closed basin, a periodic channel, a doubly periodic
 domain or a domain with various open boundary conditions. Each side is
-controlled independently with \code{WEST} being the \code{i=1} boundary,
-\code{EAST} being the \code{i=L} boundary, \code{SOUTH} being the \code{j=1}
-boundary, and \code{NORTH} being the \code{j=M} boundary. These choices are
-made via the \code{cpp} options in your include file.
+controlled independently with ``West'' being the \code{i=1} boundary,
+``East'' being the \code{i=L} boundary, ``South'' being the \code{j=1}
+boundary, and ``North'' being the \code{j=M} boundary. These choices are
+set in \code{ocean.in} via the \code{LBC} array.
 
 Many of the choices for open boundaries require that the model have
 some boundary values for the field in question. These can be specified in
@@ -333,8 +337,9 @@ for any given time. An example of such a tidal forcing file is in
 \code{Data/ROMS/Forcing/test\_head\_frc.nc}.
 
 The non-trunk code with ice, etc. includes the \code{TIDES\_ASTRO} option to
-add on the long-period tides from Foreman
-(\cite{Foreman_96a} and \cite{Foreman_96b}). There is also an option to include the tidal potential
+add on the long-period tides from
+\cite{Foreman_96a} and \cite{Foreman_96b}.
+There is also an option to include the tidal potential
 forcing term (\code{POT\_TIDES}), requiring the tidal potential to
 be included in the tides forcing file.
 
@@ -356,12 +361,12 @@ ignored by ROMS on reading them.
 
 The input is organized as key/value pairs, separated by one or two
 equals signs. It is possible for ROMS to run on more than one grid
-simultaneously, with the number of grids being set at compile time
-via the build script and/or the \code{makefile}. If there is one
-equals sign (\code{=}), ROMS will use the corresponding value for
-all grids. If there are two (\code{==}), ROMS will read a value for
-each grid. Thus far, our domains have used just one grid since the
-inter-grid coupling has not been released.
+simultaneously, with the number of grids being read from the input
+file. If there is one equals sign (\code{=}), ROMS will use the
+corresponding value for all grids. If there are two (\code{==}), ROMS
+will read a value for each grid. Thus far, our domains have used just
+one grid since the inter-grid coupling has only been released very
+recently.
 
 ROMS will ignore the parameters not needed by the current
 simulation, e.g., the GLS parameters will not be read if you are not
@@ -376,6 +381,8 @@ The input parameters are in groups, as follows:
    \kitem{VARNAME} The location of the \code{varinfo.dat} file
      containing information about fields to read/write from/to NetCDF
      files.
+   \kitem{Ngrids} The number of grids to compute on---usually 1 so
+   far.
      \end{klist}
    \kitem{Grid-dimension parameters} \mbox{}
      \begin{klist}
@@ -392,6 +399,30 @@ The input parameters are in groups, as follows:
      \begin{klist}
        \kitem{NtileI} Number of $i$-direction partitions.
        \kitem{NtileJ} Number of $j$-direction partitions.
+     \end{klist}
+   \kitem{Boundary conditions} \mbox{}
+     \begin{klist}
+       \kitem{LBC} A line is given for each field, each line
+       containing four values, one for each side in the order
+       ``West'', ``South'', ``East'', ``North''. Each value is a
+       string, with the possible values being:
+         \begin{klist}
+           \kitem{Cha}   Chapman.
+           \kitem{Cla}   Clamped.
+           \kitem{Clo}   Closed.
+           \kitem{Fla}   Flather.
+           \kitem{Gra}   Gradient.
+           \kitem{Nes}   Nested.
+           \kitem{Nud}   Nudging.
+           \kitem{Per}   Periodic---should match the opposing
+boundary.
+           \kitem{Rad}   Radiation.
+           \kitem{RadNud}Radiation and nudging.
+           \kitem{Red}   Reduced Physics---note that this also
+requires the \code{FSOBC\_REDUCED} cpp flag.
+         \end{klist}
+       \kitem{VolCons} Four values for the volume conservation, one
+for each edge.
      \end{klist}
    \kitem{Time-stepping parameters} \mbox{}
      \begin{klist}
@@ -600,11 +631,11 @@ The input parameters are in groups, as follows:
      \end{klist}
    \kitem{Vertical $\sigma$-coordinates parameters} \mbox{}
      \begin{klist}
-       \kitem{theta\_s}  $\sigma$-coordinate surface control parameter,
+       \kitem{THETA\_S}  $\sigma$-coordinate surface control parameter,
      [$0 < \code{theta\_s} < 20$].
-       \kitem{theta\_b}  $\sigma$-coordinate bottom  control parameter,
+       \kitem{THETA\_B}  $\sigma$-coordinate bottom  control parameter,
      [$0 < \code{theta\_b} < 1$].
-       \kitem{Tcline}   Width of the surface or bottom boundary layer
+       \kitem{TCLINE}   Width of the surface or bottom boundary layer
      in which higher vertical resolution is required during stretching.
      \end{klist}
    \kitem{Mean Density and Brunt-V\"ais\"al\"a frequency} \mbox{}
@@ -652,151 +683,65 @@ The input parameters are in groups, as follows:
      \end{klist}
    \kitem{Slipperiness parameter} \mbox{}
      \begin{klist}
-       \kitem{gamma2}   Slipperiness variable, either 1.0 (free
+       \kitem{GAMMA2}   Slipperiness variable, either 1.0 (free
      slip) or $-1.0$ (no slip).
      \end{klist}
-   \kitem{Adjoint sensitivity time parameters} \mbox{}
+   \kitem{Tracer point sources} \mbox{}
      \begin{klist}
-       \kitem{DstrS} Starting day.
-       \kitem{DendS} Ending day.
+       \kitem{LtracerSrc} Logical, one value per tracer,
+whether or not point sources have tracer values.
      \end{klist}
-   \kitem{Adjoint sensitivity vertical level parameters} \mbox{}
-     \begin{klist}
-       \kitem{KstrS} Starting level.
-       \kitem{KendS} Ending level.
-     \end{klist}
-   \kitem{Adjoint sensitivity logical parameters} \mbox{}
-     \begin{klist}
-       \kitem{Lstate(isFsur)} Free surface.
-       \kitem{Lstate(isUbar)} 2D $u$-momentum.
-       \kitem{Lstate(isVbar)} 2D $v$-momentum.
-       \kitem{Lstate(isUvel)} 3D $u$-momentum.
-       \kitem{Lstate(isVvel)} 3D $v$-momentum.
-       \kitem{Lstate(isTvar)} Tracers (NT values expected).
-     \end{klist}
-   \kitem{Stochastic optimals time scale} \mbox{}
-     \begin{klist}
-       \kitem{SO\_decay}  Stochastic optimals time decorrelation
-       scale (days) assumed for red noise processes.
-     \end{klist}
-   \kitem{Logicals for stochastic optimals} \mbox{}
-     \begin{klist}
-       \kitem{SOstate(isUstr)}  Surface $u$-stress.
-       \kitem{SOstate(isVstr)}  Surface $v$-stress.
-       \kitem{Lstate(isTsur)} Surface tracer flux (NT values expected).
-     \end{klist}
-   \kitem{Stochastic optimals surface standard deviations} \mbox{}
-     \begin{klist}
-       \kitem{SO\_sdev(isUstr)} Surface $u$-stress.
-       \kitem{SO\_sdev(isVstr)} Surface $v$-stress.
-       \kitem{SO\_sdev(isTsur)} Surface tracer flux (NT values
-       expected).
-     \end{klist}
+%   \kitem{Adjoint sensitivity time parameters} \mbox{}
+%     \begin{klist}
+%       \kitem{DstrS} Starting day.
+%       \kitem{DendS} Ending day.
+%     \end{klist}
+%   \kitem{Adjoint sensitivity vertical level parameters} \mbox{}
+%     \begin{klist}
+%       \kitem{KstrS} Starting level.
+%       \kitem{KendS} Ending level.
+%     \end{klist}
+%   \kitem{Adjoint sensitivity logical parameters} \mbox{}
+%     \begin{klist}
+%       \kitem{Lstate(isFsur)} Free surface.
+%       \kitem{Lstate(isUbar)} 2D $u$-momentum.
+%       \kitem{Lstate(isVbar)} 2D $v$-momentum.
+%       \kitem{Lstate(isUvel)} 3D $u$-momentum.
+%       \kitem{Lstate(isVvel)} 3D $v$-momentum.
+%       \kitem{Lstate(isTvar)} Tracers (NT values expected).
+%     \end{klist}
+%   \kitem{Stochastic optimals time scale} \mbox{}
+%     \begin{klist}
+%       \kitem{SO\_decay}  Stochastic optimals time decorrelation
+%       scale (days) assumed for red noise processes.
+%     \end{klist}
+%   \kitem{Logicals for stochastic optimals} \mbox{}
+%     \begin{klist}
+%       \kitem{SOstate(isUstr)}  Surface $u$-stress.
+%       \kitem{SOstate(isVstr)}  Surface $v$-stress.
+%       \kitem{Lstate(isTsur)} Surface tracer flux (NT values expected).
+%     \end{klist}
+%   \kitem{Stochastic optimals surface standard deviations} \mbox{}
+%     \begin{klist}
+%       \kitem{SO\_sdev(isUstr)} Surface $u$-stress.
+%       \kitem{SO\_sdev(isVstr)} Surface $v$-stress.
+%       \kitem{SO\_sdev(isTsur)} Surface tracer flux (NT values
+%       expected).
+%     \end{klist}
    \kitem{Logical switches to activate the writing of
    history/averages fields} \mbox{}
      \begin{klist}
-       \kitem{Hout(idUvel)}    3-D $u$-velocity component.
-       \kitem{Hout(idVvel)}    3-D $v$-velocity component.
-       \kitem{Hout(idWvel)}    3-D $w$-velocity component.
-       \kitem{Hout(idOvel)}    3-D $\Omega$ vertical velocity.
-       \kitem{Hout(idUbar)}  2-D $u$-velocity component.
-       \kitem{Hout(idVbar)}  2-D $v$-velocity component.
-       \kitem{Hout(idFsur)}     Free-surface.
-       \kitem{Hout(idBath)}     Time-dependent bathymetry.
-\vspace{2 mm}
-       \kitem{Hout(idTvar)}     Tracer type variables: potential
-    temperature, salinity, etc.
-\vspace{2 mm}
-       \kitem{Hout(idUsms)}   Surface $u$-stress.
-       \kitem{Hout(idVsms)}   Surface $v$-stress.
-       \kitem{Hout(idUbms)}   Bottom $u$-stress.
-       \kitem{Hout(idVbms)}   Bottom $v$-stress.
-\vspace{2 mm}
-       \kitem{Hout(idUbrs)}   Bottom $u$-current stress.
-       \kitem{Hout(idVbrs)}   Bottom $v$-current stress.
-       \kitem{Hout(idUbws)}   Bottom $u$-wave stress.
-       \kitem{Hout(idVbws)}   Bottom $v$-wave stress.
-       \kitem{Hout(idUbcs)}   Bottom max wave-current $u$-stress.
-       \kitem{Hout(idVbcs)}   Bottom max wave-current $v$-stress.
-\vspace{2 mm}
-       \kitem{Hout(idUbot)}   Bed wave orbital $u$-velocity.
-       \kitem{Hout(idVbot)}   Bed wave orbital $v$-velocity.
-       \kitem{Hout(idUbur)}   Bottom max wave-current $u$-stress.
-       \kitem{Hout(idVbur)}   Bottom max wave-current $v$-stress.
-\vspace{2 mm}
-       \kitem{Hout(idW2xx)}  2D radiation stress, $S_{xx}$ component.
-       \kitem{Hout(idW2xy)}  2D radiation stress, $S_{xy}$ component.
-       \kitem{Hout(idW2yy)}  2D radiation stress, $S_{yy}$ component.
-       \kitem{Hout(idU2rs)}  2D $u$-radiation stress.
-       \kitem{Hout(idV2rs)}  2D $v$-radiation stress.
-       \kitem{Hout(idU2Sd)}  2D $u$-Stokes velocity.
-       \kitem{Hout(idV2Sd)}  2D $v$-Stokes velocity.
-\vspace{2 mm}
-       \kitem{Hout(idW3xx)}  3D radiation stress, $S_{xx}$ component.
-       \kitem{Hout(idW3xy)}  3D radiation stress, $S_{xy}$ component.
-       \kitem{Hout(idW3yy)}  3D radiation stress, $S_{yy}$ component.
-       \kitem{Hout(idW3zx)}  3D radiation stress, $S_{zx}$ component.
-       \kitem{Hout(idW3zy)}  3D radiation stress, $S_{zy}$ component.
-       \kitem{Hout(idU3rs)}  3D $u$-radiation stress.
-       \kitem{Hout(idV3rs)}  3D $v$-radiation stress.
-       \kitem{Hout(idU3Sd)}  3D $u$-Stokes velocity.
-       \kitem{Hout(idV3Sd)}  3D $v$-Stokes velocity.
-\vspace{2 mm}
-       \kitem{Hout(idWamp)}  Wave height.
-       \kitem{Hout(idWlen)}  Wave length.
-       \kitem{Hout(idWdir)}  Wave direction.
-\vspace{2 mm}
-       \kitem{Hout(idTsur)}  Surface net heat and salt flux (NAT values).
-       \kitem{Hout(idLhea)}  Latent heat flux.
-       \kitem{Hout(idShea)}  Sensible heat flux.
-       \kitem{Hout(idLrad)}  Longwave radiation flux.
-       \kitem{Hout(idSrad)}  Shortwave radiation flux.
-       \kitem{Hout(idEmPf)}  E-P flux.
-       \kitem{Hout(idevap)}  Evaporation rate.
-       \kitem{Hout(idrain)}  Precipitation rate.
-\vspace{2 mm}
-       \kitem{Hout(idDano)}   Density anomaly.
-       \kitem{Hout(idVvis)}   Vertical viscosity coefficient.
-       \kitem{Hout(idTdif)}   Vertical diffusion coefficient for
-     temperature.
-       \kitem{Hout(idSdif)}   Vertical diffusion coefficient for
-     salinity.
-       \kitem{Hout(idHsbl)}   Depth of the surface boundary layer.
-       \kitem{Hout(idHbbl)}   Depth of the bottom boundary layer.
-       \kitem{Hout(idMtke)}   Turbulent kinetic energy.
-       \kitem{Hout(idMtls)}   Turbulent length scale.
-     \end{klist}
-   \kitem{Ice fields} \mbox{}
-     \begin{klist}
-       \kitem{Hout(idUice)}    Ice $u$-velocity.
-       \kitem{Hout(idVice)}    Ice $v$-velocity.
-       \kitem{Hout(idAice)}    Ice concentration.
-       \kitem{Hout(idHice)}    Ice thickness.
-       \kitem{Hout(idTice)}    Ice surface temperature.
-       \kitem{Hout(idHsno)}    Snow thickness.
-       \kitem{Hout(idTimid)}    Ice internal temperature.
-       \kitem{Hout(idSfwat)}    Surface water (melt ponds).
-       \kitem{Hout(idTauiw)}    Tauiw.
-       \kitem{Hout(idChuiw)}    Chuiw.
-       \kitem{Hout(idAgeice)}    Ice age.
-       \kitem{Hout(idSig11)}    Ice internal stress, 11 component.
-       \kitem{Hout(idSig12)}    Ice internal stress, 12 component.
-       \kitem{Hout(idSig22)}    Ice internal stress, 22 component.
-       \kitem{Hout(idS0mk)}    Under-ice salinity.
-       \kitem{Hout(idT0mk)}    under-ice temperature.
-       \kitem{Hout(idWfr)}    Frazil ice growth rate.
-       \kitem{Hout(idWai)}    Air-ice melt rate.
-       \kitem{Hout(idWao)}    Air-ocean ice growth rate.
-       \kitem{Hout(idWio)}    Ice-ocean ice melt/growth rate.
-       \kitem{Hout(idWro)}    Surface water runoff rate.
-     \end{klist}
-   \kitem{Inert (passive) tracers} \mbox{}
-     \begin{klist}
-       \kitem{Hout(inert)}    Passive tracers (NPT values).
-     \end{klist}
-   \kitem{Sediment tracers} \mbox{}
-     \begin{klist}
-       \kitem{Hout(idBott)}    Sediment tracers (MBOTP values).
+       \kitem{Hout} History output switches, one line per variable.
+Check the \code{ocean.in} file for the names of the fields involved. The
+\code{Hout} values for the ice model are now set in \code{ice.in}.
+       \kitem{Aout} Averages output switches, one line per variable.
+Check the \code{ocean.in} file for the names of the fields involved. The
+\code{Aout} values for the ice model are now set in \code{ice.in}.
+       \kitem{Aout2} Averages2 output switches, one line per variable.
+Check the \code{ocean.in} file for the names of the fields involved. The
+\code{Aout2} values for the ice model are now set in \code{ice.in}.
+       \kitem{Dout} Diagnostics output switches, one line per term.
+Check the \code{ocean.in} file for the names of the fields involved.
      \end{klist}
    \kitem{User parameters} \mbox{}
      \begin{klist}
@@ -816,13 +761,19 @@ The input parameters are in groups, as follows:
        \kitem{ITLNAME}  Initial tangent linear file.
        \kitem{IRPNAME}  Initial representer file.
        \kitem{IADNAME}  Initial adjoint file.
-       \kitem{CLMNAME}  Climatology file.
-       \kitem{BRYNAME}  Boundary condition file.
        \kitem{FWDNAME}  Forward model file.
        \kitem{ADSNAME}  Adjoint sensitivity functional file.
      \end{klist}
-    \kitem{Forcing NetCDF files} \mbox{}
+    \kitem{Boundary, Climatology and Forcing NetCDF files} These can
+each have an array of files, with one set of files per variable,
+each file in a set for a different range of times. See
+\code{ocean.in} for syntax. Note that the trunk code only does this
+for forcing files.
      \begin{klist}
+       \kitem{NCLMFILES}  Number of climatology files.
+       \kitem{CLMNAME}  Climatology file.
+       \kitem{NBCFILES}  Number of boundary files.
+       \kitem{BRYNAME}  Boundary condition file.
        \kitem{NFFILES}  Number of forcing files.
        \kitem{FRCNAME}  Forcing files.
      \end{klist}
@@ -835,6 +786,8 @@ The input parameters are in groups, as follows:
        \kitem{TLFNAME}  Impulse forcing file (for tangent linear model).
        \kitem{ADJNAME}  Adjoint file.
        \kitem{AVGNAME}  Averages file.
+       \kitem{AVG2NAME}  Averages2 file.
+       \kitem{DIANAME}  Diagnostics file.
        \kitem{STANAME}  Stations file.
        \kitem{FLTNAME}  Lagrangian floats file.
      \end{klist}
@@ -866,23 +819,24 @@ the ASCII input file (\S\ref{ASCII_in}). A query on the ROMS forum
 might be in order if you have something specific in mind.
 
 If you do choose to add bits, know that the \code{makefile}
-fragments called \code{Module.mk} will attempt to compile anything
-with a \code{.F} extension in the directories already populated with
-such code.
+fragments called \code{Module.mk} will attempt to compile and
+link into a library anything
+with a \code{.F} extension in the directories already generating a
+library from such files.
 
 \subsection{Upwelling/Downwelling Example}
 \label{UpDown}
 The application which ROMS is configured to run as distributed
 is a wind-driven
-upwelling and downwelling example, described in Macks and Middleton
+upwelling and downwelling example, described in
 \cite{Macks93}.  There is a shelf on each wall of a periodic channel
 and an along-channel wind forcing, which drives upwelling at one wall
 and downwelling at the other.  This problem depends on the Ekman layer,
-so a surface stress is used with vertical viscosity.  The Ekman depth
-is estimated to be 9 $m$ if $A_v = 0.01 m^2 / s$, so the vertical grid
-spacing must resolve this.  The maximum depth is 150 $m$ and our choice
-of the vertical grid parameters leads to a surface $\Delta z$ of 4.0
-$m$.
+therefore a surface stress is used with vertical viscosity.  The Ekman
+depth is estimated to be 9 $m$ if $A_v = 0.01 m^2 / s$, so the vertical
+grid spacing must resolve this.  The maximum depth is 150 $m$ and our
+choice of the vertical grid parameters leads to a surface $\Delta z$
+of 4.0 $m$.
 
 \subsubsection{\code{cppdefs.h}}
 The C preprocessor variable \code{UPWELLING} is used for the
@@ -910,7 +864,6 @@ direct \code{cppdefs.h} to include the file \code{upwelling.h}:
         #define AVERAGES
         #define DIAGNOSTICS_TS
         #define DIAGNOSTICS_UV
-        #define EW_PERIODIC
 
         #define ANA_GRID
         #define ANA_INITIAL
@@ -961,13 +914,12 @@ direct \code{cppdefs.h} to include the file \code{upwelling.h}:
         # define OUT_DOUBLE
         #endif
 \end{verbatim}
-Here we have declared that we want a periodic channel
-(\code{EW\_PERIODIC}) but no masking.
-There is salinity but we're using a linear equation of state.
+Here we have declared that we want a three-dimensional solution, but
+no masking. There is salinity but we're using a linear equation of state.
 The momentum equations have advection, Coriolis force and pressure
-gradients. There is both horizontal viscosity and diffusion, but
-they are along constant $\sigma$-surfaces and if you check the input
-file, you find that the horizontal diffusion is set to zero.
+gradients. There is both horizontal viscosity and diffusion, but they
+are along constant $\sigma$-surfaces and if you check the input file,
+you find that the horizontal diffusion is set to zero.
 
 There are ifdefs for various biology cases, none of which
 have been defined. Likewise, we are using the default of
@@ -977,7 +929,7 @@ for diagnostic output with the \code{DIAGNOSTICS\_TS} and
 \code{DIAGNOSTICS\_UV}.
 
 \subsubsection{Model domain}
-The flow does not vary in $x$, so \code{Lm} can be small.
+The flow does not vary in $x$, so \code{Lm} can be almost anything.
 Set the values for \code{Lm}, \code{Mm}, \code{N} and \code{NT} in
 the input file:
 \begin{verbatim}
@@ -987,6 +939,10 @@ the input file:
 
          NAT =  2             ! Number of active tracers (usually, 2)
 \end{verbatim}
+A historical note: \code{Lm} here really is 41 for 41 boxes in the
+$x$-direction. It was originally set to 41 for 40 boxes, but the
+periodic boundary conditions are now more efficient and no longer
+need an extra box. One could just as well set it to 40 (or even 5).
 
 \subsubsection{\code{ana\_grid}}
 For this geometry one has a choice of using one of the external
@@ -1026,10 +982,9 @@ of \code{S0}, though it could be left out entirely if we undefine
 \code{SALINITY} and set \code{NAT} to 1.
 
 \subsubsection{Boundary conditions}
-The option \code{EW\_PERIODIC} has been chosen for the eastern and
-western edges. None of the open boundary options have been selected
-for the Northern and Southern edges; they are both then given the
-default wall conditions and no boundary values are required.
+In \code{ocean\_upwelling.in}, the variable \code{LBC} is set to be
+periodic in the East-West direction, with closed walls to the North
+and South. No boundary values are required.
 
 \subsubsection{Model forcing}
 In this problem we want to resolve the
@@ -1073,21 +1028,24 @@ records every 1/4 day, restart records once a day.
         NDIA == 72
      NDEFDIA == 0
 \end{verbatim}
-  The value of the linear bottom
+As stated before, there is no horizontal diffusivity, but a small
+horizontal viscosity has been set. The value of the linear bottom
 friction coefficient \code{rdrg} is set to $3.0 \times 10^{-4}$ and the
 channel walls are set to be free-slip:
 \begin{verbatim}
+        TNU2 == 0.0d0  0.0d0                    ! m2/s
+       VISC2 == 5.0d0                           ! m2/s
         RDRG == 3.0d-04                    ! m/s
       GAMMA2 == 1.0d0
 \end{verbatim}
 The vertical stretching is set to a modest value of
 \code{theta\_s}$=3$:
 \begin{verbatim}
-  Vtransform == 1                          ! transformation equation
- Vstretching == 1                          ! stretching function
+  Vtransform == 2                          ! transformation equation
+ Vstretching == 4                          ! stretching function
      THETA_S == 3.0d0                      ! surface stretching parameter
      THETA_B == 0.0d0                      ! bottom  stretching parameter
-      TCLINE == 50.0d0                     ! critical depth (m)
+      TCLINE == 25.0d0                     ! critical depth (m)
 \end{verbatim}
 
 \subsubsection{Output}
@@ -1095,24 +1053,21 @@ The vertical stretching is set to a modest value of
 The model writes some information to standard out, after setting
 \code{ninfo} to 72:
 \begin{verbatim}
- Process Information:
 
- Thread #  0 (pid=   32022) is active.
-
- Model Input Parameters:  ROMS/TOMS version 3.2  
-                          Friday - October 30, 2009 -  9:11:20 AM
+ Model Input Parameters:  ROMS/TOMS version 3.6  
+                          Tuesday - April 3, 2012 - 10:47:12 AM
  -----------------------------------------------------------------------------
 
  Wind-Driven Upwelling/Downwelling over a Periodic Channel
 
  Operating system : Linux
  CPU/hardware     : x86_64
- Compiler system  : pgi
- Compiler command : /usr/local/pkg/pgi/current/linux86-64/6.1/bin/pgf90
- Compiler flags   :  -O3 -tp k8-64 -Mfree
+ Compiler system  : gfortran
+ Compiler command : /usr/bin/gfortran
+ Compiler flags   : -frepack-arrays -O3 -ffast-math -ffree-form -ffree-form -ffree-form
 
- SVN Root URL  : https://www.myroms.org/svn/omlab/branches/kate/trunk
- SVN Revision  : 
+ SVN Root URL  : https:://myroms.org/svn/src
+ SVN Revision  : exported
 
  Local Root    : /export/staffdata/kate/roms/kate_svn
  Header Dir    : /export/staffdata/kate/roms/kate_svn/ROMS/Include
@@ -1163,11 +1118,11 @@ The model writes some information to standard out, after setting
  3.0000E-04  rdrg            Linear bottom drag coefficient (m/s).
  3.0000E-03  rdrg2           Quadratic bottom drag coefficient.
  2.0000E-02  Zob             Bottom roughness (m).
-          1  Vtransform      S-coordinate transformation equation.
-          1  Vstretching     S-coordinate stretching function.
+          2  Vtransform      S-coordinate transformation equation.
+          4  Vstretching     S-coordinate stretching function.
  3.0000E+00  theta_s         S-coordinate surface control parameter.
  0.0000E+00  theta_b         S-coordinate bottom  control parameter.
-     50.000  Tcline          S-coordinate surface/bottom layer width (m) used
+     25.000  Tcline          S-coordinate surface/bottom layer width (m) used
                                in vertical coordinate stretching.
    1025.000  rho0            Mean density (kg/m3) for Boussinesq approximation.
       0.000  dstart          Time-stamp assigned to model initialization (days).
@@ -1184,6 +1139,10 @@ The model writes some information to standard out, after setting
                                for 3D momentum.
  0.0000E+00  obcfac          Factor between passive and active
                                open boundary conditions.
+          F  VolCons(1)      NLM western  edge boundary volume conservation.
+          F  VolCons(2)      NLM southern edge boundary volume conservation.
+          F  VolCons(3)      NLM eastern  edge boundary volume conservation.
+          F  VolCons(4)      NLM northern edge boundary volume conservation.
      14.000  T0              Background potential temperature (C) constant.
      35.000  S0              Background salinity (PSU) constant.
    1027.000  R0              Background density (kg/m3) used in linear Equation
@@ -1202,13 +1161,65 @@ The model writes some information to standard out, after setting
           T  Hout(idTvar)    Write out tracer 01: temp
           T  Hout(idTvar)    Write out tracer 02: salt
 
+          T  Aout(idFsur)    Write out averaged free-surface.
+          T  Aout(idUbar)    Write out averaged 2D U-momentum component.
+          T  Aout(idVbar)    Write out averaged 2D V-momentum component.
+          T  Aout(idUvel)    Write out averaged 3D U-momentum component.
+          T  Aout(idVvel)    Write out averaged 3D V-momentum component.
+          T  Aout(idWvel)    Write out averaged W-momentum component.
+          T  Aout(idOvel)    Write out averaged omega vertical velocity.
+          T  Aout(idTvar)    Write out averaged tracer 01: temp
+          T  Aout(idTvar)    Write out averaged tracer 02: salt
+
+          T  Dout(M2rate)    Write out 2D momentun acceleration.
+          T  Dout(M2pgrd)    Write out 2D momentum pressure gradient.
+          T  Dout(M2fcor)    Write out 2D momentum Coriolis force.
+          T  Dout(M2hadv)    Write out 2D momentum horizontal advection.
+          T  Dout(M2xadv)    Write out 2D momentum horizontal X-advection.
+          T  Dout(M2yadv)    Write out 2D momentum horizontal Y-advection.
+          T  Dout(M2hvis)    Write out 2D momentum horizontal viscosity.
+          T  Dout(M2xvis)    Write out 2D momentum horizontal X-viscosity.
+          T  Dout(M2yvis)    Write out 2D momentum horizontal Y-viscosity.
+          T  Dout(M2sstr)    Write out 2D momentum surface stress.
+          T  Dout(M2bstr)    Write out 2D momentum bottom stress.
+
+          T  Dout(M3rate)    Write out 3D momentun acceleration.
+          T  Dout(M3pgrd)    Write out 3D momentum pressure gradient.
+          T  Dout(M3fcor)    Write out 3D momentum Coriolis force.
+          T  Dout(M3hadv)    Write out 3D momentum horizontal advection.
+          T  Dout(M3xadv)    Write out 3D momentum horizontal X-advection.
+          T  Dout(M3yadv)    Write out 3D momentum horizontal Y-advection.
+          T  Dout(M3vadv)    Write out 3D momentum vertical advection.
+          T  Dout(M3hvis)    Write out 3D momentum horizontal viscosity.
+          T  Dout(M3xvis)    Write out 3D momentum horizontal X-viscosity.
+          T  Dout(M3yvis)    Write out 3D momentum horizontal Y-viscosity.
+          T  Dout(M3vvis)    Write out 3D momentum vertical viscosity.
+
+          T  Dout(iTrate)    Write out rate of change of tracer 01: temp
+          T  Dout(iTrate)    Write out rate of change of tracer 02: salt
+          T  Dout(iThadv)    Write out horizontal advection, tracer 01: temp
+          T  Dout(iThadv)    Write out horizontal advection, tracer 02: salt
+          T  Dout(iTxadv)    Write out horizontal X-advection, tracer 01: temp
+          T  Dout(iTxadv)    Write out horizontal X-advection, tracer 02: salt
+          T  Dout(iTyadv)    Write out horizontal Y-advection, tracer 01: temp
+          T  Dout(iTyadv)    Write out horizontal Y-advection, tracer 02: salt
+          T  Dout(iTvadv)    Write out vertical advection, tracer 01: temp
+          T  Dout(iTvadv)    Write out vertical advection, tracer 02: salt
+          T  Dout(iThdif)    Write out horizontal diffusion, tracer 01: temp
+          T  Dout(iThdif)    Write out horizontal diffusion, tracer 02: salt
+          T  Dout(iTxdif)    Write out horizontal X-diffusion, tracer 01: temp
+          T  Dout(iTxdif)    Write out horizontal X-diffusion, tracer 02: salt
+          T  Dout(iTydif)    Write out horizontal Y-diffusion , tracer 01: temp
+          T  Dout(iTydif)    Write out horizontal Y-diffusion , tracer 02: salt
+          T  Dout(iTvdif)    Write out vertical diffusion, tracer 01: temp
+          T  Dout(iTvdif)    Write out vertical diffusion, tracer 02: salt
+
  Output/Input Files:
 
              Output Restart File:  ocean_rst.nc
              Output History File:  ocean_his.nc
             Output Averages File:  ocean_avg.nc
          Output Diagnostics File:  ocean_dia.nc
-    IO Variable Information File:  ROMS/External/varinfo.dat
 
  Tile partition information for Grid 01:  0041x0080x0016  tiling: 001x001
 
@@ -1228,6 +1239,26 @@ The model writes some information to standard out, after setting
 
         0    -2.50    43.50    -0.50    82.50    V-points
 
+Lateral Boundary Conditions: NLM
+ ============================
+
+ Variable               Grid    West Edge   South Edge  East Edge   North Edge
+ ---------              ----    ----------  ----------  ----------  ----------
+
+ zeta                     1     Periodic    Closed      Periodic    Closed
+
+ ubar                     1     Periodic    Closed      Periodic    Closed
+
+ vbar                     1     Periodic    Closed      Periodic    Closed
+
+ u                        1     Periodic    Closed      Periodic    Closed
+
+ v                        1     Periodic    Closed      Periodic    Closed
+
+ temp                     1     Periodic    Closed      Periodic    Closed
+
+ salt                     1     Periodic    Closed      Periodic    Closed
+
  Activated C-preprocessing Options:
 
  UPWELLING           Wind-Driven Upwelling/Downwelling over a Periodic Channel
@@ -1245,7 +1276,6 @@ The model writes some information to standard out, after setting
  DIAGNOSTICS_UV      Computing and writing momentum diagnostic terms.
  DJ_GRADPS           Parabolic Splines density Jacobian (Shchepetkin, 2002).
  DOUBLE_PRECISION    Double precision arithmetic.
- EW_PERIODIC         East-West periodic boundaries.
  MIX_S_TS            Mixing of tracers along constant S-surfaces.
  MIX_S_UV            Mixing of momentum along constant S-surfaces.
  NONLINEAR           Nonlinear Model.
@@ -1267,30 +1297,34 @@ The model writes some information to standard out, after setting
  UV_VIS2             Harmonic mixing of momentum.
  VAR_RHO_2D          Variable density barotropic mode.
 
+ Process Information:
+
+ Thread #  0 (pid=     515) is active.
+
  INITIAL: Configuring and initializing forward nonlinear model ...
 
 
  Vertical S-coordinate System: 
 
- level   S-coord     Cs-curve          at_hmin  over_slope   at_hmax
+ level   S-coord     Cs-curve   Z   at hmin       at hc    half way    at hmax
 
-    16   0.0000000   0.0000000           0.000       0.000     0.000
-    15  -0.0625000  -0.0188264          -1.575      -2.750    -3.925
-    14  -0.1250000  -0.0383166          -3.150      -5.541    -7.932
-    13  -0.1875000  -0.0591578          -4.725      -8.417   -12.108
-    12  -0.2500000  -0.0820849          -6.300     -11.422   -16.544
-    11  -0.3125000  -0.1079063          -7.875     -14.608   -21.342
-    10  -0.3750000  -0.1375324          -9.450     -18.032   -26.614
-     9  -0.4375000  -0.1720078         -11.025     -21.758   -32.492
-     8  -0.5000000  -0.2125480         -12.600     -25.863   -39.126
-     7  -0.5625000  -0.2605826         -14.175     -30.436   -46.696
-     6  -0.6250000  -0.3178051         -15.750     -35.581   -55.412
-     5  -0.6875000  -0.3862333         -17.325     -41.426   -65.527
-     4  -0.7500000  -0.4682798         -18.900     -48.121   -77.341
-     3  -0.8125000  -0.5668375         -20.475     -55.846   -91.216
-     2  -0.8750000  -0.6853816         -22.050     -64.818  -107.586
-     1  -0.9375000  -0.8280918         -23.625     -75.298  -126.971
-     0  -1.0000000  -1.0000000         -25.200     -87.600  -150.000
+    16   0.0000000   0.0000000        0.000       0.000       0.000      0.000
+    15  -0.0625000  -0.0019442       -0.809      -0.806      -1.348     -1.589
+    14  -0.1250000  -0.0078455       -1.668      -1.661      -2.966     -3.687
+    13  -0.1875000  -0.0179119       -2.580      -2.568      -4.867     -6.321
+    12  -0.2500000  -0.0324983       -3.549      -3.531      -7.077     -9.535
+    11  -0.3125000  -0.0521190       -4.581      -4.558      -9.630    -13.397
+    10  -0.3750000  -0.0774659       -5.686      -5.656     -12.573    -17.996
+     9  -0.4375000  -0.1094327       -6.875      -6.837     -15.967    -23.445
+     8  -0.5000000  -0.1491465       -8.162      -8.114     -19.889    -29.890
+     7  -0.5625000  -0.1980075       -9.564      -9.506     -24.435    -37.512
+     6  -0.6250000  -0.2577387      -11.104     -11.034     -29.721    -46.531
+     5  -0.6875000  -0.3304460      -12.808     -12.724     -35.892    -57.218
+     4  -0.7500000  -0.4186931      -14.709     -14.609     -43.121    -69.903
+     3  -0.8125000  -0.5255915      -16.846     -16.726     -51.622    -84.987
+     2  -0.8750000  -0.6549105      -19.266     -19.124     -61.651   -102.953
+     1  -0.9375000  -0.8112096      -22.028     -21.859     -73.518   -124.388
+     0  -1.0000000  -1.0000000      -25.200     -25.000     -87.600   -150.000
 
  Time Splitting Weights: ndtfast =  30    nfast =  42
 
@@ -1301,43 +1335,43 @@ The model writes some information to standard out, after setting
   3-0.0017877524645903 0.0334071600137066-0.0040025528757869 0.1001008081383191
   4-0.0019566842408176 0.0334667517625262-0.0059592371166046 0.1335675599008453
   5-0.0019122901320372 0.0335319745705535-0.0078715272486418 0.1670995344713988
-  6-0.0016548570247459 0.0335957175749547-0.0095263842733877 0.2006952520463535
-  7-0.0011849025289723 0.0336508794757796-0.0107112868023601 0.2343461315221331
-  8-0.0005032751608632 0.0336903762267453-0.0112145619632232 0.2680365077488784
-  9 0.0003887272597151 0.0337071520654408-0.0108258347035082 0.3017436598143192
+  6-0.0016548570247459 0.0335957175749547-0.0095263842733877 0.2006952520463536
+  7-0.0011849025289723 0.0336508794757796-0.0107112868023600 0.2343461315221331
+  8-0.0005032751608631 0.0336903762267453-0.0112145619632232 0.2680365077488784
+  9 0.0003887272597151 0.0337071520654408-0.0108258347035081 0.3017436598143192
  10 0.0014892209965583 0.0336941944901169-0.0093366137069498 0.3354378543044362
  11 0.0027955815694920 0.0336445537902317-0.0065410321374578 0.3690824080946679
- 12 0.0043042707117221 0.0335513677379153-0.0022367614257357 0.4026337758325830
- 13 0.0060106451121704 0.0334078920475245 0.0037738836864347 0.4360416678801077
+ 12 0.0043042707117221 0.0335513677379153-0.0022367614257356 0.4026337758325831
+ 13 0.0060106451121704 0.0334078920475245 0.0037738836864348 0.4360416678801076
  14 0.0079087469427945 0.0332075372104522 0.0116826306292293 0.4692492050905598
- 15 0.0099910761708919 0.0329439123123590 0.0216737068001212 0.5021931174029188
- 16 0.0122483446563884 0.0326108764399960 0.0339220514565096 0.5348039938429148
- 17 0.0146692120341107 0.0322025982847830 0.0485912634906203 0.5670065921276978
- 18 0.0172400033810439 0.0317136245503127 0.0658312668716642 0.5987202166780104
- 19 0.0199444086685725 0.0311389577709445 0.0857756755402367 0.6298591744489550
- 20 0.0227631639997064 0.0304741441486588 0.1085388395399431 0.6603333185976138
- 21 0.0256737146312911 0.0297153720153352 0.1342125541712341 0.6900486906129490
- 22 0.0286498597812016 0.0288595815276255 0.1628624139524358 0.7189082721405745
- 23 0.0316613792205220 0.0279045862015855 0.1945237931729577 0.7468128583421599
- 24 0.0346736416507075 0.0268492068942347 0.2291974348236652 0.7736620652363947
- 25 0.0376471948657328 0.0256934188392112 0.2668446296893980 0.7993554840756058
- 26 0.0405373376992232 0.0244385123436867 0.3073819673886213 0.8237939964192925
- 27 0.0432936737565710 0.0230872677537126 0.3506756411451923 0.8468812641730052
- 28 0.0458596469320356 0.0216441452951603 0.3965352880772279 0.8685254094681655
- 29 0.0481720587108285 0.0201154903974257 0.4447073467880564 0.8886408998655913
- 30 0.0501605672561820 0.0185097551070648 0.4948679140442383 0.9071506549726561
- 31 0.0517471682814031 0.0168377361985254 0.5466150823256414 0.9239883911711814
+ 15 0.0099910761708920 0.0329439123123590 0.0216737068001213 0.5021931174029188
+ 16 0.0122483446563884 0.0326108764399960 0.0339220514565097 0.5348039938429148
+ 17 0.0146692120341107 0.0322025982847830 0.0485912634906204 0.5670065921276978
+ 18 0.0172400033810439 0.0317136245503127 0.0658312668716643 0.5987202166780105
+ 19 0.0199444086685725 0.0311389577709445 0.0857756755402368 0.6298591744489550
+ 20 0.0227631639997064 0.0304741441486588 0.1085388395399432 0.6603333185976138
+ 21 0.0256737146312911 0.0297153720153352 0.1342125541712342 0.6900486906129490
+ 22 0.0286498597812016 0.0288595815276255 0.1628624139524359 0.7189082721405746
+ 23 0.0316613792205220 0.0279045862015855 0.1945237931729578 0.7468128583421600
+ 24 0.0346736416507075 0.0268492068942347 0.2291974348236653 0.7736620652363948
+ 25 0.0376471948657328 0.0256934188392112 0.2668446296893981 0.7993554840756060
+ 26 0.0405373376992232 0.0244385123436867 0.3073819673886213 0.8237939964192927
+ 27 0.0432936737565710 0.0230872677537126 0.3506756411451924 0.8468812641730054
+ 28 0.0458596469320356 0.0216441452951603 0.3965352880772280 0.8685254094681656
+ 29 0.0481720587108284 0.0201154903974257 0.4447073467880565 0.8886408998655914
+ 30 0.0501605672561820 0.0185097551070648 0.4948679140442384 0.9071506549726561
+ 31 0.0517471682814030 0.0168377361985254 0.5466150823256415 0.9239883911711815
  32 0.0528456577069106 0.0151128305891453 0.5994607400325521 0.9391012217603267
- 33 0.0533610761022577 0.0133513086655816 0.6528218161348097 0.9524525304259083
- 34 0.0531891349131380 0.0115726061288397 0.7060109510479476 0.9640251365547480
- 35 0.0522156244733761 0.0097996349650684 0.7582265755213236 0.9738247715198163
- 36 0.0503158038019030 0.0080591141492892 0.8085423793232266 0.9818838856691055
- 37 0.0473537721847154 0.0063819206892258 0.8558961515079421 0.9882658063583314
- 38 0.0431818225418188 0.0048034616164019 0.8990779740497608 0.9930692679747333
- 39 0.0376397765791564 0.0033640675316746 0.9367177506289172 0.9964333355064079
- 40 0.0305543017255206 0.0021094083123694 0.9672720523544379 0.9985427438187774
- 41 0.0217382098544504 0.0010909315881854 0.9890102622088882 0.9996336754069628
- 42 0.0109897377911118 0.0003663245930371 1.0000000000000000 0.9999999999999998
+ 33 0.0533610761022577 0.0133513086655816 0.6528218161348098 0.9524525304259084
+ 34 0.0531891349131379 0.0115726061288397 0.7060109510479478 0.9640251365547481
+ 35 0.0522156244733761 0.0097996349650684 0.7582265755213239 0.9738247715198165
+ 36 0.0503158038019030 0.0080591141492892 0.8085423793232269 0.9818838856691057
+ 37 0.0473537721847153 0.0063819206892258 0.8558961515079423 0.9882658063583315
+ 38 0.0431818225418188 0.0048034616164019 0.8990779740497611 0.9930692679747334
+ 39 0.0376397765791564 0.0033640675316746 0.9367177506289175 0.9964333355064080
+ 40 0.0305543017255206 0.0021094083123694 0.9672720523544381 0.9985427438187774
+ 41 0.0217382098544504 0.0010909315881854 0.9890102622088885 0.9996336754069628
+ 42 0.0109897377911118 0.0003663245930371 1.0000000000000004 0.9999999999999999
 
  ndtfast, nfast =   30  42   nfast/ndtfast = 1.40000
 
@@ -1351,8 +1385,8 @@ The model writes some information to standard out, after setting
  Maximum X-grid spacing, DXmax =  1.00000000E+00 km
  Minimum Y-grid spacing, DYmin =  1.00000000E+00 km
  Maximum Y-grid spacing, DYmax =  1.00000000E+00 km
- Minimum Z-grid spacing, DZmin =  1.57503054E+00 m
- Maximum Z-grid spacing, DZmax =  2.30290891E+01 m
+ Minimum Z-grid spacing, DZmin =  8.08965824E-01 m
+ Maximum Z-grid spacing, DZmax =  2.56123321E+01 m
 
  Minimum barotropic Courant Number =  2.22358627E-01
  Maximum barotropic Courant Number =  5.42494240E-01
@@ -1360,79 +1394,65 @@ The model writes some information to standard out, after setting
 
 
  Maximum grid stiffness ratios:  rx0 =   6.931666E-02 (Beckmann and Haidvogel)
-                                 rx1 =   1.188435E+00 (Haney)
+                                 rx1 =   8.661243E-01 (Haney)
 
 
  Initial basin volumes: TotVolume =  3.8843755884E+11 m3
-                        MinVolume =  1.6168290365E+06 m3
-                        MaxVolume =  2.3029089059E+07 m3
-                          Max/Min =  1.4243366824E+01
+                        MinVolume =  8.4521383562E+05 m3
+                        MaxVolume =  2.5612332106E+07 m3
+                          Max/Min =  3.0302783777E+01
+
 
 NL ROMS/TOMS: started time-stepping: (Grid: 01 TimeSteps: 00000001 - 00001440)
 
-   STEP   Day HH:MM:SS  KINETIC_ENRG   POTEN_ENRG    TOTAL_ENRG   NET_VOLUME
-      0     0 00:00:00  0.000000E+00  6.579497E+02  6.579497E+02 3.884376E+11
+   STEP   Day HH:MM:SS  KINETIC_ENRG   POTEN_ENRG    TOTAL_ENRG    NET_VOLUME
+          C => (i,j,k)       Cu            Cv            Cw         Max Speed
+
+      0     0 00:00:00  0.000000E+00  6.585677E+02  6.585677E+02  3.884376E+11
+            (00,00,00)  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00
       DEF_HIS   - creating history file: ocean_his.nc
       WRT_HIS   - wrote history  fields (Index=1,1) into time record = 0000001
       DEF_AVG   - creating average file: ocean_avg.nc
       DEF_DIAGS - creating diagnostics file: ocean_dia.nc
-     72     0 06:00:00  8.366194E-06  6.579497E+02  6.579497E+02 3.884376E+11
-      WRT_HIS   - wrote history  fields (Index=1,1) into time record = 0000002
-      WRT_AVG   - wrote averaged fields into time record = 0000001
-      WRT_DIAGS - wrote diagnostics fields into time record = 0000001
-    144     0 12:00:00  7.416156E-05  6.579497E+02  6.579498E+02 3.884376E+11
-      WRT_HIS   - wrote history  fields (Index=1,1) into time record = 0000003
-      WRT_AVG   - wrote averaged fields into time record = 0000002
-      WRT_DIAGS - wrote diagnostics fields into time record = 0000002
-    216     0 18:00:00  2.317054E-04  6.579497E+02  6.579499E+02 3.884376E+11
-      WRT_HIS   - wrote history  fields (Index=1,1) into time record = 0000004
-      WRT_AVG   - wrote averaged fields into time record = 0000003
-      WRT_DIAGS - wrote diagnostics fields into time record = 0000003
-    288     1 00:00:00  5.382882E-04  6.579497E+02  6.579503E+02 3.884376E+11
-      WRT_HIS   - wrote history  fields (Index=1,1) into time record = 0000005
-      WRT_AVG   - wrote averaged fields into time record = 0000004
-      WRT_DIAGS - wrote diagnostics fields into time record = 0000004
-      WRT_RST   - wrote re-start fields (Index=1,1) into time record = 0000001
             :
-   1440     5 00:00:00  2.476731E-02  6.579533E+02  6.579781E+02
+   1440     5 00:00:00  2.448524E-02  6.585713E+02  6.585958E+02
 3.884376E+11
-      WRT_HIS   - wrote history  fields (Index=1,1) into time record
-= 0000021
-      WRT_AVG   - wrote averaged fields into time record =
-0000020
-      WRT_DIAGS - wrote diagnostics fields into time record =
-0000020
-      WRT_RST   - wrote re-start fields (Index=1,1) into time record
-= 0000001
+            (01,02,10)  1.604228E-01  8.313453E-03  4.693175E-02
+6.425970E-01
+      WRT_HIS   - wrote history  fields (Index=1,1) into time record = 0000021
+      WRT_AVG   - wrote averaged fields into time record = 0000020
+      WRT_DIAGS - wrote diagnostics fields into time record = 0000020
+      WRT_RST   - wrote re-start fields (Index=1,1) into time record = 0000001
 
  Elapsed CPU time (seconds):
 
- Thread #  0 CPU:     557.021
- Total:               557.021
+ Thread #  0 CPU:     365.500
+ Total:               365.500
 
  Nonlinear model elapsed time profile:
 
-  Initialization ...................................         0.015  ( 0.0027 %)
-  Reading of input data ............................         0.002  ( 0.0004 %)
-  Processing of input data .........................         0.127  ( 0.0229 %)
-  Processing of output time averaged data ..........        55.303  ( 9.9284 %)
-  Computation of vertical boundary conditions ......         0.419  ( 0.0752 %)
-  Computation of global information integrals ......         2.316  ( 0.4159 %)
-  Writing of output data ...........................         1.923  ( 0.3453 %)
-  Model 2D kernel ..................................       365.560  (65.6278 %)
-  2D/3D coupling, vertical metrics .................         1.950  ( 0.3500 %)
-  Omega vertical velocity ..........................         3.135  ( 0.5628 %)
-  Equation of state for seawater ...................         1.645  ( 0.2954 %)
-  3D equations right-side terms ....................        14.268  ( 2.5615 %)
-  3D equations predictor step ......................        31.518  ( 5.6583 %)
-  Pressure gradient ................................        10.157  ( 1.8235 %)
-  Harmonic mixing of tracers, S-surfaces ...........         4.130  ( 0.7414 %)
-  Harmonic stress tensor, S-surfaces ...............         8.211  ( 1.4741 %)
-  Corrector time-step for 3D momentum ..............        27.976  ( 5.0225 %)
-  Corrector time-step for tracers ..................        19.558  ( 3.5112 %)
-                                              Total:       548.216   98.4193
+  Allocation and array initialization ..............         0.074  ( 0.0202 %)
+  Ocean state initialization .......................         0.015  ( 0.0041 %)
+  Reading of input data ............................         0.002  ( 0.0005 %)
+  Processing of input data .........................         0.054  ( 0.0148 %)
+  Processing of output time averaged data ..........        18.084  ( 4.9478 %)
+  Computation of vertical boundary conditions ......         0.092  ( 0.0252 %)
+  Computation of global information integrals ......         2.947  ( 0.8062 %)
+  Writing of output data ...........................         2.093  ( 0.5726 %)
+  Model 2D kernel ..................................       222.805  (60.9589 %)
+  2D/3D coupling, vertical metrics .................         2.890  ( 0.7906 %)
+  Omega vertical velocity ..........................         2.127  ( 0.5819 %)
+  Equation of state for seawater ...................         1.733  ( 0.4741 %)
+  3D equations right-side terms ....................        11.289  ( 3.0887 %)
+  3D equations predictor step ......................        30.722  ( 8.4055 %)
+  Pressure gradient ................................         7.821  ( 2.1398 %)
+  Harmonic mixing of tracers, S-surfaces ...........         3.128  ( 0.8557 %)
+  Harmonic stress tensor, S-surfaces ...............         5.736  ( 1.5694 %)
+  Corrector time-step for 3D momentum ..............        29.575  ( 8.0918 %)
+  Corrector time-step for tracers ..................        17.731  ( 4.8512 %)
+                                              Total:       358.917   98.1989
 
- All percentages are with respect to total time =          557.021
+ All percentages are with respect to total time =          365.500
 
  ROMS/TOMS - Output NetCDF summary for Grid 01:
              number of time records written in HISTORY file = 00000021
@@ -1444,11 +1464,12 @@ NL ROMS/TOMS: started time-stepping: (Grid: 01 TimeSteps: 00000001 - 00001440)
      ROMS/Functionals/ana_btflux.h
      ROMS/Functionals/ana_grid.h
      ROMS/Functionals/ana_initial.h
+     ROMS/Functionals/ana_nudgcoef.h
      ROMS/Functionals/ana_smflux.h
      ROMS/Functionals/ana_stflux.h
      ROMS/Functionals/ana_vmix.h
 
- ROMS/TOMS: DONE... Friday - October 30, 2009 -  9:20:38 AM
+ ROMS/TOMS: DONE... Tuesday - April 3, 2012 - 10:53:22 AM
 \end{verbatim}
 Note that it ends by printing out a profile of where the time was
 used---the ratios will vary depending on the application.
@@ -1462,7 +1483,9 @@ day 4 and day 5. The history file contains records for 0, 1/4, 1/2,
 3/4, and 1 day, etc., while the averages and diagnostics files are
 at 1/8, 3/8, 5/8, and 7/8 day, etc..
 Plots can be made from any one of these files, using the plotting
-software described in \S\ref{Plothist}.  Selected frames from
+software described in
+\href{https://www.myroms.org/wiki/index.php/Plotting_Package_Installation}{ROMS
+plotting package}. Selected frames from
 such plots are shown in Fig.\ \ref{fsm1} to \ref{fsm2}.
 
 \begin{figure}
@@ -1502,33 +1525,55 @@ at day 5.}
 \label{fsm2}
 \end{figure}
 
-\subsection{Northeast Pacific example}
-\label{NEP}
+\subsection{Arctic example}
+\label{ARCTIC}
 The upwelling/downwelling examples is one in which all the start-up
 fields are defined analytically.  The other extreme is one in which
-everything is read from files, as in our Northeast Pacific simulations.
-Figure \ref{fbath_nep5} shows the bathymetry and the extent of this
-domain, which is rectangular in a conic map projection.
+everything is read from files, as in our Arctic simulations.
+Figure \ref{fbath_arc} shows the bathymetry and the extent of this
+domain. The grid is non-uniform, having more resolution close to
+Alaska - a measure of grid spacing is shown in Figure
+\ref{fgspace_arc}.
 
 \begin{figure}
 \setlength{\unitlength}{10mm}
 \begin{picture}(0,16)(0,0)
-\includegraphics{pics/bath_NEP5}
+\includegraphics{pics/bath_Arc}
   \end{picture}
-\caption{Bathymetry of the Northeast Pacific domain (NEP5).}
-\label{fbath_nep5}
+\caption{Bathymetry of the Arctic domain.}
+\label{fbath_arc}
 \end{figure}
 
-\subsubsection{\code{nep5.h}}
-The C preprocessor variable \code{NEP5} has been chosen to
-label our Northeast Pacific domain, using the
-fifth generation grid file. The header include file then becomes
-\code{nep5.h}:
+\begin{figure}
+\setlength{\unitlength}{10mm}
+\begin{picture}(0,16)(0,0)
+\includegraphics{pics/size_Arc}
+  \end{picture}
+\caption{Grid spacing of the Arctic domain.}
+\label{fgspace_arc}
+\end{figure}
+
+\subsubsection{\code{arctic.h}}
+The C preprocessor variable \code{ARCTIC} has been chosen to
+label our Arctic domain, which is a close cousin to \code{NEP6}.
+The header include file then becomes \code{arctic.h}:
 \begin{verbatim}
 /*
-**  Options for Northeast Pacific (NEP5) simulation
+** svn $Id$
+*******************************************************************************
+** Copyright (c) 2002-2012 The ROMS/TOMS Group
+**
+**   Licensed under a MIT/X style license
+**
+**   See License_ROMS.txt
+**
+*******************************************************************************
+**
+**  Options for ARCTIC simulation
 */
- 
+
+#define NO_HIS
+#define GLOBAL_PERIODIC
 #undef NETCDF4
 #undef PARALLEL_IO
 #undef OFFLINE_FLOATS
@@ -1541,7 +1586,7 @@ fifth generation grid file. The header include file then becomes
 #define SOLVE3D
 #define SALINITY
 #ifdef SOLVE3D
-# undef SPLINES
+# define SPLINES
 #endif
 #define FLOATS
 #define STATIONS
@@ -1550,6 +1595,9 @@ fifth generation grid file. The header include file then becomes
 #undef T_PASSIVE
 #ifdef T_PASSIVE
 # define ANA_PASSIVE
+# define TRC_PSOURCE
+# define ANA_TRC_PSOURCE
+# define AGE_PASSIVE
 #endif
  
 /* ice */
@@ -1557,6 +1605,8 @@ fifth generation grid file. The header include file then becomes
 #ifdef SOLVE3D
 # define  ICE_MODEL
 # ifdef ICE_MODEL
+#  define  OUTFLOW_MASK
+#  define  FASTICE_CLIMATOLOGY
 #  define  ICE_THERMO
 #  define  ICE_MK
 #  undef   ICE_ALB_EC92
@@ -1568,9 +1618,9 @@ fifth generation grid file. The header include file then becomes
 #  define  ICE_SMOLAR
 #  define  ICE_UPWIND
 #  define  ICE_BULK_FLUXES
-#  define  ANA_AIOBC
-#  define  ANA_HIOBC
-#  define  ANA_HSNOBC
+#  undef  ANA_AIOBC
+#  undef  ANA_HIOBC
+#  undef  ANA_HSNOBC
 # endif
 #endif
 
@@ -1580,14 +1630,9 @@ fifth generation grid file. The header include file then becomes
 #undef OUT_DOUBLE
 #define RST_SINGLE
 #define AVERAGES
-#undef AVERAGES2
+#define AVERAGES2
 #ifdef SOLVE3D
 # undef AVERAGES_DETIDE
-# define AVERAGES_AKT
-# define AVERAGES_AKS
-# define AVERAGES_AKV
-# define AVERAGES_FLUXES
-# undef AVERAGES_QUADRATIC
 # undef DIAGNOSTICS_TS
 #endif
 #undef DIAGNOSTICS_UV
@@ -1600,7 +1645,7 @@ fifth generation grid file. The header include file then becomes
  
 #define UV_ADV
 #define UV_COR
-#define UV_SADVECTION
+#undef UV_SADVECTION
  
 #ifdef SOLVE3D
 # define TS_U3HADVECTION
@@ -1609,11 +1654,11 @@ fifth generation grid file. The header include file then becomes
 #endif
  
 #define UV_VIS2
-#define UV_SMAGORINSKY
-#define VISC_3DCOEF
+#undef UV_SMAGORINSKY
+#undef VISC_3DCOEF
 #define MIX_S_UV
 #define VISC_GRID
-#define SPONGE
+#undef SPONGE
 
 #ifdef SOLVE3D
 # define TS_DIF2
@@ -1621,13 +1666,13 @@ fifth generation grid file. The header include file then becomes
 # define DIFF_GRID
 #endif
  
- 
 /* vertical mixing */
  
 #ifdef SOLVE3D
 # define SOLAR_SOURCE
+# define WTYPE_GRID
  
-# define LMD_MIXING
+# undef LMD_MIXING
 # ifdef LMD_MIXING
 #  define LMD_RIMIX
 #  define LMD_CONVEC
@@ -1638,7 +1683,7 @@ fifth generation grid file. The header include file then becomes
 #  undef LMD_DDMIX
 # endif
  
-# undef GLS_MIXING
+# define GLS_MIXING
 # undef MY25_MIXING
 
 # if defined GLS_MIXING || defined MY25_MIXING
@@ -1650,7 +1695,6 @@ fifth generation grid file. The header include file then becomes
 /* surface forcing */
  
 #ifdef SOLVE3D
-# define CORE_FORCING
 # define BULK_FLUXES
 # define CCSM_FLUXES
 # if defined BULK_FLUXES || defined CCSM_FLUXES
@@ -1659,6 +1703,7 @@ fifth generation grid file. The header include file then becomes
 #  define EMINUSP
 #  undef ANA_SRFLUX
 #  undef ALBEDO
+#  define ALBEDO_CURVE
 #  undef LONGWAVE
 # endif
 #endif
@@ -1666,8 +1711,10 @@ fifth generation grid file. The header include file then becomes
 /* surface and side corrections */
  
 #ifdef SOLVE3D
-# define SRELAXATION
+# define SCORRECTION
 # undef QCORRECTION
+# undef TCLIMATOLOGY
+# undef TCLM_NUDGING
 #endif
  
 /* point sources (rivers, line sources) */
@@ -1694,7 +1741,8 @@ fifth generation grid file. The header include file then becomes
 # define POT_TIDES
 
 # define UV_LDRAG
-# define RDRG_GRID
+# define UV_DRAG_GRID
+# define ANA_DRAG
 # define DRAG_LIMITER
 # undef UV_QDRAG
 #else
@@ -1703,60 +1751,7 @@ fifth generation grid file. The header include file then becomes
  
 /* Boundary conditions...careful with grid orientation */
  
-#define EASTERN_WALL
-#define NORTHERN_WALL
-#undef WESTERN_WALL
-#undef SOUTHERN_WALL
- 
 #define RADIATION_2D
- 
-#ifndef NORTHERN_WALL
-# define NORTH_FSCHAPMAN
-# define NORTH_M2FLATHER
-# ifdef SOLVE3D
-#  define NORTH_M3RADIATION
-#  define NORTH_M3NUDGING
-#  define NORTH_TRADIATION
-#  define NORTH_TNUDGING
-#  define NORTH_MIGRADIENT
-# endif
-#endif
- 
-#ifndef WESTERN_WALL
-# define WEST_FSCHAPMAN
-# define WEST_M2FLATHER
-# ifdef SOLVE3D
-#  define WEST_M3RADIATION
-#  define WEST_M3NUDGING
-#  define WEST_TRADIATION
-#  define WEST_TNUDGING
-#  define WEST_MIGRADIENT
-# endif
-#endif
- 
-#ifndef SOUTHERN_WALL
-# define SOUTH_FSCHAPMAN
-# define SOUTH_M2FLATHER
-# ifdef SOLVE3D
-#  define SOUTH_M3RADIATION
-#  define SOUTH_M3NUDGING
-#  define SOUTH_TRADIATION
-#  define SOUTH_TNUDGING
-#  define SOUTH_MIGRADIENT
-# endif
-#endif
- 
-#ifndef EASTERN_WALL
-# define EAST_FSCHAPMAN
-# define EAST_M2FLATHER
-# ifdef SOLVE3D
-#  define EAST_M3RADIATION
-#  define EAST_M3NUDGING
-#  define EAST_TRADIATION
-#  define EAST_TNUDGING
-#  define EAST_MIGRADIENT
-# endif
-#endif
  
 /* roms quirks */
  
@@ -1770,114 +1765,44 @@ fifth generation grid file. The header include file then becomes
 /*
 **  Biological model options.
 */
-#define NEMURO
-#define LIMIT_BIO_AKT
-#undef BIO_GOANPZ        /* Sarah Hinckley's 11 box model */
-#undef BEST_NPZ         /* Georgina Gibsons BEST NPZ model  */
-
-#if defined BEST_NPZ || defined BIO_GOANPZ || defined PASSIVE_TRACERS
-# undef  BIOFLUX           /* sum Nitrogen fluxes between boxes */
-# define ANA_BIOLOGY       /* analytical biology initial conditions */
-# define ANA_BPFLUX        /* analytical bottom passive tracers fluxes */
-# define ANA_SPFLUX        /* analytical surface passive tracers fluxes */
-# define DIAPAUSE          /* Enable Neocalanus seasonal vertical migration */
-# undef FLOAT_VWALK
-# define IRON_LIMIT        /* Add iron as passive 11th tracer */
-# undef TCLM_NUDGING      /* Nudging of tracer climatology for iron */
-#endif
+#undef NEMURO
 
 #if defined NEMURO
+# define BIO_SEDIMENT
+# define NEMURO_SED1
 # undef ANA_BIOLOGY       /* analytical biology initial conditions */
 # define ANA_BPFLUX        /* analytical bottom passive tracers fluxes */
 # define ANA_SPFLUX        /* analytical surface passive tracers fluxes */
 # define IRON_LIMIT        /* Add iron as passive 11th tracer */
 # define IRON_RELAX
 # undef  IRON_RSIN
-# define BIO_SEDIMENT
 # define HOLLING_GRAZING
 # undef  IVLEV_EXPLICIT
 # undef  ANA_BIOSWRAD
 # undef  DIAGNOSTICS_BIO
-# undef  BIO_SEDIMENT
 #endif
 \end{verbatim}
-Here, we have declared that we want two open sides and two closed
-walls. For each open side, we're using a Chapman/Flather combination
-on the 2D flow and a radiation/nudging combination on the 3D flow.
-We've got masking, salinity, and the non-linear equation of state.
+We've got masking, salinity, sea ice and the non-linear equation of state.
 We want Laplacian viscosity on $\sigma$-surfaces, diffusion along constant
 $z$-surfaces and the full non-linear, curvilinear momentum equations.
-Sea ice is turned on, as is the \code{NEMURO} ecosystem (for some
-runs at least).
 
 Notice that comments are allowed in this file as long as they are in
 the C/C++ syntax. Also, conditionals are fine---some parts are only
 wanted when \code{SOLVE3D} is on. There is evidence of options
 having been tried and rejected, such as the quadratic bottom drag
-in the presence of tides. The ``Eastern'' side is actually open to
-the North, up in the Arctic, but it is set to be a closed boundary.
-Instead, there is an imposed flow through Bering Strait by using
-\code{UV\_PSOURCE} and \code{ANA\_PSOURCE}.
+in the presence of tides.
+Sources are turned on to presribe inflow through Bering Strait
+(\code{UV\_PSOURCE}).
 
-\subsubsection{NEP5 code chunks}
-As mentioned above, we are specifying point sources in
-\code{ana\_psource.h}. The \code{NEP5} section of the copy in
-\code{Apps/NEP} is:
+\subsubsection{Arctic code chunks}
+The \code{Apps/Arctic} directory contains the \code{ana\_}
+family of include files for setting the bottom drag, the horizontal
+mixing coefficients, and the nudging coefficients.
+Doing a search for \code{ARCTIC} shows up a few other bits of code. One
+is in \code{output.F}, forcing a new station file after every
+restart:
 \begin{verbatim}
-#if defined NEP5
-        Nsrc=149
-        DO is=1,Nsrc
-          Dsrc(is)=0.0_r8
-          Isrc(is)=225
-          Jsrc(is)=472+is
-          Lsrc(is,itemp)=.FALSE.
-          Lsrc(is,isalt)=.FALSE.
-        END DO
-#elif defined BERING_10K
-            :
-
-#if defined UV_PSOURCE || defined Q_PSOURCE
-# ifdef SOLVE3D
-!
-!  If appropriate, set-up nondimensional shape function to
-distribute
-!  mass point sources/sinks vertically.  It must add to unity!!.
-!
-#  if defined NEP5
-        DO k=1,N(ng)
-          DO is=1,Nsrc
-            Qshape(is,k)=1.0_r8/REAL(N(ng),r8)
-          END DO
-        END DO
-#  endif
-# endif
-# if defined NEP5
-      cff = 800000._r8/Nsrc
-      DO is=1,Nsrc
-        Qbar(is)=cff
-      END DO
-# else
-      ana_psource.h: No values provided for Qbar.
-# endif
-\end{verbatim}
-The total transport is set to 0.8 Sv and is divided among the
-\code{Nsrc} sources.
-
-Doing a search for \code{NEP5} shows up a few other instances. One
-is in \code{output.F}, forcing more digits in the averages file names
-for handling one file per record, one record per day for fifty
-years:
-\begin{verbatim}
-#ifdef NEP5
-  20          FORMAT (a,'_',i5.5,'.nc')
-#else
-  20          FORMAT (a,'_',i4.4,'.nc')
-#endif
-\end{verbatim}
-Also in \code{output.F} is code to ask for a new stations file for
-each run rather than appending to the old one:
-\begin{verbatim}
-#ifdef NEP5
+#ifdef ARCTIC
           CALL def_station (ng, .true.)
 #else
           CALL def_station (ng, ldefout(ng))
@@ -1888,98 +1813,92 @@ numbered just like the averages files. Why not set \code{ldefout} to
 be true? It is shared by many outputs, including the floats, and you
 can only restart floats with \code{ldefout} set to false.
 
-One feature which got turned on after the two decade ``run 35'' is
-\code{SRELAXATION}, in which I'm nudging the sea surface salinity to
-a value from a forcing file. If you check the nudging code, you will
-find that the timescale for nudging is the same as that used for the
-open boundary conditions. That isn't quite what I want, so there's
-this change to \code{set\_vbc.F}:
-\begin{verbatim}
-    #   elif defined SRELAXATION
-              stflx(i,j,isalt)=-Tnudg(isalt,ng)*Hz(i,j,N(ng))*      &
-    #ifdef NEP5   
-    !  60 days from Tnudg of 360 days
-         &                     6.0_r8*                              &
-    #endif
-         &                     (t(i,j,N(ng),nrhs,isalt)-sss(i,j))
-\end{verbatim}
-There is also a kludge in \code{step\_floats.F} for a yet-untested
-float reuse strategy. Having a handy tag like \code{NEP5} allows me
-to search for these little hacks later. The file
-\code{Apps/NEP/ana\_hmixcoef.h} tried to sneak by without any
-\code{NEP5}, but the location means that it will be used to set up
-the sponge layers for this domain:
-\begin{verbatim}
-    !
-    ! Northeast Pacific sponge areas
-    !
-          Iwrk = 10
-    #  if defined UV_VIS2
-          DO i=IstrR,IendR
-            DO j=JstrR,MIN(Iwrk,JendR)
-              cff = 250.*0.5_r8*(1.0_r8+COS(pi*REAL(j,r8)/REAL(Iwrk,r8)))
-              visc2_r(i,j) = max(cff, visc2_r(i,j))
-              visc2_p(i,j) = max(cff, visc2_p(i,j))
-            END DO
-          END DO
-          DO i=IstrR,MIN(Iwrk,IendR)
-            DO j=MAX(JstrR,i),JendR
-              cff = 250.*0.5_r8*(1.0_r8+COS(pi*REAL(i,r8)/REAL(Iwrk,r8)))
-              visc2_r(i,j) = max(cff, visc2_r(i,j))
-              visc2_p(i,j) = max(cff, visc2_p(i,j))
-            END DO
-          END DO
-            :
-    #   if defined TS_DIF2
-          DO itrc=1,NT(ng)
-            DO j=JstrR,MIN(Iwrk,JendR)
-              cff = 100. * (1.0_r8+COS(pi*REAL(j,r8)/REAL(Iwrk,r8)))
-              DO i=IstrR,IendR
-                diff2(i,j,itrc)=max(cff, diff2(i,j,itrc))
-              END DO
-            END DO
-            DO i=IstrR,MIN(Iwrk,IendR)
-              DO j=MAX(JstrR,i),JendR
-                cff = 100. * (1.0_r8+COS(pi*REAL(i,r8)/REAL(Iwrk,r8)))
-                diff2(i,j,itrc) = max(cff, diff2(i,j,itrc))
-              END DO
-            END DO
-\end{verbatim}
+There is a hack in \code{grid\_coords.F} so that floats and stations
+are placed at the correct $i,j$ position. Otherwise, the code to
+find $i,j$ from longitude, latitude finds two boxes with the correct
+range, one where I want it, the other at the same latitude, but
+where the longitude jumps from 360 back to 0.
+
+There is code in \code{set\_masks.F} to position the mask for
+the ice outflow cells off the coast of Greenland.
+
+Finally, there is a kludge in \code{step\_floats.F} for a
+float reuse strategy, restarting them each year. Having a handy tag like
+\code{ARCTIC} allows me to search for these little hacks later.
 
 \subsubsection{Model domain}
 A number of horizontal grid points was chosen to resolve the
-domain at roughly 10 km. Values for \code{Lm}, \code{Mm}, and
-\code{N} are:
+domain at roughly 5 km near Alaska, less well across the basin, but
+with only twice as many points as the regional Chukchi domain. Values
+for \code{Lm}, \code{Mm}, and \code{N} are:
 \begin{verbatim}
-          Lm == 224           ! Number of I-direction INTERIOR RHO-points
-          Mm == 640           ! Number of J-direction INTERIOR RHO-points
-           N == 60            ! Number of vertical levels
+          Lm == 472           ! Number of I-direction INTERIOR RHO-points
+          Mm == 480           ! Number of J-direction INTERIOR RHO-points
+           N == 50            ! Number of vertical levels
 \end{verbatim}
-The vertical structure is the same as we've been using for a good
-long time now, though the minimum depth keeps creeping shallower:
+The vertical structure is set to our new favorite, using the new stretching:
 \begin{verbatim}
-  Vtransform == 1                          ! transformation equation
- Vstretching == 1                          ! stretching function
+  Vtransform == 2                          ! transformation equation
+ Vstretching == 4                          ! stretching function
 
-     THETA_S == 5.0d0                      ! surface stretching parameter
-     THETA_B == 0.4d0                      ! bottom  stretching parameter
-      TCLINE == 10.0d0                     ! critical depth (m)
+     THETA_S == 7.0d0                      ! surface stretching parameter
+     THETA_B == 2.0d0                      ! bottom  stretching parameter
+      TCLINE == 250.0d0                    ! critical depth (m)
 \end{verbatim}
 
 \subsubsection{Initial and boundary conditions}
-The best fields we know of at the moment are known as SODA, a
-reanalysis from 1958 through 2005 by Carton et al.\
-(\cite{Carton_2005}). There are \code{Matlab} scripts to create
-initial and boundary conditions from the SODA files.
+The best ocean fields we knew of when setting this up are known as SODA, a
+reanalysis from 1958 through 2005 by
+\cite{Carton_2005}. There are \code{Python} scripts to create
+initial and boundary conditions from the SODA files. Snow and ice
+initial and boundary conditions are obtained from model results generously
+provided by Jinlun Zhang. I am using three boundary files so that each
+field can have its own unlimited dimension---there are three frequencies,
+from daily to monthly.
+
+The side known as ``South'' is along Northern Alaska and Western
+Canada and is set to closed. The side known as ``West'' is only open
+at Bering Strait, where I am imposing the inflow using a ``rivers''
+file, but letting temperature and salinity come in from SODA
+boundary conditions. The last two boundaries on the Atlantic side
+have our usual combination of radiation and nudging:
+\begin{verbatim}
+   LBC(isFsur) ==   Cha     Clo     Cha     Cha         ! free-surface
+   LBC(isUbar) ==   Clo     Clo     Fla     Fla         ! 2D U-momentum
+   LBC(isVbar) ==   Clo     Clo     Fla     Fla         ! 2D V-momentum
+   LBC(isUvel) ==   Clo     Clo     RadNud  RadNud      ! 3D U-momentum
+   LBC(isVvel) ==   Clo     Clo     RadNud  RadNud      ! 3D V-momentum
+   LBC(isMtke) ==   Gra     Clo     Gra     Gra         ! mixing TKE
+
+   LBC(isTvar) ==   RadNud  Clo     RadNud  RadNud \    ! temperature
+                    RadNud  Clo     RadNud  RadNud      ! salinity
+
+! Ice boundary conditions
+
+   LBC(isAice) ==   Mix     Clo     Mix     Mix         ! ice concentration
+   LBC(isHice) ==   Mix     Clo     Mix     Mix         ! ice thickness
+   LBC(isHsno) ==   Mix     Clo     Mix     Mix         ! snow thickness
+   LBC(isTice) ==   Clo     Clo     Clo     Clo         ! ice temperature
+   LBC(isSfwat)==   Clo     Clo     Clo     Clo         ! surface water
+   LBC(isSig11)==   Clo     Clo     Clo     Clo         ! sigma-11
+   LBC(isSig12)==   Clo     Clo     Clo     Clo         ! sigma-12
+   LBC(isSig22)==   Clo     Clo     Clo     Clo         ! sigma-22
+   LBC(isUice) ==   Gra     Clo     Gra     Gra         ! ice U-momentum
+   LBC(isVice) ==   Gra     Clo     Gra     Gra         ! ice V-momentum
+
+\end{verbatim}
 
 \subsubsection{Forcing}
-We are using the CORE forcing files (\cite{Large_08}) and computing the
+We are using the CORE2 forcing files (\cite{Large_08}) and computing the
 momentum, heat and salt fluxes from the atmospheric conditions and the
 model's surface temperature. There are two options, one provided by
 \code{bulk\_flux.F} and the other provided by \code{ccsm\_flux.F}. We
-are opting to use the second. With minimal fussing, the CORE files
+are using the second. With minimal fussing, the CORE2 files
 can be used as is, on their native grid, then interpolated by ROMS
-internally to the domain at hand.
+internally to the domain at hand. Other forcings include a nudging
+to sea surface salinity, runoff from Dai and Trenberth, a fastice
+climatology from Andy Mahoney, Bering Strait flow estimated by Seth
+Danielson using Rebecca Woodgate's mooring data, and tides from OTPS.
 
 \subsubsection{ocean.in}
 We use an internal time-step of 200 $s$ and an external time-step of 10
@@ -1988,44 +1907,38 @@ $s$. The horizontal viscosity and diffusion is:
         TNU2 == 5.0d0  5.0d0                    ! m2/s
        VISC2 == 25.0d0                          ! m2/s
 \end{verbatim}
-plus the sponge layers as shown above along the SE and SW boundaries.
 
 \subsubsection{Output}
 The model writes voluminous information to standard out, as shown
-for the \code{UPWELLING} case.
-It also writes out NetCDF files for restart, history, daily
-averages, stations and floats.  Plots can be made from any of
-these files; some examples are shown in Fig.\
-\ref{fnep1}--\ref{fnep2} .
+for the \code{UPWELLING} case.  It also writes out NetCDF files for
+restart, daily averages, three-hourly averages2, stations and floats.
+Plots can be made from any of these files; some examples are shown
+in Fig.\ \ref{fnep1}--\ref{fnep2} .
 
 \begin{figure}
-\setlength{\unitlength}{10mm}
-\begin{picture}(0,16)(-1.1,0)
-\includegraphics{pics/zeta_NEP5}
+\setlength{\unitlength}{10 mm}
+\begin{picture}(16,9)(0.0,0.4)
+\includegraphics[width=16cm]{pics/usurf_Arc}
   \end{picture}
-\caption{Surface elevation after 200 days showing tides. This is
-from a snapshot in a history file---the averages files have been
-detided.}
+\caption{Surface velocity averaged over the month of June, 1986.}
 \label{fnep1}
 \end{figure}
 
 \begin{figure}
-\setlength{\unitlength}{10mm}
-\begin{picture}(0,16)(-1.1,0)
-\includegraphics{pics/aice_NEP5}
+\setlength{\unitlength}{10 mm}
+\begin{picture}(16,12)(0.0,0)
+\includegraphics[width=16cm]{pics/aice_Arc}
   \end{picture}
-\caption{Ice concentration averaged over the month of April, 1959.}
+\caption{Ice concentration averaged over the month of June, 1986.}
 \end{figure}
 
 \begin{figure}
-\setlength{\unitlength}{10mm}
-\begin{picture}(0,16)(-0.2,0)
-\includegraphics{pics/tslice_NEP5}
+\setlength{\unitlength}{10 mm}
+\begin{picture}(16,18)(0.0,0)
+\includegraphics[width=16cm]{pics/float_Arc}
   \end{picture}
-\caption{Vertical slice if temperature, averaged over the month of
-April, 1959. The slice is across the Bering Sea shelf, showing the
-transition from vertically mixed at the coast, a two layer system at
-mid-shelf, then a thermocline over the shelf-break.}
+\caption{Five-day tracks of some surface floats, showing the starting
+positions in blue.}
 \label{fnep2}
 \end{figure}
 

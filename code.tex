@@ -348,16 +348,12 @@ this is, then calls the following ROMS routines:
   \kitem{initial} reads in the initial conditions from a NetCDF file or
   computes them analytically. Likewise for the grid, plus it sets up the
   vertical grid spacing to be used and many other details.
-  \kitem{get\_data} reads in the first record of time-varying forcing
-  fields, boundary conditions, etc.
 \end{klist}
 
 \subsubsection{ROMS\_run}
 This loops over all the steps from the starting iteration to the ending
 iteration in its argument list. The loop consists of calls to:
 \begin{klist}
-  \kitem{get\_data} reads in the second and subsequent records of
-  time-varying forcing fields, boundary conditions, etc.
   \kitem{main3d} or \code{main2d} solves the full
   equations described in \S\ref{Num} (\code{main3d}) or the depth-integrated
   version only (\code{main2d}).
@@ -375,6 +371,44 @@ successful or not. The routines called are:
   \kitem{close\_io} closes all open files so as to flush the buffers
   and put NetCDF files into a finished state.
 \end{klist}
+
+\subsection{Initialization}
+\label{Ini}
+   \begin{klist}
+     \kitem{checkdefs}Reports on which C preprocessor variables
+   have been \code{\#define}d and checks their consistency.
+     \kitem{ana\_grid} Computes the grid internally.
+     \kitem{ana\_mask} Computes the land mask internally.
+     \kitem{get\_grid} Reads in the curvilinear coordinate arrays as
+   well as $f$ and $h$ from a grid NetCDF file.
+     \kitem{set\_scoord}  Sets and initializes relevant variables
+   associated with the vertical transformation to nondimensional
+   $\sigma$-coordinate described in Appendix~\ref{Scoord}.
+     \kitem{set\_weights} Sets the barotropic time-step average
+   weighting function.
+     \kitem{metrics}   Computes the metric term combinations which do
+   not depend on the surface elevation and therefore remain constant in
+   time.
+     \kitem{ana\_hmixcoef} Computes the horizontal mixing coefficients.
+     \kitem{ana\_nudgcoef} Computes the nudging time scales.
+     \kitem{ana\_initial} Analytic initial conditions for momentum and
+     active tracers.
+     \kitem{ana\_passive} Analytic initial conditions for passive tracers.
+     \kitem{ana\_biology} Analytic initial conditions for ecosystem tracers.
+     \kitem{ana\_sediment} Analytic initial conditions for sediment tracers.
+     \kitem{ana\_ice} Analytic initial conditions for ice variables.
+     \kitem{get\_state} Reads initial fields from disk---either
+   restart or from some other source which has been converted to the
+   appropriate format of NetCDF file.
+     \kitem{set\_depth}  Compute time-evolving depths.
+     \kitem{set\_massflux}  Compute initial horizontal mass fluxes.
+     \kitem{get\_idata} Read in time-invariant forcing data.
+     \kitem{get\_data} reads in the first record of time-varying forcing
+  fields, boundary conditions, etc.
+     \kitem{stiffness} Compute grid stiffness.
+     \kitem{grid\_coords}  Convert initial float and station locations to
+     fractional grid coordinates.
+   \end{klist}
 
 \subsubsection{main3d}
 This solves the full three-dimensional equations described in \S\ref{Num}.
@@ -515,6 +549,8 @@ reached}%
 \end{figure}
 
 \begin{klist}
+  \kitem{get\_data} reads in the second and subsequent records of
+  time-varying forcing fields, boundary conditions, etc.
   \kitem{set\_data} time interpolates between the records read in by
   \code{get\_data}.
   \kitem{ini\_zeta} checks for wet/dry cells if needed and initializes
@@ -576,8 +612,10 @@ reached}%
   \kitem{set\_avg2} accumulates the time-averaged surface fields for the
   second averages output. Not in the trunk code.
   \kitem{output} writes to various output NetCDF files.
-  \kitem{rhs3d} computes right-hand-sides of the three-dimensional
-  velocity and tracer fields.
+  \kitem{rhs3d} calls \code{pre\_step3d} which computes a predictor
+  stepp on the three-dimensional variables. It then computes
+  right-hand-sides of the three-dimensional velocity fields for the
+  corrector step, including pressure gradients.
   \kitem{my25\_prestep} computes the predictor step for turbulent
   kinetic energy prognostic variables, \code{tke} and \code{gls}.
   \kitem{gls\_prestep} computes the predictor step for turbulent
@@ -591,7 +629,7 @@ reached}%
   \kitem{my25\_corstep} performs the corrector step for turbulent kinetic
   energy and length scale prognostic variables, \code{tke} and \code{gls}
   (\cite{Mellor82} and \cite{Galperin88}).
-  \kitem{my25\_corstep} performs the corrector step for turbulent kinetic
+  \kitem{gls\_corstep} performs the corrector step for turbulent kinetic
   energy and length scale prognostic variables, \code{tke} and \code{gls}
   (\cite{Umlauf2003}, \cite{Warner_2005}).
   \kitem{biology} computes the changes to the biological tracers due to
@@ -604,42 +642,6 @@ reached}%
   trunk code.
   \kitem{step\_floats} time-steps the Lagrangian floats.
 \end{klist}
-
-\subsection{Initialization}
-\label{Ini}
-   \begin{klist}
-     \kitem{checkdefs}Reports on which C preprocessor variables
-   have been \code{\#define}d and checks their consistency.
-     \kitem{ana\_grid} Computes the grid internally.
-     \kitem{ana\_mask} Computes the land mask internally.
-     \kitem{get\_grid} Reads in the curvilinear coordinate arrays as
-   well as $f$ and $h$ from a grid NetCDF file.
-     \kitem{set\_scoord}  Sets and initializes relevant variables
-   associated with the vertical transformation to nondimensional
-   $\sigma$-coordinate described in Appendix~\ref{Scoord}.
-     \kitem{set\_weights} Sets the barotropic time-step average
-   weighting function.
-     \kitem{metrics}   Computes the metric term combinations which do
-   not depend on the surface elevation and therefore remain constant in
-   time.
-     \kitem{ana\_hmixcoef} Computes the horizontal mixing coefficients.
-     \kitem{ana\_nudgcoef} Computes the nudging time scales.
-     \kitem{ana\_initial} Analytic initial conditions for momentum and
-     active tracers.
-     \kitem{ana\_passive} Analytic initial conditions for passive tracers.
-     \kitem{ana\_biology} Analytic initial conditions for ecosystem tracers.
-     \kitem{ana\_sediment} Analytic initial conditions for sediment tracers.
-     \kitem{ana\_ice} Analytic initial conditions for ice variables.
-     \kitem{get\_state} Reads initial fields from disk---either
-   restart or from some other source which has been converted to the
-   appropriate format of NetCDF file.
-     \kitem{set\_depth}  Compute time-evolving depths.
-     \kitem{set\_massflux}  Compute initial horizontal mass fluxes.
-     \kitem{get\_idata} Read in time-invariant forcing data.
-     \kitem{stiffness} Compute grid stiffness.
-     \kitem{grid\_coords}  Convert initial float and station locations to
-     fractional grid coordinates.
-   \end{klist}
 
 \subsection{Modules}
 \label{Mod_f90}
@@ -724,6 +726,8 @@ variables. The complete list is:
     which don't have spatial dependence. Some are fixed constants such
     as \code{itemp} referring to the temperature tracer. Others could
     have a different value on each grid.
+  \kitem{mod\_sedbed.F} If either \code{SEDIMENT} or \code{BBL\_MODEL}
+    is defined, this contains parameters for the sediment bed layers.
   \kitem{mod\_sediment.F} If either \code{SEDIMENT} or \code{BBL\_MODEL}
     is defined, this contains parameters for the respective model.
   \kitem{mod\_sources.F} If one of \code{UV\_PSOURCE}, \code{TS\_PSOURCE}
@@ -739,6 +743,9 @@ variables. The complete list is:
     code being profiled.
   \kitem{mod\_tides.F}  If \code{SSH\_TIDES} and/or \code{UV\_TIDES} is
     defined, this will provide the storage for the tidal constituents.
+  \kitem{mod\_trc\_sources.F} If \code{TRC\_PSOURCE}
+    is defined, this contains the variables used
+    for tracer point sources. Not in the trunk code.
 \end{klist}
 
 \subsection{Functionals}
@@ -752,12 +759,11 @@ files, especially for idealized problems.
    concentration.
      \kitem{ana\_biology} Computes analytic initial conditions for the
    biology tracers.
-     \kitem{ana\_bmflux}  Computes analytic kinematic bottom
-   momentum flux.
      \kitem{ana\_btflux}  Computes analytic kinematic bottom flux of
    tracer type variables.
      \kitem{ana\_cloud} Computes analytic cloud fraction.
      \kitem{ana\_diag} Computes customized diagnostics.
+     \kitem{ana\_drag} Computes customized bottom drag coefficients.
      \kitem{ana\_fsobc} Computes analytic open boundary conditions for
    the free surface.
      \kitem{ana\_grid}  Sets up an analytic grid.
@@ -821,25 +827,31 @@ files, especially for idealized problems.
 \subsection{Other subroutines and functions}
 \label{Minor}
 \begin{klist}
-\kitem{NetCDF I/O} \mbox{\hspace{1in}}
+\kitem{NetCDF I/O} The I/O has been cleaned up so that {\em all}
+processes check for the return code on reads and writes and exit on
+failure. In many cases, the master process is the only one actually
+doing the I/O, but it then broadcasts its status to the rest.
    \begin{klist}
      \kitem{def\_*} Creates the ROMS NetCDF file of the appropriate
    type, including dimensions, attributes, and variables.
      \kitem{def\_info} Adds some standard scalar variables to any NetCDF file.
-     \kitem{get\_srflux}  Reads shortwave radiation flux
+     \kitem{get\_*fld} Reads a field from a netcdf file, perhaps
+     using one of \code{nf\_fread2d} and its kin. \code{nf\_fread2d}
+     is special in that it can read uniformly gridded forcing files
+     and call \code{regrid} to regrid them onto the ROMS grid.
      \kitem{wrt\_*} Writes to the ROMS NetCDF file of the appropriate type.
    \end{klist}
 %   \begin{klist}
 %     \kitem{trisolver}  Solves the PDE
 %   $A \phi(k-1) + B \phi(k) + C \phi(k+1) = D$
 %     for field $\phi$ using the tridiagonal solver, also known as
-%  Thomas algorithm (Richtmeyer and Morton \cite{Richtmeyer}).
+%  Thomas algorithm (\cite{Richtmeyer}).
 %   \end{klist}
 %\kitem{Bottom boundary-layer model} The model has an optional bottom
-%boundary layer based on Styles and Glenn \cite{Styles96}.
+%boundary layer based on \cite{Styles96}.
 %   \begin{klist}
 %     \kitem{sg\_bbl96}  Computes kinematic bottom momentum stress using
-%   Styles and Glenn \cite{Styles96} bottom boundary layer formulation.
+%   \cite{Styles96} bottom boundary layer formulation.
 %     \kitem{sg\_ubab}   Computes maximum wave bottom velocity and
 %   excursion from wind induced wave amplitude and period by
 %   solving the linear wave dispersion relation for a given
@@ -895,7 +907,7 @@ plus biharmonic viscosity to correct for spurious mixing.
     \kitem{UV\_LOGDRAG} Define for logarithmic bottom friction.
     \kitem{UV\_LDRAG}   Define for linear bottom friction.
     \kitem{UV\_QDRAG}   Define for quadratic bottom friction.
-    \kitem{RDRG\_GRID}  Define for spatially variable bottom drag.
+    \kitem{UV\_DRAG\_GRID}  Define for spatially variable bottom drag.
     \kitem{DRAG\_LIMITER}  Define for bottom drag limiter.
     \kitem{UV\_PSOURCE} Define for point sources/sinks.
     \kitem{Q\_PSOURCE}  Define for mass point sources/sinks.
@@ -951,6 +963,8 @@ advection.
     \kitem{SRELAXATION}  Define to use salinity relaxation as a
   freshwater flux.
     \kitem{TS\_PSOURCE} Define for point sources/sinks.
+    \kitem{TRC\_PSOURCE}  Define for passive tracer point sources/sinks.
+    \kitem{AGE\_PASSIVE}  Define for aging of passive tracers.
   \end{klist}
   \kitem{Pressure gradient options} \mbox{}
 If no option is selected, the pressure gradient term is computed using
@@ -991,6 +1005,8 @@ step is done and in the monotonicity constraining algorithms.
     \kitem{BULK\_FLUXES} Define for bulk flux computation.
     \kitem{CCSM\_FLUXES} Define for CCSM version of bulk flux computation.
     \kitem{NCEP\_FLUXES} Define if NCEP forcing files are used.
+    \kitem{GLOBAL\_PERIODIC} Define if letting ROMS interpolate
+  onto a grid which spans the full longitude range of the globe.
     \kitem{NL\_BULK\_FLUXES} Define to use bulk fluxes computed by
   nonlinear (forward) model.
     \kitem{COOL\_SKIN} Define for cool skin correction.
@@ -1003,6 +1019,8 @@ step is done and in the monotonicity constraining algorithms.
   roughness (\cite{Oost_2002}).
     \kitem{DEEPWATER\_WAVES} Define to use deep water waves approximation.
     \kitem{ALBEDO} Define to use albedo equation for shortwave radiation.
+    \kitem{ALBEDO\_CURVE} Define to use albedo function of latitude
+    from \cite{Large_08}.
     \kitem{DIURNAL\_SRFLUX} Define to impose the local diurnal cycle
     onto the shortwave radiation.
   \end{klist}
@@ -1019,22 +1037,12 @@ step is done and in the monotonicity constraining algorithms.
   model fields.
     \kitem{AVERAGES2}   Define to write out secondary time-averaged
   model fields.
-    \kitem{AVERAGES\_AKV}    Define to write out time-averaged AKv.
-    \kitem{AVERAGES\_AKT}    Define to write out time-averaged AKt.
-    \kitem{AVERAGES\_AKS}    Define to write out time-averaged AKs.
     \kitem{AVERAGES\_DETIDE}    Define to write out time-averaged
   detided fields, one method.
     \kitem{FILTERED}    Define to write out time-averaged
   detided fields, using a Lanczos filter.
-    \kitem{AVERAGES\_FLUXES}    Define to write out time-averaged
-  surface fluxes.
-    \kitem{AVERAGES\_NEARSHORE}    Define to write out time-averaged
-  nearshore stresses.
-    \kitem{AVERAGES\_QUADRATIC}    Define to write out time-averaged
-  quadratic terms.
-    \kitem{AVERAGES\_BEDLOAD}    Define to write out time-averaged
-  bed load.
     \kitem{ICESHELF}    Define for ice shelf cavities.
+    \kitem{ICESHELF\_3EQ}  Define for floating three equation ice shelves.
     \kitem{SPHERICAL}   Define if lat/lon coordinates rather than x/y.
     \kitem{SPLINES}     Define for conservative, parabolic spline
   reconstruction of vertical derivatives.
@@ -1042,7 +1050,9 @@ step is done and in the monotonicity constraining algorithms.
   information at specific points in the model.
     \kitem{STATIONS\_CGRID}    Define if stations are on native C-grid.
     \kitem{FLOATS}    Define for simulated Lagrangian drifters.
-    \kitem{FLOATS\_VWALK}  Define if floats do vertical random walk.
+    \kitem{FLOAT\_STICKY}  Define for floats to stick/reflect when
+    hitting the bottom or surface.
+    \kitem{FLOAT\_VWALK}  Define if floats do vertical random walk.
     \kitem{VWALK\_FORWARD} Define for forward time stepping of vertical random
   walk.
     \kitem{DEBUGGING}  Define to suppress timestamps for easier
@@ -1056,6 +1066,8 @@ step is done and in the monotonicity constraining algorithms.
     \kitem{ANA\_BTFLUX}  Define for an analytic bottom heat flux.
     \kitem{ANA\_CLOUD}   Define for an analytic cloud fraction.
     \kitem{ANA\_DIAG}    Define for customized diagnostics.
+    \kitem{ANA\_DRAG}    Define for an analytic spatially variable
+  bottom drag.
     \kitem{ANA\_FSOBC}   Define for analytic free-surface boundary
   conditions.
     \kitem{ANA\_GRID}    Define for an analytic model grid set-up.
@@ -1075,6 +1087,8 @@ step is done and in the monotonicity constraining algorithms.
     \kitem{ANA\_PERTURB} Define for analytic perturbation of initial
   conditions.
     \kitem{ANA\_PSOURCE} Define for analytic point sources.
+    \kitem{ANA\_PTOBC}   Define for analytic passive tracer boundary
+  conditions.
     \kitem{ANA\_RAIN}    Define for analytic rain fall rate.
     \kitem{ANA\_SEDIMENT} Define for analytic sediment initial fields.
     \kitem{ANA\_SMFLUX}  Define for an analytic kinematic surface
@@ -1097,6 +1111,8 @@ step is done and in the monotonicity constraining algorithms.
     \kitem{ANA\_TCLIMA}  Define for an analytic tracer climatology.
     \kitem{ANA\_TOBC}   Define for analytic tracer open boundary
   conditions.
+    \kitem{ANA\_TRC\_PSOURCE} Define for analytic passive tracer
+  point sources.
     \kitem{ANA\_VMIX}    Define for analytic vertical mixing
   coefficients.
     \kitem{ANA\_WIND}   Define for analytic surface winds.
@@ -1165,6 +1181,8 @@ step is done and in the monotonicity constraining algorithms.
    depths.
      \kitem{LMD\_SKPP}  Define to add a surface boundary layer from a local
    K-Profile Parameterization (KPP).
+     \kitem{WTYPE\_GRID}  Define for spatially dependent Jerlov
+     water type.
     \end{klist}
      \kitem{MY25\_MIXING}  Define to activate Mellor/Yamada Level-2.5
    closure.
@@ -1176,8 +1194,6 @@ step is done and in the monotonicity constraining algorithms.
        \kitem{N2S2\_HORAVG}  Define for horizontal smoothing of
        buoyancy/shear.
     \end{klist}
-     \kitem{PP\_MIXING}  Define to activate Pacanowski/Philander
-   closure.
      \kitem{RI\_HORAVG}  Define for horizontal Richardson number
    smoothing.
      \kitem{RI\_VERAVG}  Define for vertical Richardson number
@@ -1230,11 +1246,11 @@ step is done and in the monotonicity constraining algorithms.
     \S\ref{Iphys}).
       \begin{klist}
         \kitem{ICE\_THERMO} Define for ice thermodynamics.
-        \kitem{ICE\_MK} Define for Mellor-Kantha (\cite{Mellor89})
+        \kitem{ICE\_MK} Define for \cite{Mellor89}
 	ice thermodynamics---this is the only choice.
 	\kitem{ICE\_SMOOTH} Define to smooth some ice fields.
-	\kitem{ICE\_ALB\_EC92} Define for albedo computations from Ebert
-	and Curry (\cite{Ebert93}).
+	\kitem{ICE\_ALB\_EC92} Define for albedo computations from
+	\cite{Ebert93}.
 	\kitem{ICE\_MOMENTUM} Define for momentum component of the ice.
 	\kitem{ICE\_MOM\_BULK} Define for alternate ice-water stress
 	computation.
@@ -1246,66 +1262,22 @@ step is done and in the monotonicity constraining algorithms.
 	\kitem{ICE\_UPWIND} Define for upwind advection (not available).
 	\kitem{ICE\_BULK\_FLUXES} Define for ice part of bulk flux
 	computation.
+	\kitem{ICE\_CONVSNOW} Define for conversion of flooded snow
+	to ice.
+	\kitem{OUTFLOW\_MASK} Define for Hibler style outflow cells.
+	\kitem{FASTICE\_CLIMATOLOGY} Define for clamping to a
+	climatology of landfast ice.
       \end{klist}
   \end{klist}
   \kitem{Boundary conditions} \mbox{}
   \begin{klist}
-     \kitem{EW\_PERIODIC}  Define for periodic boundaries in the
-   $\xi$-direction.
      \kitem{SPONGE}      Define to use SSH climatology as 2D inflow
    data.
-     \kitem{NS\_PERIODIC}  Define for periodic boundaries in the
-   $\eta$-direction.
      \kitem{RADIATION\_2D}  Define for tangential phase speed in
      radiation conditions.
-%     \kitem{EASTERN\_WALL}  Define for closed boundaries to the east.
-%     \kitem{WESTERN\_WALL}  Define for closed boundaries to the west.
-%     \kitem{SOUTHERN\_WALL}  Define for closed boundaries to the south.
-%     \kitem{NORTHERN\_WALL}  Define for closed boundaries to the north.
-  \end{klist}
-  \kitem{Detailed eastern open boundary conditions} Other sides have
-similar. If none of these are defined, it is assumed to be a closed wall.
-  \begin{klist}
-     \kitem{EAST\_FSCHAPMAN}  Define for a Chapman
-   condition on the free surface.
-     \kitem{EAST\_FSGRADIENT}  Define for a gradient
-   condition on the free surface.
-     \kitem{EAST\_FSRADIATION}  Define for a radiation
-   condition on the free surface.
-     \kitem{EAST\_FSNUDGING}  Define for an active/passive nudging term
-   on the free surface.
-     \kitem{EAST\_FSCLAMPED}  Define for a clamped free surface.
-     \kitem{EAST\_M2FLATHER}  Define for a Flather
-   condition on the 2-D momentum.
-     \kitem{EAST\_M2GRADIENT}  Define for a gradient
-   condition on the 2-D momentum.
-     \kitem{EAST\_M2RADIATION}  Define for a radiation
-   condition on the 2-D momentum.
-     \kitem{EAST\_M2REDUCED}  Define for a reduced physics
-   condition on the 2-D momentum.
-     \kitem{EAST\_M2NUDGING}  Define for an active passive nudging term
-   on the 2-D momentum.
-     \kitem{EAST\_M2CLAMPED}  Define for clamped 2-D momentum.
-     \kitem{EAST\_M3GRADIENT}  Define for a gradient
-   condition on the 3-D momentum.
-     \kitem{EAST\_M3RADIATION}  Define for a radiation
-   condition on the 3-D momentum.
-     \kitem{EAST\_M3NUDGING}  Define for an active passive nudging term
-   on the 3-D momentum.
-     \kitem{EAST\_M3CLAMPED}  Define for clamped 3-D momentum.
-     \kitem{EAST\_KGRADIENT}  Define for a gradient
-   condition on the TKE fields.
-     \kitem{EAST\_KRADIATION}  Define for a radiation
-   condition on the TKE fields.
-     \kitem{EAST\_TGRADIENT}  Define for a gradient
-   condition on the tracers.
-     \kitem{EAST\_TRADIATION}  Define for a radiation
-   condition on the tracers.
-     \kitem{EAST\_TNUDGING}  Define for an active passive nudging term
-   on the tracers.
-     \kitem{EAST\_TCLAMPED}  Define for clamped tracers.
-     \kitem{EAST\_VOLCONS}  Define for Eastern edge mass conservation
-   enforcement.
+     \kitem{FSOBC\_REDUCED} Define for reduced physics when
+     providing SSH boundary conditions but not the 2D momentum
+     fields.
   \end{klist}
   \kitem{Tides} \mbox{}
 The tidal data is processed in terms of tidal constituents, classified by
@@ -1343,17 +1315,19 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
      \kitem{TCLIMATOLOGY} Define for processing the tracer climatology arrays.
      \kitem{ZCLIMATOLOGY} Define for processing the sea surface height
    climatology arrays.
+     \kitem{AKTCLIMATOLOGY} Define for processing the tracer
+     vertical diffusion climatology arrays.
      \kitem{M2CLM\_NUDGING}     Define for nudging to 2-D momentum
    climatology.
      \kitem{M3CLM\_NUDGING}     Define for nudging to 3-D momentum
    climatology.
      \kitem{TCLM\_NUDGING}     Define for nudging to tracer climatology.
-     \kitem{ZCLM\_NUDGING}     Define for nudging to sea surface height
+     \kitem{BCLM\_NUDGING}     Define for nudging to biological tracer
    climatology.
   \end{klist}
   \kitem{Ecosystem models} \mbox{}
   \begin{klist}
-    \kitem{BIO\_FENNEL} Define for Fennel (\cite{Fennel_2006})
+    \kitem{BIO\_FENNEL} Define for \cite{Fennel_2006}
     nitrogen-based model.
     \begin{klist}
        \kitem{BIO\_SEDIMENT} Define to restore fallen material to the
@@ -1361,9 +1335,8 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
        \kitem{CARBON} Define to add carbon constituents.
        \kitem{DENITRIFICATION} Define to add denitrification processes.
        \kitem{OXYGEN} Define to add oxygen dynamics.
-       \kitem{OCMIP\_OXYGEN\_SC} Define if Schmidt number from Keeling
-       et al.\ (\cite{Keeling_98}).
-       \kitem{RIVER\_BIOLOGY} Define for river biology point-sources.
+       \kitem{OCMIP\_OXYGEN\_SC} Define if Schmidt number from
+       \cite{Keeling_98}.
        \kitem{TALK\_NONCONSERV} Define for nonconservative computation
        of alkalinity.
     \end{klist}
@@ -1376,15 +1349,14 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
       \kitem{JELLY} Define for jellyfish.
       \kitem{CLIM\_ICE\_1D} Define if 1-D with ice.
     \end{klist}
-    \kitem{BIO\_UMAINE} Define for Chai et al.\ (\cite{Chai_2002}) model.
-    \kitem{BIO\_GOANPZ} Define for Hinckley et al.\
-    (\cite{Hinckley_2009}) Gulf of Alaska model.
-    \kitem{NPZD\_FRANKS} Define for NPZD model of Franks et al.\
-      (\cite{Franks_86}).
+    \kitem{BIO\_UMAINE} Define for \cite{Chai_2002} model.
+    \kitem{BIO\_GOANPZ} Define for
+    \cite{Hinckley_2009} Gulf of Alaska model.
+    \kitem{NPZD\_FRANKS} Define for NPZD model of \cite{Franks_86}.
     \kitem{NPZD\_IRON} Define for NPZD model with iron limitation.
-    \kitem{NPZD\_POWELL} Define for NPZD model of Powell et al.\
-      (\cite{Powell_2006}).
-    \kitem{IRON\_LIMIT} Define for iron limitation on phytoplankton growth.
+    \kitem{NPZD\_POWELL} Define for NPZD model of \cite{Powell_2006}.
+    \kitem{IRON\_LIMIT} Define for iron limitation on phytoplankton
+    growth (for a few of the biology models).
     \kitem{IRON\_RELAX} Define for nudging to iron over the shelf.
     \kitem{ECOSIM} Define for bio-optical EcoSim model.
     \kitem{NEMURO} Define for Nemuro ecosystem model (\cite{Kishi_2007}).
@@ -1394,6 +1366,8 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
     \begin{klist}
        \kitem{BIO\_SEDIMENT} Define to restore fallen material to the
        nutrient pool.
+       \kitem{NEMURO\_SED1} Define for sediment remineralization.
+       \kitem{NEMURO\_PROD} Define for primary productivity output.
        \kitem{HOLLING\_GRAZING} Define for Holling-type s-shaped curve
        grazing (implicit).
        \kitem{IVLEV\_EXPLICIT} Define for Ivlev explicit grazing
@@ -1417,19 +1391,26 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
   \kitem{Nearshore options} \mbox{}
   \begin{klist}
     \kitem{WET\_DRY} Define to allow wetting and drying of cells.
-    \kitem{NEARSHORE\_MELLOR} Define for radiation stress terms from
-    waves.
+    \kitem{NEARSHORE\_MELLOR05} Define for radiation stress terms from
+    waves (\cite{Mellor_2005}).
+    \kitem{NEARSHORE\_MELLOR08} Define for radiation stress terms from
+    waves (\cite{Mellor_2008}).
   \end{klist}
   \kitem{NetCDF input/output} \mbox{}
   \begin{klist}
     \kitem{DEFLATE} Define to set compression of NetCDF-4/HDF5 format files.
-    \kitem{NETCDF4} Define to create NetCDF-4/HDF5 format files.
-    \kitem{PARALLEL\_IO} Define to create NetCDF-4/HDF5 format files
-    with MPI-I/O.
+    \kitem{HDF5} Define to create NetCDF-4/HDF5 format files.
+    \kitem{NO\_LBC\_ATT} Define to not check \code{NLM\_LBC} global
+    attribute on restart.
     \kitem{NO\_READ\_GHOST} Define to not include ghost points during
     read/scatter.
     \kitem{NO\_WRITE\_GRID} Define to omit writing grid arrays.
+    \kitem{PARALLEL\_IO} Define for parallel I/O via HDF5 or pnetcdf
+    libraries.
     \kitem{PERFECT\_RESTART} Define to include perfect restart variables.
+    \kitem{PNETCDF} Define for parallel I/O via pnetcdf library
+    (classic format).
+    \kitem{POSITIVE\_ZERO} Define for positive zero on output.
     \kitem{READ\_WATER} Define to only read water points.
     \kitem{WRITE\_WATER} Define to only write water points.
     \kitem{RST\_SINGLE} Define to write single precision restart fields.
@@ -1444,6 +1425,7 @@ The following is a list of the important parameters in the model. These
 are in \code{mod\_param.F} and many of them are read from the standard
 input file as described in \S\ref{ASCII_in}.
 \begin{klist}
+  \kitem{Ngrids} Number of grids. This used to be set at compile time.
   \kitem{Lm} Number of interior grid points in the $\xi$-direction.
   \kitem{Mm} Number of interior grid points in the $\eta$-direction.
   \kitem{N} Number of grid points in the vertical.
@@ -1459,6 +1441,9 @@ input file as described in \S\ref{ASCII_in}.
   \kitem{MTC} Maximum number of tidal constituents.
   \kitem{NtileI} Number of tiles in the $\xi$-direction.
   \kitem{NtileJ} Number of tiles in the $\eta$-direction.
+  \kitem{LBC} In the old days, the choice of boundary condition was
+    made via \code{cpp} options. After a significant rewrite, the
+    boundary condition choices are now loaded into this array.
 \end{klist}
 
 \subsection{Domain decomposition}
@@ -1590,19 +1575,20 @@ computation in a serial run. The tile contains enough
 information to time-step all the interior points, so the number
 of ghost points is dictated by the footprint of the algorithm
 using the largest number of neighbor points. In ROMS, the halo area
-would be two grids points wide unless the MPDATA advection
-scheme is used, in which case it needs three. The variable
-\code{GHOST\_POINTS} is set accordingly:
+would be two grids points wide unless the MPDATA advection or
+biharmonic viscosity scheme is used, in which case it needs three. The
+variable \code{NghostPoints} is set accordingly in \code{inp\_par}:
 \begin{verbatim}
     #if defined TS_MPDATA || defined UV_VIS4
-    # define GHOST_POINTS 3
-    # if defined DISTRIBUTE || defined EW_PERIODIC || defined NS_PERIODIC
-    #   define THREE_GHOST
-    # endif
+          NghostPoints=3
     #else
-    # define GHOST_POINTS 2
+          NghostPoints=2
     #endif
+          IF (ANY(ComposedGrid).or.ANY(RefinedGrid)) THEN
+            NghostPoints=MAX(3,NghostPoints)
+	  END IF
 \end{verbatim}
+The grid nesting requires NghostPoints=3, hence the last bit there.
 
 \begin{figure}[t]
 \setlength{\unitlength}{10mm}
@@ -1623,7 +1609,7 @@ numbers of OpenMP threads. Also, a serial run could have 24
 tiles and would just compute them sequentially.
 
 Once the input file
-has been read, we can compute the tile sizes:
+has been read, we can compute the tile sizes in \code{get\_bounds}:
 \begin{verbatim}
      ChunkSizeI = (Lm+NtileI-1)/NtileI
      ChunkSizeJ = (Mm+NtileJ-1)/NtileJ
@@ -1678,7 +1664,7 @@ For MPI jobs, the ghost points need to be updated between
 interior point computations. The routines
 \code{mp\_exchange2d}, \code{mp\_exchange3d} and
 \code{mp\_exchange4d} can be used to update the halo points of
-up to four arrays at a time. Each of these routines call
+up to four arrays at a time. Each of these routines calls
 \code{tile\_neighbors} to figure out which tiles are neighboring and
 whether or not there really is a neighboring tile on each side. The
 \code{mp\_exchangexd} routines then call:
@@ -1777,25 +1763,15 @@ of tiles once it is known by \code{inp\_par}:
         END DO
 \end{verbatim}
 They are then initialized in calls to the routines in
-\code{get\_bounds.F}. If a tile is on the ``western'' edge
-(\code{Itile}$=0$), then \code{UBi} is set to \code{LOWER\_BOUND\_I}.
+\code{get\_bounds.F}. \code{Imin} is set to \code{-NghostPoints}
+or zero, for periodic and non-periodic domains, respectively. The
+\code{UBi} family is set once the \code{Istr} family is known:
 \begin{verbatim}
-      Imin=LOWER_BOUND_I
-              :
-      IF ((Itile.eq.-1).or.(Itile.eq.0)) THEN
-        LBi=Imin
-      ELSE
-        LBi=Istr-Nghost
-      END IF
-\end{verbatim}
-Tracking the origins of \code{LOWER\_BOUND\_I}, we find it in
-\code{globaldefs.h}:
-\begin{verbatim}
-    #ifdef EW_PERIODIC
-    #  define LOWER_BOUND_I -GHOST_POINTS
-    #else
-    #  define LOWER_BOUND_I 0
-    #endif
+        IF ((Itile.eq.-1).or.(Itile.eq.0)) THEN 
+          LBi=Imin
+        ELSE
+          LBi=Istr-Nghost
+        END IF
 \end{verbatim}
 
 In the case of \code{set\_data}, we are simply passing array indices
@@ -1832,13 +1808,14 @@ syntax as the pre-parallel, pre-module code once had.
 \subsubsection{Input/output}
 
 In ROMS, the distributed memory I/O is all happening on the master process
-(0) unless you specifically ask it to use MPI-I/O, which requires both the
-\code{NETCDF4} and \code{PARALLEL\_IO} \code{cpp} flags to be defined.
-If you do this, you will be reading and writing \code{HDF5} files and
-will need to update your pre- and post-processing tools accordingly. I
-have tentatively tried the parallel I/O and found it to be exceedingly
-slow---I've been told since that this is the fault of the \code{NetCDF-4}
-layer sitting on top of \code{HDF5}---\code{HDF5} alone should be fast.
+(0) unless you specifically ask it to use MPI-I/O, which requires both
+\code{PARALLEL\_IO} and either of the \code{HDF5} or \code{PNETCDF}
+\code{cpp} flags to be defined.  If you choose \code{HDF5}, you will be
+reading and writing \code{HDF5} files and will need to update your pre-
+and post-processing tools accordingly. I have tentatively tried the
+parallel I/O and found it to be exceedingly slow---I've been told since
+that this is the fault of the \code{NetCDF-4} layer sitting on top of
+\code{HDF5}---\code{HDF5} alone should be fast.
 
 In the case of having all the I/O pass through the master process,
 we can still read and write classic NetCDF-3 files. Care must be
