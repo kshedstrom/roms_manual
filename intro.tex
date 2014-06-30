@@ -5,7 +5,7 @@ This user's manual for the Regional Ocean Modeling System (ROMS)
 describes the model equations and algorithms, as well as
 additional user configurations necessary for specific applications.
 This manual also describes the sea-ice model
-that we are using (\cite{Budgell05}).
+that we are using \citep{Budgell05}.
 
 The principle attributes of the model are as follows:
 \begin{klist}
@@ -54,13 +54,13 @@ equation of state.
     along constant $s$ or $z$ surfaces.
   \item Optional Smagorinsky horizontal viscosity and diffusion (but
   not recommended for diffusion).
-%  \item Optional Gent and McWilliams \cite{Gent90}, \cite{Gent95} 
+%  \item Optional Gent and McWilliams \citet{Gent90, Gent95} 
 %    eddy-induced horizontal mixing.
   \item Horizontal free-slip or no-slip boundaries.
   \item Vertical harmonic viscosity and diffusion with a spatially
     variable coefficient, with options to compute the coefficients
-    via \cite{Large94}, \cite{Mellor74},
-    or generic length scale (GLS) \cite{Umlauf2003} mixing schemes.
+    via \citet{Large94, Mellor74},
+    or generic length scale (GLS) \citet{Umlauf2003} mixing schemes.
 \end{itemize}
 \newpage
 \kitem{Implementation} \mbox{}
@@ -69,7 +69,7 @@ equation of state.
   \item Fortran 90.
   \item Runs under UNIX, requires the C preprocessor, gnu make, and
   Perl.
-  \item All input and output is done in NetCDF \cite{netCDF} (Network
+  \item All input and output is done in NetCDF \citet{netCDF} (Network
     Common Data Format), requires the NetCDF library.
   \item Options include serial, parallel with MPI, and parallel with
   OpenMP.
@@ -94,7 +94,7 @@ Chapter \ref{Starting} has some information on getting started with
 ROMS.
 Chapters \ref{Phys} and \ref{Num} describe the model physics and
 numerical techniques and contain information from 
-\cite{SS2008b} and \cite{Haidvogel07}.
+\citet{SS2008b,Haidvogel07}.
 Chapter \ref{Iphys} describes the ice equations and
 Chapter \ref{Code} lists the model subroutines and functions.
 %Chapter \ref{Progs} describes

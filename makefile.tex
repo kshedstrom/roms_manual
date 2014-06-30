@@ -4,7 +4,7 @@ One of the software development tools which comes with the UNIX
 operating system is called \code{make}. \code{Make} has many uses,
 but is most commonly used to keep track of how a large program
 should be compiled. ROMS now requires the \code{gnu} version of 
-\code{make}, sometimes known as \code{gmake} (\cite{GMAKE}).
+\code{make}, sometimes known as \code{gmake} \citep{GMAKE}.
 This appendix describes generic \code{make}, the \code{gnu}
 enhancements to \code{make}, as well as describing the
 \code{makefile} structure used in ROMS. This material first
@@ -328,7 +328,7 @@ built-in function is the substitution we do in:
 \end{verbatim}
 where we build our list of objects from the list of sources.
 There are quite a few other functions, plus the user can define
-their own. From \cite{GMAKE}:
+their own. From \citet{GMAKE}:
 \begin{quote}
 GNU make supports both built-in and user-defined functions.
 A function invocation looks much like a variable reference, but
@@ -646,7 +646,7 @@ to the \code{libraries} list. The \code{compile-rules} function uses this
 \code{local\_src} variable to generate the rules for compiling each file,
 placing the resulting files in the \code{Build} directory.
 
-%the user-defined \code{subdirectory} function, from \cite{GMAKE}:
+%the user-defined \code{subdirectory} function, from \citet{GMAKE}:
 %\begin{verbatim}
 %subdirectory  = $(patsubst %/Module.mk,%, \
 %                $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST)))
@@ -761,7 +761,7 @@ to remove specific files there.
 
 \item ``\code{all}'' is the first target that gets seen by \code{make},
 making it the default \code{target}. In this case, we know there is only
-the one binary, whose name we know---\cite{GMAKE} shows what to
+the one binary, whose name we know---\citet{GMAKE} shows what to
 do with more than one binary. Both ``\code{all}'' and ``\code{clean}''
 are phony targets in that no files of those names get generated---make
 has the \code{.PHONY} designation for such targets. Also, the \code{clean}

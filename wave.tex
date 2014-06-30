@@ -8,7 +8,7 @@ to upwelling/downwelling and wind-driven Arctic problems,
 respectively.  As distributed, ROMS is ready to run quite a few
 examples, where the C preprocessor flags determine which is to be
 executed.  Some of these examples are described in
-\cite{Haidvogel99}, some are listed here:
+\citet{Haidvogel99}, some are listed here:
 \begin{klist}
    \kitem{BASIN} This is a rectangular, flat-bottomed basin with
  double-gyre wind forcing. When run, it produces a western boundary
@@ -22,7 +22,7 @@ executed.  Some of these examples are described in
 % periodic forcing which causes the water to oscillate along the
 % channel.  The rotation and the shelf lead to non-zero mean flows,
 % especially near the canyon.  Version A is homogeneous and can be
-% executed with a 2-D model.  See \cite{HB97} for
+% executed with a 2-D model.  See \citet{HB97} for
 % a description of the canyon problems and the gravitational adjustment
 % problem.
 %   \kitem{CANYON\_B} This is like Canyon A, except that it is
@@ -43,9 +43,9 @@ executed.  Some of these examples are described in
 part of a domain with a sloping bottom.
    \kitem{SEAMOUNT}   The seamount test has been used to test the pressure
  gradient errors.  It has an idealized seamount in a periodic channel.
- See \cite{BH93} and \cite{McCalpin94} for more information.
+ See \citet{BH93} and \citet{McCalpin94} for more information.
    \kitem{UPWELLING}  The upwelling/downwelling example was
- contributed by \cite{Macks93}
+ contributed by \citet{Macks93}
  and consists of a periodic channel with shelves on each side.
  There is along-channel wind forcing and the Coriolis term leads
  to upwelling on one side and downwelling on the other side. If
@@ -171,7 +171,7 @@ Coriolis parameter.  Most of the simple test problems have their grid
 information specified in \code{ana\_grid.h} in the directory
 \code{ROMS/Functionals}.  More realistic problems require a NetCDF grid
 file, produced by the grid generation programs described in
-\cite{GRIDS}, by the Matlab \code{SeaGrid}, or by some
+\citet{GRIDS}, by the Matlab \code{SeaGrid}, or by some
 other method.  The variables which are read by \code{get\_grid} are:
 \begin{tabbing}
   Gnu \= \kill
@@ -243,7 +243,7 @@ pressure gradient.
 \subsubsection{Equation of state}
 The equation of state is defined in the subroutine \code{rho\_eos}.  Two
 versions are provided in ROMS: a nonlinear $\rho =
-\rho(T,S,z)$ from \cite{Jackett} and a linear
+\rho(T,S,z)$ from \citet{Jackett} and a linear
 $\rho(T,S)$.  The linear form is
 $$
       \rho = \code{R0} - \code{Tcoef} \cdot (T-T0) +
@@ -338,7 +338,7 @@ for any given time. An example of such a tidal forcing file is in
 
 The non-trunk code with ice, etc. includes the \code{TIDES\_ASTRO} option to
 add on the long-period tides from
-\cite{Foreman_96a} and \cite{Foreman_96b}.
+\citet{Foreman_96a} and \citet{Foreman_96b}.
 There is also an option to include the tidal potential
 forcing term (\code{POT\_TIDES}), requiring the tidal potential to
 be included in the tides forcing file.
@@ -829,7 +829,7 @@ library from such files.
 The application which ROMS is configured to run as distributed
 is a wind-driven
 upwelling and downwelling example, described in
-\cite{Macks93}.  There is a shelf on each wall of a periodic channel
+\citet{Macks93}.  There is a shelf on each wall of a periodic channel
 and an along-channel wind forcing, which drives upwelling at one wall
 and downwelling at the other.  This problem depends on the Ekman layer,
 therefore a surface stress is used with vertical viscosity.  The Ekman
@@ -1849,7 +1849,7 @@ The vertical structure is set to our new favorite, using the new stretching:
 \subsubsection{Initial and boundary conditions}
 The best ocean fields we knew of when setting this up are known as SODA, a
 reanalysis from 1958 through 2005 by
-\cite{Carton_2005}. There are \code{Python} scripts to create
+\citet{Carton_2005}. There are \code{Python} scripts to create
 initial and boundary conditions from the SODA files. Snow and ice
 initial and boundary conditions are obtained from model results generously
 provided by Jinlun Zhang. I am using three boundary files so that each
@@ -1889,7 +1889,7 @@ have our usual combination of radiation and nudging:
 \end{verbatim}
 
 \subsubsection{Forcing}
-We are using the CORE2 forcing files (\cite{Large_08}) and computing the
+We are using the CORE2 forcing files \citep{Large_08} and computing the
 momentum, heat and salt fluxes from the atmospheric conditions and the
 model's surface temperature. There are two options, one provided by
 \code{bulk\_flux.F} and the other provided by \code{ccsm\_flux.F}. We

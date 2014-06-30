@@ -2,12 +2,12 @@
 \label{Iphys}
 
 The sea-ice component of ROMS is a combination of the
-elastic-viscous-plastic (EVP) rheology (
-\cite{Hunke97}, \cite{Hunke_2001}) and simple one-layer
+elastic-viscous-plastic (EVP) rheology 
+\citep{Hunke97,Hunke_2001} and simple one-layer
 ice and snow thermodynamics with a molecular sublayer under the ice
-(\cite{Mellor89}). It is tightly coupled, having
+\citep{Mellor89}. It is tightly coupled, having
 the same grid (Arakawa-C) and timestep as the ocean and sharing the same
-parallel coding structure for use with MPI or OpenMP (\cite{Budgell05}).
+parallel coding structure for use with MPI or OpenMP \citep{Budgell05}.
 
 \subsection{Dynamics}
 The momentum equations describe the change in ice/snow velocity due
@@ -37,11 +37,10 @@ stress:
   \vec{\tau}_w & = \rho_w C_w | \vec{v}_w - \vec{v} |
   ( \vec{v}_w - \vec{v}) .
 \end{align}
-The force due to
-the internal ice stress is given by the divergence of the stress
-tensor $\sigma$. The rheology is given by the stress-strain relation
-of the medium. We would like to emulate the viscous-plastic rheology
-of \cite{Hibler79}:
+The force due to the internal ice stress is given by the divergence of
+the stress tensor $\sigma$. The rheology is given by the stress-strain
+relation of the medium. We would like to emulate the viscous-plastic
+rheology of \citet{Hibler79}:
 \begin{equation}
   \sigma_{ij} = 2 \eta \dot \epsilon_{ij} + (\zeta - \eta) \dot
   \epsilon_{kk} \delta_{ij} - \frac{P }{ 2} \delta_{ij}
@@ -51,10 +50,7 @@ of \cite{Hibler79}:
   }{
   \partial x_j} + \frac{\partial u_j }{ \partial x_i} \right)
 \end{equation}
-\begin{equation}
-  P = P^* A h_i e^{-C(1-A)}
-\end{equation}
-where the nonlinear viscosities are given by
+where the nonlinear viscosities are given by:
 \begin{equation}
 \zeta = \frac{ P }{ 2 \left[ (\epsilon^2_{11} +
    \epsilon^2_{22} ) ( 1 + 1/e^2 ) + 4 e^{-2} \epsilon^2_{12}
@@ -63,6 +59,17 @@ where the nonlinear viscosities are given by
 \begin{equation}
       \eta = \frac{ \zeta }{ e^2 }.
 \end{equation}
+Hibler's ice strength is given by:
+\begin{equation}
+  P = P^* A h_i e^{-C(1-A)}
+\end{equation}
+while \citep{Overland_1988} advocate a nonlinear strength:
+\begin{equation}
+  P = P^* A h_i^2 e^{-C(1-A)}
+\end{equation}
+in which $P^*$ now depends on the grid spacing. Both options are available
+in ROMS.
+
 We would also like to have an explicit model that can be solved
 efficiently on parallel computers. The EVP rheology has a tunable
 coefficient $E$ (the Young's modulus) which can be chosen to make
@@ -86,7 +93,7 @@ internal ice stress term is updated on a shorter timestep so as to
 allow the elastic wave velocity to be resolved.
 
 Once the new ice velocities are computed, the ice tracers can be
-advected using the MPDATA scheme \cite{Smolark90}. The tracers in
+advected using the MPDATA scheme \citet{Smolark90}. The tracers in
 this case are the ice thickness, ice concentration, snow thickness,
 internal ice temperature, and surface melt ponds. The continuity
 equations describing the evolution of these parameters (equations
@@ -113,7 +120,7 @@ Equation \ref{ist3b} is discussed in some detail in MK89, but
 represents the advection of ice blocks in which no ridging occurs as
 long as there is any open water.
 %An optional ridging term can be added
-%(\cite{Gray96}):
+%\citep{Gray96}:
 %\begin{equation}
 %  \frac{\partial A }{ \partial t} =
 %  - \frac{\partial (uA) }{ \partial x} - \frac{\partial (vA) }{ \partial y}
@@ -184,7 +191,7 @@ fraction of the gridbox.
 
 The thermodynamics is based on calculating how much ice grows and
 melts on each of the surface, bottom, and sides of the ice floes,
-as well as frazil ice formation (\cite{Mellor89}).
+as well as frazil ice formation \citep{Mellor89}.
 Once the ice tracers are advected, the ice concentration and
 thickness are timestepped according to the terms on the right:
 
@@ -210,7 +217,7 @@ the melt happens on the sides of the ice due to warming of the water in
 the leads.
 
 The heat fluxes through the ice are based on a simple one layer
-\cite{Semtner76a} type model with snow on top. The temperature is
+\citet{Semtner76a} type model with snow on top. The temperature is
 assumed to be linear within the snow and within the ice. The ice contains
 brine pockets for a total ice salinity of 3.2 or the surface salinity,
 whichever is less. The surface ocean temperature and salinity is half a
@@ -385,7 +392,7 @@ The surface flux to the air is:
 The incoming shortwave and longwave radiations are assumed to
 come from an atmospheric model. The formulae for sensible heat,
 latent heat, and outgoing longwave radiation are the same as in
-\cite{Parkinson} and are shown in Appendix
+\citet{Parkinson} and are shown in Appendix
 \ref{shortwave}. The sensible heat is a function of $T_3$, as is the
 heat flux through the snow $Q_s$. Setting $Q_{ai} = Q_s$, we can solve
 for $T_3$ by setting $T_3^{n+1} = T_3^n + \Delta T_3$ and linearizing in
@@ -512,7 +519,7 @@ Variable & Value & Definition \\ \hline
 The surface ocean is assumed to be at the freezing temperature for the
 surface salinity ($T_0 = mS_0$) in the presense of ice. We also have $T$ and $S$ at the
 uppermost computed ocean point ${1 \over 2} dz$ below the surface.
-In order to solve for $T_0$ and $S_0$, we assume a (\cite{Yaglom_1974})
+In order to solve for $T_0$ and $S_0$, we assume a \citep{Yaglom_1974}
 logarithmic boundary layer. The upper ocean heat flux is:
 \begin{equation}
    \frac{F_T }{ \rho_o C_{po}} = -C_{T_z} (T_0 - T) \qquad z \rightarrow 0
@@ -539,7 +546,7 @@ The ocean model receives the following heat and salt fluxes:
    W_o & \equiv A W_{io} + (1-A) W_{ao}
 \end{align}
 
-(\cite{Mellor89}) describe solving simultaneously for
+\citep{Mellor89} describe solving simultaneously for
 the five unknowns $W_o$, $T_0$, $S_0$, $F_T$ and $F_S$. Instead, we use
 the old value of $T_0$ to find $W_{io}$ and therefore $W_o$. Using the
 new value of $W_{io}$, solve for a new value of $S_0$ and then find the
@@ -567,7 +574,7 @@ only, not refreezing of melt ponds.
 \subsubsection{Frazil ice formation}
 \label{frazil}
 
-Following \cite{Steele89}, we check to see if any
+Following \citet{Steele89}, we check to see if any
 of the ocean temperatures are below freezing at the end of each
 timestep.  If so, frazil ice is formed, changing the local
 temperature and salinity.  The ice that forms is assumed to

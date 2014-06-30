@@ -41,27 +41,27 @@
 \vfill
 
 % Appendix thing from LaTeX Companion
-\makeatletter
-  \renewcommand\appendix{%
-    \renewcommand\section{%
-        \newpage\thispagestyle{plain}%
-       \suppressfloats[t]\@afterindentfalse%
-       \secdef\Appendix\sAppendix}%
-    \setcounter{section}{0}%
-    \setcounter{subsection}{0}%
-    \renewcommand\thesection{\Alph{section}}}
-  \newcommand\Appendix[2][?]{%
-     \refstepcounter{section}%
-     \addcontentsline{toc}{section}%
-       {\protect\numberline{\thesection}#1}%
-     {\noindent\large\bfseries \appendixname\  \thesection\  #2\par}%
-     \sectionmark{#1}%
-     \@afterheading
-     \addvspace{\baselineskip}}
-   \newcommand\sAppendix[1]{%
-     {\noindent\large\bfseries\appendixname~#1\par}%
-     \@afterheading\addvspace{\baselineskip}}
- \makeatother
+%\makeatletter
+%  \renewcommand\appendix{%
+%    \renewcommand\section{%
+%        \newpage\thispagestyle{plain}%
+%       \suppressfloats[t]\@afterindentfalse%
+%       \secdef\Appendix\sAppendix}%
+%    \setcounter{section}{0}%
+%    \setcounter{subsection}{0}%
+%    \renewcommand\thesection{\Alph{section}}}
+%  \newcommand\Appendix[2][?]{%
+%     \refstepcounter{section}%
+%     \addcontentsline{toc}{section}%
+%       {\protect\numberline{\thesection}#1}%
+%     {\noindent\large\bfseries \appendixname\  \thesection\  #2\par}%
+%     \sectionmark{#1}%
+%     \@afterheading
+%     \addvspace{\baselineskip}}
+%   \newcommand\sAppendix[1]{%
+%     {\noindent\large\bfseries\appendixname~#1\par}%
+%     \@afterheading\addvspace{\baselineskip}}
+% \makeatother
 
 This study was funded by the Alaska Outer Continental Shelf Region
 of the Bureau of Ocean Energy Management, U.S.\ Department of the

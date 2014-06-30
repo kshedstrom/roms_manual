@@ -30,7 +30,7 @@ The directories shown here are:
   subset of the Northeast Pacific grid, but at four times the
   resolution.
   \kitem{Circle} This is a circular domain wave propagation problem
-  with an analytic solution used as a test problem (\cite{Lamb32}).
+  with an analytic solution used as a test problem \citep{Lamb32}.
   \kitem{NEP} This is the Northeast Pacific domain covering the
   waters off the west coast of the US, from California to the Bering
   Sea. It is a rectangular domain at about 11 km resolution when
@@ -564,17 +564,16 @@ reached}%
   \kitem{diag} computes some global sums, prints them, and checks them to
   see if they are sensible. If not, it stops the model run.
   \kitem{radiation\_stress} computes the radiation stresses due to
-  wave-current interactions (\cite{Mellor_2003} and \cite{Mellor_2005}).
+  wave-current interactions \citep{Mellor_2003,Mellor_2005}.
   \kitem{cawdir\_eval} computes a 24-hour mean albedo at the marine
   surface. Not in the trunk code.
   \kitem{ccsm\_flux} computes the surface fluxes from the atmosphere
   based on a marine boundary layer. This version comes from CCSM
-  (\cite{Large_08}) and is
+  \citep{Large_08} and is
   reputed to do better outside of the tropics. Not in the trunk code.
   \kitem{bulk\_flux} computes the surface fluxes from the atmosphere
   based on a marine boundary layer. This version comes from COARE
-  version 3.0 (\cite{Fairall_2003}, \cite{Taylor_2001} and
-  \cite{Oost_2002}).
+  version 3.0 \citep{Fairall_2003,Taylor_2001,Oost_2002}.
   \kitem{ncep\_flux} computes the surface fluxes from the NCEP
   atmospheric model. Not in the trunk code.
   \kitem{bblm} compute the bottom stresses from one of three bottom
@@ -591,11 +590,11 @@ reached}%
   \kitem{ana\_vmix} is called if there's an analytic profile for the
   vertical mixing coefficient.
   \kitem{lmd\_vmix} is called when using the K-profile parameterization
-  of vertical mixing (\cite{Large94} and \cite{Large98}).
+  of vertical mixing \citep{Large94,Large98}.
   \kitem{bvf\_mix} computes the vertical mixing as a function of the
   Brunt-V\"ais\"al\"a frequency.
   \kitem{hmixing} computes time-dependent horizontal mixing coefficients
-  (\cite{S63}, \cite{Holland_98}, \cite{Webb_98} and \cite{Griffies_2000}).
+  \citep{S63, Holland_98, Webb_98,Griffies_2000}.
   \kitem{omega} computes the $\Omega$ vertical velocity from the horizontal
   divergences.
   \kitem{wvelocity} computes the physical vertical velocity for the
@@ -628,15 +627,15 @@ reached}%
   \kitem{omega} computes the $\Omega$ vertical velocity.
   \kitem{my25\_corstep} performs the corrector step for turbulent kinetic
   energy and length scale prognostic variables, \code{tke} and \code{gls}
-  (\cite{Mellor82} and \cite{Galperin88}).
+  \citep{Mellor82, Galperin88}.
   \kitem{gls\_corstep} performs the corrector step for turbulent kinetic
   energy and length scale prognostic variables, \code{tke} and \code{gls}
-  (\cite{Umlauf2003}, \cite{Warner_2005}).
+  \citep{Umlauf2003, Warner_2005}.
   \kitem{biology} computes the changes to the biological tracers due to
   biological activity using one of several options for the ecosystem
   model.
   \kitem{sediment} computes changes to the sediment tracers
-  (\cite{Warner_2008}).
+  \citep{Warner_2008}.
   \kitem{step3d\_t} completes the tracer time-step.
   \kitem{ice\_frazil} computes the frazil ice growth, if any. Not in the
   trunk code.
@@ -845,13 +844,13 @@ doing the I/O, but it then broadcasts its status to the rest.
 %     \kitem{trisolver}  Solves the PDE
 %   $A \phi(k-1) + B \phi(k) + C \phi(k+1) = D$
 %     for field $\phi$ using the tridiagonal solver, also known as
-%  Thomas algorithm (\cite{Richtmeyer}).
+%  Thomas algorithm \citep{Richtmeyer}.
 %   \end{klist}
 %\kitem{Bottom boundary-layer model} The model has an optional bottom
-%boundary layer based on \cite{Styles96}.
+%boundary layer based on \citet{Styles96}.
 %   \begin{klist}
 %     \kitem{sg\_bbl96}  Computes kinematic bottom momentum stress using
-%   \cite{Styles96} bottom boundary layer formulation.
+%   \citet{Styles96} bottom boundary layer formulation.
 %     \kitem{sg\_ubab}   Computes maximum wave bottom velocity and
 %   excursion from wind induced wave amplitude and period by
 %   solving the linear wave dispersion relation for a given
@@ -935,7 +934,7 @@ advection.
     \kitem{TS\_C4HADVECTION} Define for 4rd-order centered horizontal
 advection.
     \kitem{TS\_MPDATA} Define for recursive MPDATA 3D advection
-    (\cite{Margolin_98}).
+    \citep{Margolin_98}.
     \kitem{TS\_U3HADVECTION} Define for 3nd-order upstream horizontal advection.
     \kitem{TS\_A4VADVECTION} Define for 4nd-order Akima vertical advection.
     \kitem{TS\_C2VADVECTION} Define for 2nd-order centered vertical
@@ -974,15 +973,15 @@ reconciliation
 step is done and in the monotonicity constraining algorithms.
   \begin{klist}
     \kitem{DJ\_GRADPS}  Define for splines density Jacobian
-  (\cite{SS2003}).
+  \citep{SS2003}.
     \kitem{PJ\_GRADP}  Define for finite volume Pressure Jacobian
-  (\cite{Lin97}).
+  \citep{Lin97}.
     \kitem{PJ\_GRADPSQ2}  Define for quartic 2 Pressure Jacobian
-  (\cite{SS2003}).
+  \citep{SS2003}.
     \kitem{PJ\_GRADPSQ4}  Define for quartic 4 Pressure Jacobian
-  (\cite{SS2003}).
+  \citep{SS2003}.
     \kitem{DJ\_GRADPS}  Define for weighted density Jacobian
-  (\cite{Song98}).
+  \citep{Song98}.
     \kitem{ATM\_PRESS}  Define to impose atmospheric sea-level pressure
   onto the sea surface.
   \end{klist}
@@ -1014,13 +1013,13 @@ step is done and in the monotonicity constraining algorithms.
     \kitem{LONGWAVE\_OUT} Define to compute outgoing longwave radiation.
     \kitem{EMINUSP} Define to compute evaporation minus precipitation.
     \kitem{COARE\_TAYLOR\_YELLAND} Define to use Taylor and Yelland wave
-  roughness (\cite{Taylor_2001}).
+  roughness \citep{Taylor_2001}.
     \kitem{COARE\_OOST} Define to use Oost et al. wave
-  roughness (\cite{Oost_2002}).
+  roughness \citep{Oost_2002}.
     \kitem{DEEPWATER\_WAVES} Define to use deep water waves approximation.
     \kitem{ALBEDO} Define to use albedo equation for shortwave radiation.
     \kitem{ALBEDO\_CURVE} Define to use albedo function of latitude
-    from \cite{Large_08}.
+    from \citet{Large_08}.
     \kitem{DIURNAL\_SRFLUX} Define to impose the local diurnal cycle
     onto the shortwave radiation.
   \end{klist}
@@ -1246,16 +1245,16 @@ step is done and in the monotonicity constraining algorithms.
     \S\ref{Iphys}).
       \begin{klist}
         \kitem{ICE\_THERMO} Define for ice thermodynamics.
-        \kitem{ICE\_MK} Define for \cite{Mellor89}
+        \kitem{ICE\_MK} Define for \citet{Mellor89}
 	ice thermodynamics---this is the only choice.
 	\kitem{ICE\_SMOOTH} Define to smooth some ice fields.
 	\kitem{ICE\_ALB\_EC92} Define for albedo computations from
-	\cite{Ebert93}.
+	\citet{Ebert93}.
 	\kitem{ICE\_MOMENTUM} Define for momentum component of the ice.
 	\kitem{ICE\_MOM\_BULK} Define for alternate ice-water stress
 	computation.
 	\kitem{ICE\_EVP} Define for elastic-viscous-plastic rheology
-	(\cite{Hunke97} and \cite{Hunke_2001}).
+	\citep{Hunke97, Hunke_2001}.
 	\kitem{ICE\_ADVECT} Define for advection of ice tracers.
 	\kitem{ICE\_SMOLAR} Define to use MPDATA for ice tracers (no
 	other option).
@@ -1327,7 +1326,7 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
   \end{klist}
   \kitem{Ecosystem models} \mbox{}
   \begin{klist}
-    \kitem{BIO\_FENNEL} Define for \cite{Fennel_2006}
+    \kitem{BIO\_FENNEL} Define for \citet{Fennel_2006}
     nitrogen-based model.
     \begin{klist}
        \kitem{BIO\_SEDIMENT} Define to restore fallen material to the
@@ -1336,7 +1335,7 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
        \kitem{DENITRIFICATION} Define to add denitrification processes.
        \kitem{OXYGEN} Define to add oxygen dynamics.
        \kitem{OCMIP\_OXYGEN\_SC} Define if Schmidt number from
-       \cite{Keeling_98}.
+       \citet{Keeling_98}.
        \kitem{TALK\_NONCONSERV} Define for nonconservative computation
        of alkalinity.
     \end{klist}
@@ -1349,17 +1348,17 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
       \kitem{JELLY} Define for jellyfish.
       \kitem{CLIM\_ICE\_1D} Define if 1-D with ice.
     \end{klist}
-    \kitem{BIO\_UMAINE} Define for \cite{Chai_2002} model.
+    \kitem{BIO\_UMAINE} Define for \citet{Chai_2002} model.
     \kitem{BIO\_GOANPZ} Define for
-    \cite{Hinckley_2009} Gulf of Alaska model.
-    \kitem{NPZD\_FRANKS} Define for NPZD model of \cite{Franks_86}.
+    \citet{Hinckley_2009} Gulf of Alaska model.
+    \kitem{NPZD\_FRANKS} Define for NPZD model of \citet{Franks_86}.
     \kitem{NPZD\_IRON} Define for NPZD model with iron limitation.
-    \kitem{NPZD\_POWELL} Define for NPZD model of \cite{Powell_2006}.
+    \kitem{NPZD\_POWELL} Define for NPZD model of \citet{Powell_2006}.
     \kitem{IRON\_LIMIT} Define for iron limitation on phytoplankton
     growth (for a few of the biology models).
     \kitem{IRON\_RELAX} Define for nudging to iron over the shelf.
     \kitem{ECOSIM} Define for bio-optical EcoSim model.
-    \kitem{NEMURO} Define for Nemuro ecosystem model (\cite{Kishi_2007}).
+    \kitem{NEMURO} Define for Nemuro ecosystem model \citep{Kishi_2007}.
     Need to choose a zooplankton grazing option (\code{HOLLING\_GRAZING} or
     \code{IVLEV\_EXPLICIT}). The default implicit \code{IVLEV} algorithm
     does not work yet. 
@@ -1377,7 +1376,7 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
   \kitem{Sediment transport model} \mbox{}
   \begin{klist}
     \kitem{SEDIMENT} Define to activate sediment transport model
-    (\cite{Warner_2008}).
+    \citep{Warner_2008}.
     \kitem{BEDLOAD\_MPM} Define to activate Meyer-Peter-Mueller bed load.
     \kitem{BEDLOAD\_SOULSBY} Define to activate Soulsby wave/current
     bed load.
@@ -1392,9 +1391,9 @@ term in both Flather or reduced physics conditions (\code{*\_M2FLATHER},
   \begin{klist}
     \kitem{WET\_DRY} Define to allow wetting and drying of cells.
     \kitem{NEARSHORE\_MELLOR05} Define for radiation stress terms from
-    waves (\cite{Mellor_2005}).
+    waves \citep{Mellor_2005}.
     \kitem{NEARSHORE\_MELLOR08} Define for radiation stress terms from
-    waves (\cite{Mellor_2008}).
+    waves \citep{Mellor_2008}.
   \end{klist}
   \kitem{NetCDF input/output} \mbox{}
   \begin{klist}
