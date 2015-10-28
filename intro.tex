@@ -28,6 +28,7 @@ equation of state.
   \item Closed basin, periodic, prescribed, radiation, and
     gradient open boundary conditions.
   \item Masking of land areas.
+  \item Early version of nesting.
 \end {itemize}
 \kitem{Vertical} \mbox{}
 \begin{itemize}
@@ -69,7 +70,8 @@ equation of state.
   \item Runs under UNIX, requires the C preprocessor, gnu make, and
   Perl.
   \item All input and output is done in NetCDF \cite{netCDF} (Network
-    Common Data Format), requires the NetCDF library.
+    Common Data Format), requires the NetCDF and NetCDF-fortran
+    libraries.
   \item Options include serial, parallel with MPI, and parallel with
   OpenMP.
 %  \item Pre- and post-processing graphics package available which
@@ -86,7 +88,10 @@ to account for local variations in the density field; vertical
 interpolation performed using conservative parabolic splines; and
 higher-order, quasi-monotone advection algorithms.
 
-ROMS now comes with a full suite of advanced data assimilation
+New with this version of the manual is the introduction of nesting
+capabilities which requires Matlab for preprocessing.
+
+ROMS also comes with a full suite of advanced data assimilation
 routines; these options are beyond the scope of this document.
 
 Chapter \ref{Starting} has some information on getting started with
@@ -106,7 +111,7 @@ described in Chapter \ref{Wave}, including a discussion of a few example
 applications.
 %Chapter \ref{Floats} describes the Lagrangian floats and
 %how to use them, including the plotting postprocessor \code{fltplt}.
-Chapter \ref{Plothist} describes Hernan Arango's plotting
-programs \code{cnt}, \code{ccnt}, \code{sec}, and \code{csec}.
+%Chapter \ref{Plothist} describes Hernan Arango's plotting
+%programs \code{cnt}, \code{ccnt}, \code{sec}, and \code{csec}.
 %while chapter
 %\ref{Userice} describes the ice subroutines and the coupling procedure.

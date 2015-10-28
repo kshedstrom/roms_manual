@@ -146,7 +146,7 @@ corrected by setting the first derivative terms at points {\bf E}, {\bf
 I}, and {\bf L} to zero, to be consistent with a no-flux boundary
 condition.
 Note that the equation of state must be able to handle $T = S = 0$
-since this is the value inside masked regions.
+since these are the values inside masked regions.
 
 %\subsubsection{Free surface and pressure gradients}
 
@@ -168,9 +168,10 @@ If the water level is less than this depth, no flux is allowed out
 of that cell. Water can always flow in and resubmerge the cell.
   \item The wetting and drying only happens during the 2-D
 computations; the 3-D computations see a depth of
-$D_{crit}$ in the ``dry'' areas.
+$D_{crit}$ in the ``dry'' areas, though surface fluxes are turned
+off in the dry cells, as are some other processes.
   \item The ice component now checks for dry cells when computing
-the ice rheology.
+the ice rheology and ice thermodynamics.
 \end{itemize}
 
 \subsection{Time-stepping overview}
@@ -220,7 +221,8 @@ are described in Appendix~\ref{Frog}.
 \end{picture}%
 \caption{Diagrams of the time stepping and mode coupling used in
 various ROMS versions. (a) Rutgers University ROMS (from
-myroms.org), (b) ROMS AGRIF, (c) UCLA ROMS, described in \cite{SS2005},
+myroms.org), (b) older ROMS AGRIF,
+(c) UCLA ROMS, described in \cite{SS2005},
 (d) non-hydrostatic ROMS (\cite{Kanarska2007}). In all, the curved
 arrows update the 3-D fields; those with ``pillars'' are leapfrog
 in nature with the pillar representing the r.h.s. terms. Straight
