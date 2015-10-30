@@ -4,21 +4,27 @@
 The ROMS source code is distributed using
 \href{http://subversion.tigris.org}{Subversion} (svn). There are svn
 clients available for nearly every operating system and many
-resources available, including an O'Reilly book \cite{SVN}. I'll
+resources available, including an O'Reilly book \citep{SVN}. I'll
 just cover a few basics here, taken in part from the
 \href{https://www.myroms.org/wiki/index.php/Subversion}{ROMS wiki}.
 
 If you wish to maintain your own copy of ROMS in a source code
 repository, you may want to investigate \href{http://git-scm.com/}{git},
 which has the ability to download from an svn server. It too has
-an O'Reilly book (\cite{GIT2}), plus I enjoyed Swicegood's book
-(\cite{GIT1}).
+an O'Reilly book \citep{GIT2}, plus I enjoyed
+\citet{GIT1}. I have rambled at length about \code{git}
+on the \href{https://www.myroms.org/wiki/index.php/ROMS_git}{ROMS
+wiki} because I truly believe that \code{svn} is not the best tool
+for most ROMS users (those who can't check back in). My ramblings
+about the shortcomings of \code{svn} have driven one ROMS user to adopt
+\href{http://mercurial.selenic.com/}{Mercurial} instead, another
+valid option.
 
 \subsection{Overview}
 Subversion is a tool for managing software development that keeps
 track of who modified what and allows the return to a previous
 version if changes don't work as expected. All the ROMS/TOMS files
-are stored in a SVN repository on www.myroms.org with access
+are stored in a \code{svn} repository on www.myroms.org with access
 controlled by requiring authentication with the same ROMS
 Username/Password combination assigned to registered users of the
 ROMS Forum.
@@ -36,7 +42,7 @@ tags version is kept largely as an historical record of stable
 releases at the conclusion of major code upgrades.
 
 Below is a general description of how subversion works. Please look
-at the svn book (\cite{SVN}) for more detailed information and the wiki
+at the svn book \citep{SVN} for more detailed information and the wiki
 for more on some available GUI clients.
 
 \subsection{Checking out the code}
@@ -47,7 +53,7 @@ run it on a non-Windows machine you will need convert the line
 endings with a utility like dos2unix or recode. Even with these
 utilities you may still have problems compiling ROMS.
 
-In order download source code from a Subversion repository, svn
+In order download source code from a Subversion repository, the svn
 client software must be installed on your local machine. If you are
 compiling subversion on your own be sure to build it with SSL
 support or you will not be able to download the ROMS source code.

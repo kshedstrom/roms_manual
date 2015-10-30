@@ -2,11 +2,15 @@
 %\includeonly{num,eqice}
 
 \input{startup}
+
+%\pagestyle{fancyplain}
+%\rhead{OCS Study BOEM ????-???}
 \pagestyle{empty}
-\centerline{\hfill OCS Study MMS 2012-0xx}
+\centerline{\hfill OCS Study BOEM 2013-202}
+
 \vspace {2 cm}
 \begin{center}
-  {\LARGE DRAFT Technical Manual for a Coupled Sea-Ice/Ocean \\ Circulation
+  {\LARGE Technical Manual for a Coupled Sea-Ice/Ocean \\ Circulation
    Model (Version 4)  }
 \end{center}
 \vspace {2 cm}
@@ -16,14 +20,15 @@
 \end{center}
 \vspace {2 cm}
 \begin{center}
-  U.S.\ Department of the Interior \\ Minerals Management Service \\
-  Anchorage, Alaska \\ \mbox{} \\ Contract No.\ M07PC13368
+  U.S.\ Department of the Interior \\ Bureau of Ocean Energy
+  Management \\
+  Herndon, Virginia \\ \mbox{} \\ Contract No.\ M10PC00116
 \end{center}
 \newpage
-\centerline{\hfill OCS Study MMS 2012-0xx}
+\centerline{\hfill OCS Study BOEM 2013-202}
 \vspace {2 cm}
 \begin{center}
-  {\LARGE DRAFT Technical Manual for a Coupled Sea-Ice/Ocean \\ Circulation
+  {\LARGE Technical Manual for a Coupled Sea-Ice/Ocean \\ Circulation
    Model (Version 4)  }
 \end{center}
 \vspace {2 cm}
@@ -32,36 +37,115 @@
   \\ University of Alaska Fairbanks
 \end{center}
 \vspace {2 cm}
-\centerline{Dec 2011}
+\centerline{June 2013}
 \vfill
 
+% Appendix thing from LaTeX Companion
+%\makeatletter
+%  \renewcommand\appendix{%
+%    \renewcommand\section{%
+%        \newpage\thispagestyle{plain}%
+%       \suppressfloats[t]\@afterindentfalse%
+%       \secdef\Appendix\sAppendix}%
+%    \setcounter{section}{0}%
+%    \setcounter{subsection}{0}%
+%    \renewcommand\thesection{\Alph{section}}}
+%  \newcommand\Appendix[2][?]{%
+%     \refstepcounter{section}%
+%     \addcontentsline{toc}{section}%
+%       {\protect\numberline{\thesection}#1}%
+%     {\noindent\large\bfseries \appendixname\  \thesection\  #2\par}%
+%     \sectionmark{#1}%
+%     \@afterheading
+%     \addvspace{\baselineskip}}
+%   \newcommand\sAppendix[1]{%
+%     {\noindent\large\bfseries\appendixname~#1\par}%
+%     \@afterheading\addvspace{\baselineskip}}
+% \makeatother
 
 This study was funded by the Alaska Outer Continental Shelf Region
-of the Minerals Management Service, U.S.\ Department of the
-Interior, Anchorage, Alaska, through Contract
-{\bf M07PC13368} with Rutgers University, Institute of Marine
+of the Bureau of Ocean Energy Management, U.S.\ Department of the
+Interior, Herndon, Virginia, through Contract
+{\bf M10PC00116} with Rutgers University, Institute of Marine
 and Coastal Sciences.
 
-\vspace {1 cm}
-The opinions, findings, conclusions, or recommendations expressed in
-this report or product are those of the authors and do not
-necessarily reflect the views of the U.S.\ Department of the
-Interior, nor does mention of trade names or commercial products
-constitute endorsement or recommendation for use by the Federal
-Government.
+%\vspace {1 cm}
+%The opinions, findings, conclusions, or recommendations expressed in
+%this report or product are those of the authors and do not
+%necessarily reflect the views of the U.S.\ Department of the
+%Interior, nor does mention of trade names or commercial products
+%constitute endorsement or recommendation for use by the Federal
+%Government.
+
+\newpage
+\vfil
+\centerline{\bf DISCLAIMER}
+
+\vfil
+\noindent
+This report was prepared under contract between the Bureau of Ocean
+Energy Management (BOEM) and Rutgers University. This report has
+been technically reviewed by BOEM, and it has been approved for
+publication. Approval does not signify that the contents necessarily
+reflect the views and policies of BOEM, nor does mention of trade
+names or commercial products constitute endorsement or
+recommendation for use. It is, however, exempt from review and
+compliance with BOEM editorial standards.
+
+\vfil
+\centerline{\bf REPORT AVAILABILITY}
+\vfil
+
+\noindent
+This report is available only in compact disc format from the Bureau
+of Ocean Energy Management, Region Name, at a charge of \$xx.xx, by
+referencing OCS Study BOEM 2012-0xx. The report may be downloaded
+from the boem.gov website through the
+\href{http://www.data.boem.gov/homepg/data_center/other/espis/espismaster.asp?appid=1}
+{Environmental Studies Program Information System (ESPIS)}. You will
+be able to obtain this report also from the National Technical
+Information Service in the near future. Here are the addresses. You
+may also inspect copies at selected Federal Depository Libraries.
+
+\begin{center}
+\begin{tabular}{ll}
+  U.S. Department of the Interior & U.S. Department of Commerce \\
+  Bureau of Ocean Energy Management & National Technical Information
+  Service \\
+  Region name or HQ & 5285 Port Royal Road \\
+  Address & Springfield, Virginia 22161 \\
+  Address & Phone: (703) 605-6040 \\
+  Address & Fax: (703) 605-6900 \\
+  Telephone requests may be placed at & Email: bookstore@ntis.gov \\
+  phone \\
+  Fax: 
+\end{tabular}
+\end{center}
+\vfil
+
+\centerline{\bf CITATION}
+\vfil
+
+\noindent K. Hedstrom. 2012. Technical Manual for a Coupled Sea-Ice/Ocean
+Circulation Model (Version 4).
+U.S. Dept. of the Interior, Bureau of Ocean Energy Management, [HQ
+or region]. OCS Study BOEM 2012-00xx. xxx pp.
+
 \include{ak}
 %\newpage
 \pagestyle{fancyplain}
+\renewcommand{\headrulewidth}{0pt}
 \setcounter{page}{1}
-%\pagenumbering{roman}
+\pagenumbering{roman}
 \tableofcontents
 \newpage
 %\setcounter{page}{5}
 \listoffigures
 %\newpage
 \listoftables
-\bibliographystyle{plain}
-%\pagenumbering{arabic}
+%\bibliographystyle{plain}
+\bibliographystyle{plainnat}
+\pagenumbering{arabic}
 \include{intro}
 \include{starting}
 %\newpage
@@ -101,8 +185,8 @@ Government.
 
 \begin{figure}
 \setlength{\unitlength}{1in}
-\begin{picture}(8.5,11)(1,-.5)
-\includegraphics{pics/MMS_mission}
+\begin{picture}(8.5,11)(1,0)
+\includegraphics{pics/BOEM_mission}
   \end{picture}
 \end{figure}
 \end{document}

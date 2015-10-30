@@ -21,8 +21,7 @@ The ice continuity consists of advection (done in \code{ice\_mpdata} or
 %Paul Budgell found that he could leave out the
 %diffusivity of ice thickness and concentration if he used an advection
 %scheme that preserved minima and maxima and did not lead to ringing
-%(Smolarkiewicz and Grabowski \cite{Smolark90} and Smolarkiewicz and
-%Margolin \cite{Smolark93}).
+%\citep{Smolark90, Smolark93}.
 We have also added the diffusion of the ice tracer variables in
 order to obtain a smoother solution. This may be optional if the
 forcing fields are sufficiently smooth.
@@ -283,7 +282,6 @@ the tracers. This must be defined for either of these to take effect:
     \begin{klist}
        \kitem{ICE\_DIFFUSION} Add a Laplacian diffusion on the ice
      tracers.
-       \kitem{ICE\_RIDGING} Add an ice ridging scheme from Gray and
-     Killworth \cite{Gray95}.
+%       \kitem{ICE\_RIDGING} Add an ice ridging scheme from \citet{Gray95}.
     \end{klist}
 \end{klist}

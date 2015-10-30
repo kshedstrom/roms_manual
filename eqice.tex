@@ -2,13 +2,12 @@
 \label{Iphys}
 
 The sea-ice component of ROMS is a combination of the
-elastic-viscous-plastic (EVP) rheology (Hunke and Dukowicz
-\cite{Hunke97}, Hunke \cite{Hunke_2001}) and simple one-layer
+elastic-viscous-plastic (EVP) rheology 
+\citep{Hunke97,Hunke_2001} and simple one-layer
 ice and snow thermodynamics with a molecular sublayer under the ice
-(Mellor and Kantha \cite{Mellor89}). It is tightly coupled, having
+\citep{Mellor89}. It is tightly coupled, having
 the same grid (Arakawa-C) and timestep as the ocean and sharing the same
-parallel coding structure for use with MPI or OpenMP (Budgell
-\cite{Budgell05}).
+parallel coding structure for use with MPI or OpenMP \citep{Budgell05}.
 
 \subsection{Dynamics}
 The momentum equations describe the change in ice/snow velocity due
@@ -38,11 +37,10 @@ stress:
   \vec{\tau}_w & = \rho_w C_w | \vec{v}_w - \vec{v} |
   ( \vec{v}_w - \vec{v}) .
 \end{align}
-The force due to
-the internal ice stress is given by the divergence of the stress
-tensor $\sigma$. The rheology is given by the stress-strain relation
-of the medium. We would like to emulate the viscous-plastic rheology
-of Hibler (1979) \cite{Hibler79}:
+The force due to the internal ice stress is given by the divergence of
+the stress tensor $\sigma$. The rheology is given by the stress-strain
+relation of the medium. We would like to emulate the viscous-plastic
+rheology of \citet{Hibler79}:
 \begin{equation}
   \sigma_{ij} = 2 \eta \dot \epsilon_{ij} + (\zeta - \eta) \dot
   \epsilon_{kk} \delta_{ij} - \frac{P }{ 2} \delta_{ij}
@@ -52,10 +50,7 @@ of Hibler (1979) \cite{Hibler79}:
   }{
   \partial x_j} + \frac{\partial u_j }{ \partial x_i} \right)
 \end{equation}
-\begin{equation}
-  P = P^* A h_i e^{-C(1-A)}
-\end{equation}
-where the nonlinear viscosities are given by
+where the nonlinear viscosities are given by:
 \begin{equation}
 \zeta = \frac{ P }{ 2 \left[ (\epsilon^2_{11} +
    \epsilon^2_{22} ) ( 1 + 1/e^2 ) + 4 e^{-2} \epsilon^2_{12}
@@ -64,6 +59,17 @@ where the nonlinear viscosities are given by
 \begin{equation}
       \eta = \frac{ \zeta }{ e^2 }.
 \end{equation}
+Hibler's ice strength is given by:
+\begin{equation}
+  P = P^* A h_i e^{-C(1-A)}
+\end{equation}
+while \citep{Overland_1988} advocate a nonlinear strength:
+\begin{equation}
+  P = P^* A h_i^2 e^{-C(1-A)}
+\end{equation}
+in which $P^*$ now depends on the grid spacing. Both options are available
+in ROMS.
+
 We would also like to have an explicit model that can be solved
 efficiently on parallel computers. The EVP rheology has a tunable
 coefficient $E$ (the Young's modulus) which can be chosen to make
@@ -87,7 +93,7 @@ internal ice stress term is updated on a shorter timestep so as to
 allow the elastic wave velocity to be resolved.
 
 Once the new ice velocities are computed, the ice tracers can be
-advected using the MPDATA scheme \cite{Smolark90}. The tracers in
+advected using the MPDATA scheme \citet{Smolark90}. The tracers in
 this case are the ice thickness, ice concentration, snow thickness,
 internal ice temperature, and surface melt ponds. The continuity
 equations describing the evolution of these parameters (equations
@@ -114,7 +120,7 @@ Equation \ref{ist3b} is discussed in some detail in MK89, but
 represents the advection of ice blocks in which no ridging occurs as
 long as there is any open water.
 %An optional ridging term can be added
-%(Gray and Killworth \cite{Gray96}):
+%\citep{Gray96}:
 %\begin{equation}
 %  \frac{\partial A }{ \partial t} =
 %  - \frac{\partial (uA) }{ \partial x} - \frac{\partial (vA) }{ \partial y}
@@ -185,20 +191,17 @@ fraction of the gridbox.
 
 The thermodynamics is based on calculating how much ice grows and
 melts on each of the surface, bottom, and sides of the ice floes,
-as well as frazil ice formation (Mellor and Kantha \cite{Mellor89}).
+as well as frazil ice formation \citep{Mellor89}.
 Once the ice tracers are advected, the ice concentration and
 thickness are timestepped according to the terms on the right:
 
 Equations (\ref{ist3a}) and (\ref{ist3b}) become:
 \begin{align}
   \frac{D A h_i }{D t}
-% + \frac{\partial (u A h_i) }{ \partial x} +
-%  \frac{\partial (v A h_i) }{ \partial y}
   & = \frac{\rho_o }{ \rho_i} \left[ A (W_{io} - W_{ai}) + (1-A) W_{ao}
   + W_{fr} \right]
 \label{ist4a} \\
   \frac{D A }{ D t}
-%  +\frac{\partial (uA) }{ \partial x} + \frac{\partial (vA) }{ \partial y}
   & = \frac{\rho_o A }{ \rho_i h_i} \left[ \Phi (1-A) W_{ao} + (1-A)
   W_{fr} \right] \qquad \qquad 0 \leq A \leq 1 .
 \label{ist4b}
@@ -214,14 +217,13 @@ the melt happens on the sides of the ice due to warming of the water in
 the leads.
 
 The heat fluxes through the ice are based on a simple one layer
-Semtner \cite{Semtner76a} type model with
-snow on top. The temperature is assumed to be linear within the snow
-and within the ice. The ice contains brine pockets for a
-total ice salinity of 5. The surface ocean temperature and salinity
-is half a $dz$ below the surface. The water right below the surface
-is assumed to be at the freezing temperature; a logarithmic boundary
-layer is computed having the temperature and salinity matched at
-freezing.
+\citet{Semtner76a} type model with snow on top. The temperature is
+assumed to be linear within the snow and within the ice. The ice contains
+brine pockets for a total ice salinity of 3.2 or the surface salinity,
+whichever is less. The surface ocean temperature and salinity is half a
+$dz$ below the surface. The water right below the surface is assumed to
+be at the freezing temperature; a logarithmic boundary layer is computed
+having the temperature and salinity matched at freezing.
 
 Here, the $W$ variables are the freeze or
 melt rates as shown in Fig.\ \ref{fm+k} and Table \ref{thermvar}.  The
@@ -240,29 +242,33 @@ freezing:
 \setlength{\unitlength}{0.00083300in}%
 %
 %\begin{picture}(6527,2507)(270,-5042)
-\begin{picture}(6527,2507)(885,-5042)
+\begin{picture}(6591,3076)(835,-5072)
 %\thicklines
 \put(1501,-2911){\line( 1, 0){3975}}
 \put(1501,-4111){\line( 1, 0){3975}}
 \put(1501,-2911){\line( 0,-1){1200}}
 \put(6976,-4111){\line( 1, 0){1050}}
-\put(6976,-2911){\line( 1, 0){1050}}
-\put(6976,-2911){\line( 0,-1){1200}}
+\put(6976,-2941){\line( 1, 0){1050}}
+\put(6976,-2711){\line( 0,-1){1400}}
+\put(6976,-2711){\line( 1, 0){1050}}
 \put(5476,-2911){\line( 0,-1){1200}}
-\put(2401,-4861){\vector( 0, 1){750}}
+\put(2401,-4811){\vector( 0, 1){700}}
 \put(3376,-4861){\vector( 0, 1){750}}
 \put(6226,-3586){\vector( 0, 1){675}}
 \put(4426,-4036){\vector( 0,-1){525}}
 \put(2596,-3376){\vector( 1, 1){450}}
-%\put(1501,-5056){\framebox(6525,2505){}}
-\put(6121,-3886){\makebox(0,0)[lb]{$W_{ao}$}}
+\put(7526,-2211){\vector( 0,-1){500}}
+\put(7490,-3383){\vector( 1,2){200}}
+\put(6121,-3786){\makebox(0,0)[lb]{$W_{ao}$}}
 \put(4336,-4756){\makebox(0,0)[lb]{$W_{ro}$}}
 \put(2416,-3586){\makebox(0,0)[lb]{$W_{ai}$}}
 \put(3241,-5056){\makebox(0,0)[lb]{$W_{io}$}}
 \put(2296,-5056){\makebox(0,0)[lb]{$W_{fr}$}}
+\put(7400,-2180){\makebox(0,0)[lb]{$W_{s}$}}
+\put(7276,-3611){\makebox(0,0)[lb]{$W_{sm}$}}
 \end{picture}
 %\begin{picture}(0,0)(5346,0)
-\begin{picture}(0,0)(5961,0)
+\begin{picture}(0,0)(5961,-30)
 \includegraphics{pics/therm_mk}%
 \end{picture}%
 \caption{Diagram of the different locations where ice melting and
@@ -270,6 +276,17 @@ freezing can occur.}
 \label{fm+k}
 \end{figure}
 
+Similar to Eq. \ref{ist4a} is the snow equation:
+\begin{equation}
+  {D A h_s \over D t} = \left[ A (W_{s} - W_{sm}) \right]
+\end{equation}
+where $W_s$ and $W_{sm}$ are the snowfall and snow melt rates,
+respectively, in units of equivalent water. Also in the model is
+the depth of the melt ponds in spring, $h_{mp}$ which can be up to
+0.1 m, after which melting ice contributes to $W_{ro}$. The melt
+ponds are not part of the thermal conductivity computations. They
+could contribute to the albedo computation, but that has been
+largely commented out.
 
 \begin{table}
 \hspace{9 mm}
@@ -305,7 +322,7 @@ freezing can occur.}
   $Q_{i2}$ && heat flux up out of the ice \\
   $Q_{io}$ && heat flux up into the ice \\
   $Q_{s}$  && heat flux up through the snow \\
-  $r$   && brine fraction in ice \\
+  $r$   & $0 \le r \le 0.2 $ & brine fraction in ice \\
   $\rho_i$ & 910 $m^3/kg$ & density of ice \\
   $S_i$ & 3.2 PSU & salinity of the ice \\
   $SW\!\!\downarrow$ && incoming shortwave radiation \\
@@ -322,7 +339,9 @@ freezing can occur.}
   $W_{ao}$ && freeze rate at the air/water interface \\
   $W_{fr}$ && rate of frazil ice growth \\
   $W_{io}$ && freeze rate at the ice/water interface \\
-  $W_{ro}$ & $W_{ai}$ & rate of run-off of surface melt water \\
+  $W_{ro}$ && rate of run-off of surface melt water \\
+  $W_{s}$  && snowfall rate \\
+  $W_{sm}$ && snow melt rate \\
   \hline
 \end{tabular}
 }
@@ -370,26 +389,25 @@ The surface flux to the air is:
        \epsilon_s LW\!\!\downarrow  -
       (1 - \alpha_s) SW\!\!\downarrow + \epsilon_s \sigma (T_3+273)^4
 \end{equation}
-The formulas for sensible heat, latent heat, and incoming longwave and
-shortwave radiations are the same as in Parkinson and Washington
-\cite{Parkinson} and
-are shown in Appendix \ref{shortwave}. The sensible heat is a function
-of $T_3$, as is the heat flux through the snow $Q_s$. Setting $Q_{ai} =
-Q_s$, we can solve for $T_3$ by setting $T_3^{n+1} = T_3^n + \Delta
-T_3$ and linearizing in $\Delta T_3$.  The temperature $T_3$ is found by
-an iterative solution of the surface heat flux balance (using the
-previous value of $T_1$ in equation \ref{qsnow}). As in Parkinson and
-Washington, if $T_3$ is found to be above the melting temperature, it
-is set to $T_{\rm melt}$ and the extra energy goes into melting the
-snow or ice:
+The incoming shortwave and longwave radiations are assumed to
+come from an atmospheric model. The formulae for sensible heat,
+latent heat, and outgoing longwave radiation are the same as in
+\citet{Parkinson} and are shown in Appendix
+\ref{shortwave}. The sensible heat is a function of $T_3$, as is the
+heat flux through the snow $Q_s$. Setting $Q_{ai} = Q_s$, we can solve
+for $T_3$ by setting $T_3^{n+1} = T_3^n + \Delta T_3$ and linearizing in
+$\Delta T_3$. As in Parkinson and Washington, if $T_3$
+is found to be above the melting temperature, it is set to $T_{\rm melt}$
+and the extra energy goes into melting the snow or ice:
 \begin{align}
    W_{ai} & = \frac{Q_{ai} - Q_{i2} }{ \rho_o L_3} \\
    L_3 & \equiv \left[ E(T_3,1) - E(T_1, R_1) \right]
 \end{align}
 Note that $L_3 = (1-r)L_i$ plus a small sensible heat correction.
-We are not storing water on the surface in melt pools, so everything
-melted at the surface is assumed to flow into the ocean ($W_{ro} =
-W_{ai}$).
+We can store water on the surface in melt pools to a fixed
+depth---everything extra melted at the surface is assumed to flow into
+the ocean as $W_{ro}$. The melt ponds however do not contribute to
+the heat flux computation.
 
 Inside the ice there are brine pockets in which there is salt water
 at the {\it in situ} freezing temperature. It is assumed that the ice
@@ -473,18 +491,22 @@ where the relevant variables are in table \ref{tobc}.
 \vbox{
 \begin{tabular}{|c|c|l|} \hline
 Variable & Value & Definition \\ \hline
-   $b$ & 3.0 & factor \\
+   $b$ & 3.14 & factor \\
    \.E && evaporation \\
    $k$ & 0.4 & von Karman's constant \\
+   $K_m$ && vertical viscosity of seawater \\
    $\nu$ & $1.8 \times 10^{-6} m^2 s^{-1}$ &
       kinematic viscosity of seawater \\
    \.P && precipitation \\
    $Pr$ & 13.0 & molecular Prandtl number \\
    $P_{rt}$ & 0.85 & turbulent Prandtl number \\
+   $S$ && internal ocean salinity \\
    $S_0$ && surface salinity \\
+   $Sc$ & 2432.0 & molecular Schmidt number \\
    $\tau_{io}$ && stress on the ocean from the ice \\
    $\tau_{ao}$ && stress on the ocean from the wind \\
    $T$ && internal ocean temperature \\
+   $T_0$ && surface temperature \\
    $u_\tau$ && friction velocity $|\tau_{io}|^{1/2} \rho_o^{-1/2}$ \\
    $z_0$ && roughness parameter \\
   \hline
@@ -495,29 +517,27 @@ Variable & Value & Definition \\ \hline
 \end{table}
 
 The surface ocean is assumed to be at the freezing temperature for the
-surface salinity ($T_0 = mS$) where we use the salinity from the
-uppermost model point at $z=- \frac{1}{ 2}\Delta z$. From this, we can
-obtain a vertical temperature gradient for the upper ocean to use in
-the heat flux formula:
+surface salinity ($T_0 = mS_0$) in the presense of ice. We also have $T$ and $S$ at the
+uppermost computed ocean point ${1 \over 2} dz$ below the surface.
+In order to solve for $T_0$ and $S_0$, we assume a \citep{Yaglom_1974}
+logarithmic boundary layer. The upper ocean heat flux is:
 \begin{equation}
-   \frac{F_T }{ \rho_o C_po} = -C_{T_z} (T_0 - T) \qquad z \rightarrow 0
+   \frac{F_T }{ \rho_o C_{po}} = -C_{T_z} (T_0 - T) \qquad z \rightarrow 0
 \end{equation}
 where
 \begin{gather}
   C_{T_z} = \frac{u_\tau }{ P_{rt} k^{-1}\ln (-z/z_0) + B_T} \\
   B_T = b \left(\frac{z_0 u_\tau }{ \nu} \right) ^{1/2} Pr^{2/3}
 \end{gather}
-
-Once we have a the value for $F_T$, we can use it to find the ice
-growth rates:
-\begin{align}
-   W_{io} = \frac{1 }{ \rho_o L_o} (Q_{io} - F_T) \\
-   W_{ao} = \frac{1 }{ \rho_o L_o} (Q_{ao} - F_T) \\
-\end{align}
-where
+Likewise, we have the following equation for the surface salt flux:
 \begin{equation}
-   L_o \equiv \left[ E(T_0,1) - E(T_1,r_1) \right]
+   F_S = -C_{S_z} (S_0 - S) \qquad z \rightarrow 0
 \end{equation}
+where
+\begin{gather}
+  C_{S_z} = \frac{u_\tau }{ P_{rt} k^{-1}\ln (-z/z_0) + B_S} \\
+  B_S = b \left(\frac{z_0 u_\tau }{ \nu} \right) ^{1/2} Sc^{2/3}
+\end{gather}
 
 The ocean model receives the following heat and salt fluxes:
 \begin{align}
@@ -526,15 +546,40 @@ The ocean model receives the following heat and salt fluxes:
    W_o & \equiv A W_{io} + (1-A) W_{ao}
 \end{align}
 
+\citep{Mellor89} describe solving simultaneously for
+the five unknowns $W_o$, $T_0$, $S_0$, $F_T$ and $F_S$. Instead, we use
+the old value of $T_0$ to find $W_{io}$ and therefore $W_o$. Using the
+new value of $W_{io}$, solve for a new value of $S_0$ and then find the
+new $T_0$ as the freezing temperature for that salinity:
+\begin{align}
+   W_{io} &= {1 \over L_o} \left[ {Q_{io} \over \rho_o} + C_{po}
+   C_{T_z} (T_o - T) \right] \\
+   S_0 &= { C_{S_z} S + (W_{ai}H(-W_{ai}) - W_{io})) S_i \over
+   C_{S_z} + W_{ai}H(-W_{ai}) + W_{ro} - W_{io} }
+\end{align}
+Note that the term $W_{ai}H(-W_{ai})$ is the contribution of melting
+only, not refreezing of melt ponds.
+
+%Once we have a the value for $F_T$, we can use it to find the ice
+%growth rates:
+%\begin{align}
+%   W_{io} &= \frac{1 }{ \rho_o L_o} (Q_{io} - F_T) \\
+%   W_{ao} &= \frac{1 }{ \rho_o L_o} (Q_{ao} - F_T) \\
+%\end{align}
+%where
+%\begin{equation}
+%   L_o \equiv \left[ E(T_0,1) - E(T_1,r_1) \right]
+%\end{equation}
+
 \subsubsection{Frazil ice formation}
 \label{frazil}
 
-Following Steele et al.\ \cite{Steele89}, we check to see if any
+Following \citet{Steele89}, we check to see if any
 of the ocean temperatures are below freezing at the end of each
-timestep.  If so, frazil ice is assumed to form, changing the local
+timestep.  If so, frazil ice is formed, changing the local
 temperature and salinity.  The ice that forms is assumed to
 instantly float up to the surface and add to the ice layer there.
-We assume balances in the mass, heat, and salt before and after the ice
+We balance the mass, heat, and salt before and after the ice
 is formed:
 \begin{align}
    m_{w_1} & = m_{w_2} + m_i \\
@@ -598,11 +643,11 @@ MK89. However, there are also ways in which we have deviated from it.
 \begin{itemize}
   \item Add advection of snow.
   \item Add lateral melting of snow when ice is melting laterally.
-  \item We iterate on the solution of $T_3$.
+%  \item We iterate on the solution of $T_3$.
 %  \item We took a shortcut in the solution of $S_0, T_0$ for the
 %    surface heat and salt fluxes. We also apply them differently to the
 %    ocean model.
-  \item We added various limiters:
+  \item Add various limiters:
     \begin{itemize}
       \item Ice concentration:$A_{\min} \leq A \leq 1.0$, $A_{\min} = 0.0$.
       \item Ice thickness: $h_i \geq 0.0$.

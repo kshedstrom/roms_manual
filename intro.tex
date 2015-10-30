@@ -5,7 +5,7 @@ This user's manual for the Regional Ocean Modeling System (ROMS)
 describes the model equations and algorithms, as well as
 additional user configurations necessary for specific applications.
 This manual also describes the sea-ice model
-that we are using (Budgell \cite{Budgell05}).
+that we are using \citep{Budgell05}.
 
 The principle attributes of the model are as follows:
 \begin{klist}
@@ -55,14 +55,15 @@ equation of state.
     along constant $s$ or $z$ surfaces.
   \item Optional Smagorinsky horizontal viscosity and diffusion (but
   not recommended for diffusion).
-%  \item Optional Gent and McWilliams \cite{Gent90}, \cite{Gent95} 
+%  \item Optional Gent and McWilliams \citet{Gent90, Gent95} 
 %    eddy-induced horizontal mixing.
   \item Horizontal free-slip or no-slip boundaries.
   \item Vertical harmonic viscosity and diffusion with a spatially
     variable coefficient, with options to compute the coefficients
-    with Large et al.\ \cite{Large94}, Mellor-Yamada \cite{Mellor74},
-    or generic length scale (GLS) \cite{Umlauf2003} mixing schemes.
+    via \citet{Large94, Mellor74},
+    or generic length scale (GLS) \citet{Umlauf2003} mixing schemes.
 \end{itemize}
+\newpage
 \kitem{Implementation} \mbox{}
 \begin{itemize}
   \item Dimensional in meter, kilogram, second (MKS) units.
@@ -97,9 +98,8 @@ routines; these options are beyond the scope of this document.
 Chapter \ref{Starting} has some information on getting started with
 ROMS.
 Chapters \ref{Phys} and \ref{Num} describe the model physics and
-numerical techniques and contain information from Shchepetkin and
-McWilliams \cite{SS2008b} and Haidvogel et al.\
-\cite{Haidvogel07}.
+numerical techniques and contain information from 
+\citet{SS2008b,Haidvogel07}.
 Chapter \ref{Iphys} describes the ice equations and
 Chapter \ref{Code} lists the model subroutines and functions.
 %Chapter \ref{Progs} describes

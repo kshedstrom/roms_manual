@@ -9,7 +9,7 @@ finite-difference approximation is adopted.  In particular, the
 horizontal arrangement of variables is as shown in Fig.\ \ref{fcgr}.
 This is equivalent to the well known Arakawa ``C'' grid, which is well
 suited for problems with horizontal resolution that is fine compared to
-the first radius of deformation (Arakawa and Lamb \cite{AL}).
+the first radius of deformation \citep{AL}.
 \begin{figure}[htb]
 \setlength{\unitlength}{6mm}
 \thicklines
@@ -208,9 +208,10 @@ instability due to the use of shorter time steps for the depth-integrated
 computations.
 
 The mode coupling has evolved through the various ROMS versions,
-as shown in Fig.~\ref{ftimestep1} (from \cite{SS2008a}). The time stepping
+as shown in Fig.~\ref{ftimestep1} \citep[from][]{SS2008a}. The
+time stepping
 schemes are also listed in Table~\ref{ttimestep1} and described in
-detail in \cite{SS2005} and \cite{SS2008b}; the relevant ones
+detail in \citet{SS2005} and \citet{SS2008b}; the relevant ones
 are described in Appendix~\ref{Frog}.
 
 \begin{figure}[p]
@@ -234,13 +235,13 @@ weights to produce an estimate at time $n+\frac{1}{2}$.}
  \label{ftimestep1}
 \end{figure}
 
-\begin{table}[thb]
+\begin{sidewaystable}
  \centerline{
 \begin{tabular}{|l|c|c|c|c|c|} \hline
   & SCRUM 3.0 & Rutgers & AGRIF & UCLA & Non-hydrostatic \\
   \hline
-  Reference & \cite{Hedstrom2000} & \cite{DAMEE_1} &
-  \cite{Penven2006} & \cite{SS2005} & \cite{Kanarska2007} \\
+  Reference & \citet{Hedstrom2000} & \citet{DAMEE_1} &
+  \citet{Penven2006} & \citet{SS2005} & \citet{Kanarska2007} \\
   \hline
   Barotropic  & LF-TR & LF-AM3 with
   & LF-AM3 with & Gen. FB & Gen. FB \\
@@ -280,11 +281,11 @@ weights to produce an estimate at time $n+\frac{1}{2}$.}
 \caption{The time stepping schemes used in the various ROMS versions.
 $\alpha \equiv \omega \delta t$ is the Courant number and $\omega=ck$
 is the frequency for a wave component with wavenumber $k$.}
-\end{table}
+\end{sidewaystable}
 
 \subsection{Conservation properties}
 \label{Enrg}
-From Shchepetkin and McWilliams (2005) \cite{SS2005}, we have a
+From \citet{SS2005}, we have a
 tracer concentration equation in advective form:
 \begin{equation}
   \frac{\partial C}{\partial t} + (u \cdot \nabla) C = 0
@@ -350,7 +351,7 @@ is the flux through an interface between adjacent grid boxes.
 This method of averaging was chosen because it internally conserves
 first moments in the model domain, although it is still possible to
 exchange mass and energy through the open boundaries. The method is
-similar to that used in Arakawa and Lamb \cite{AL}; though their
+similar to that used in \citet{AL}; though their
 scheme also conserves enstrophy. Instead, we will focus on (nearly) retaining
 constancy preservation while coupling the barotropic
 (depth-integrated) equations and the baroclinic equations.
@@ -586,7 +587,7 @@ relation must hold:
   \!\! \right\rangle_{i,j-\frac{1}{2}}^{n+\frac{1}{2}} \right]
 \label{zeta3}
 \end{equation}
-Shchepetkin and McWilliams (\cite{SS2005}) introduce a range of
+\citet{SS2005} introduce a range of
 possible weights, but the ones used here have a shape function:
 \begin{equation}
    A(\tau) = A_0 \left\{ \left( \frac{\tau}{\tau_0} \right)^p \left[ 1-
@@ -676,8 +677,7 @@ gradient becomes:
 In the case of uniform density $\rho_0$, we obtain $\rho^\star \equiv
 \overline{\rho} \equiv \rho_0$, but we otherwise have two new terms.
 The accuracy of these terms depends on an accurate vertical
-integration of the density, as described in Shchepetkin and
-McWilliams (2005, \cite{SS2005}).
+integration of the density, as described in \citet{SS2005}.
 
 \subsection{Time stepping: internal velocity modes and tracers}
 The momentum equations (\ref{st13}) and(\ref{st14}) are advanced before
@@ -794,11 +794,11 @@ With the fluxes as in \ref{uflux}--\ref{wflux}.
 
 \subsubsection{Third-order Upwind}
 There is a class of third-order upwind advection schemes, both
-one-dimensional (Leonard \cite{Leonard79}) and two-dimensional (Rasch
-\cite{Rasch94} and Shchepetkin and McWilliams \cite{SS98}). This scheme
+one-dimensional \citep{Leonard79} and two-dimensional
+\citep{Rasch94, SS98}. This scheme
 is known as UTOPIA (Uniformly Third-Order Polynomial Interpolation
-Algorithm). Applying flux limiters to UTOPIA is explored in Thuburn
-\cite{Thuburn96}, although it is not implemented in ROMS. The
+Algorithm). Applying flux limiters to UTOPIA is explored in
+\citet{Thuburn96}, although it is not implemented in ROMS. The
 two-dimensional formulation in Rasch contains terms of order $u^2C$
 and $u^3C$, including cross terms ($uvC$). The terms which are
 nonlinear in velocity have been dropped in ROMS, leaving one extra upwind
@@ -819,7 +819,7 @@ used:
 \label{equp}
 \end{equation}
 The value of $\gamma$ in the model is
-$\frac{1}{8}$ while that in Rasch \cite{Rasch94} is $\frac{1}{6}$.
+$\frac{1}{8}$ while that in \citet{Rasch94} is $\frac{1}{6}$.
 
 Because the third-order upwind scheme is designed to be
 two-dimensional, it is not used in the vertical (though one might argue
@@ -904,8 +904,8 @@ The density is obtained from temperature and salinity via an
 equation of state.  ROMS provides a choice of a nonlinear equation
 of state $\rho = \rho(T,S,z)$ or a linear equation of state $\rho =
 \rho(T)$.  The nonlinear equation of state has been modified and now
-corresponds to the UNESCO equation of state as derived by Jackett and
-McDougall \cite{Jackett}.  It computes {\sl in situ} density as a
+corresponds to the UNESCO equation of state as derived by
+\citet{Jackett}.  It computes {\sl in situ} density as a
 function of potential temperature, salinity and pressure.
 
 Warning: although we have used it quite extensively, McDougall
@@ -928,15 +928,15 @@ alter the flow.
 %This is the form traditionally used in sigma-coordinate models to
 %account for the horizontal differences being taken along surfaces of
 %constant $\sigma$.  This form can be shown to lead to significant
-%errors when $|\nabla h|$ is large (Haney \cite{Haney}; and Beckmann
-%and Haidvogel \cite{BH93}). Shchepetkin....
+%errors when $|\nabla h|$ is large \citep{Haney,BH93}. Shchepetkin....
 
 \input{mixing}
 
 \subsection{Boundary Conditions}
+\label{HBC}
 ROMS comes with a variety of boundary conditions, including open,
-closed, and periodic. See Marchesiello et al.\
-\cite{Marchesiello2001} for a more thorough exploration of the
+closed, and periodic. See
+\citet{Marchesiello2001} for a more thorough exploration of the
 options. Some options require a value for the boundary points
 from either an included analytic expression (\S\ref{Functionals})
 or from an external NetCDF file. Here, $\phi^{\rm ext}$ represents
@@ -965,7 +965,7 @@ value.
 \subsubsection{Flather boundary condition}
 For the normal component of the barotropic velocity, one option is
 to radiate out deviations from exterior values at the speed of the external
-gravity waves (Flather, \cite{Flather76}):
+gravity waves \citep{Flather76}:
 \begin{equation}
   \overline{u} = \overline{u}^{\rm ext} - \sqrt{\frac{g}{D}} \,
   (\zeta - \zeta^{\rm ext})
@@ -977,7 +977,7 @@ is available for estimating $\overline{u}^{\rm ext}$ in that case.
 
 \subsubsection{Chapman boundary condition}
 The corresponding condition for surface elevation was investigated
-by Chapman (\cite{Chapman85}), assuming all outgoing signals leave
+by \citep{Chapman85}, assuming all outgoing signals leave
 at the shallow-water wave speed of $\sqrt{gD}$. This can be useful
 when using the Flather condition on the 2-D momentum equations.
 \begin{equation}
@@ -993,12 +993,12 @@ timestep.
 In realistic domains, open boundary conditions can be extremely
 difficult to get right. There are situations in which incoming flow and
 outgoing flow happen along the same boundary or even at different
-depths at the same horizontal location. Orlanski \cite{Orlanski76}
+depths at the same horizontal location. \citet{Orlanski76}
 proposed a radiation scheme in which a local normal phase velocity is
 computed and used to radiate things out (if it is indeed going out).
 This works well for a wave propagating normal to the boundary, but
-has problems when waves approach the boundary at an angle. Raymond
-and Kuo \cite{Raymond84} have modified the scheme to account for
+has problems when waves approach the boundary at an angle.
+\citet{Raymond84} have modified the scheme to account for
 propagation in all three directions. In ROMS, only the two horizontal
 directions are accounted for (with the recommended \code{RADIATION\_2D}
 option):
@@ -1031,7 +1031,7 @@ entering the domain, a zero gradient condition is applied unless the next
 option is also specified.
 
 \subsubsection{Mixed radiation-nudging boundary condition}
-As described in Marchesiello et al. (\cite{Marchesiello2001}), ROMS has an option for providing
+As described in \citep{Marchesiello2001}, ROMS has an option for providing
 radiation conditions on outflow and nudging to a known exterior
 value on inflow. This is implemented as a variation on the radiation
 condition, requiring two timescales: the inflow nudging timescale and the

@@ -9,8 +9,8 @@ have some version of \code{gcc} which comes with a quite capable
 
 This Appendix describes the C preprocessor as used in ROMS with the
 Fortran language.  A more complete description is given by
-Kernighan and Ritchie \cite{K&R}.  More practical advice on using
-\code{cpp} is given by Hazard \cite{Hazard}.
+\citet{K&R}.  More practical advice on using
+\code{cpp} is given by \citet{Hazard}.
 
 \subsection{File inclusion}
 Placing common blocks in smaller files, which are then included in each
@@ -98,9 +98,10 @@ been defined.  Likewise,
       #endif
 \end{verbatim}
 
-There are also \code{\#else} and \code{\#elif} (else if) statements,
-although \code{\#elif} is newer and is not supported by all versions of
-\code{cpp}.  An example using \code{\#else} and \code{\#elif} is
+There are also \code{\#else} and \code{\#elif} (else if) statements.
+%although \code{\#elif} is newer and is not supported by all versions of
+%\code{cpp}.
+An example using \code{\#else} and \code{\#elif} is
 shown:
 \begin{verbatim}
 #ifdef SOLITON
@@ -181,7 +182,7 @@ many can be worked around or avoided by using the \code{gnu} version of
      know that it is in a comment and some versions will complain about
      unmatched apostrophes in the following:
      \begin{verbatim}
-  c  Some useful comment about Green's functions.
+  !  Some useful comment about Green's functions.
      \end{verbatim}
      \item \CC\ comments.  Some of the newer versions of
      \code{cpp} will remove \CC\ comments which go from '//' to

@@ -14,7 +14,7 @@ contributed by Hernan Arango. He uses "$s$" where we have been using
 "$\sigma$" while here $\sigma$ is the stress tensor.
 
 The horizontal components of the divergence of the stress tensor
-(Wajsowicz, 1993 \cite{Wajsowicz_93}) in
+\citep{Wajsowicz_93} in
 nondimesional, orthogonal curvilinear coordinates ($\xi$, $\eta$,
 $s$) with dimensional, spatially-varying metric factors
 ($\frac{1}{m}$, $\frac{1}{n}$, $H_{z}$) and velocity components
@@ -114,8 +114,8 @@ $\hbox{m}^3/\hbox{s}$.
 
 \subsubsection{Transverse stress tensor}
 
-Assuming transverse isotropy, as in Sadourny and Maynard (1997)
-\cite{Sadourny_97} and Griffies and Hallberg (2000) \cite{Griffies_2000},
+Assuming transverse isotropy, as in
+\citet{Sadourny_97} and \citet{Griffies_2000},
 the deviatoric stress tensor can be split into vertical and horizontal
 sub-tensors.  The horizontal (or transverse) sub-tensor is symmetric, it
 has a null trace, and it possesses axial symmetry in the local vertical
@@ -169,10 +169,10 @@ it has no computational modes and satisfies first-moment conservation.
 
 The biharmonic friction operator can be computed by applying the tensor
 operator eq. (\ref{eqtstressu}) and (\ref{eqtstressv}) twice, but with
-the squared root of the biharmonic viscosity coefficient (Griffies
-and Hallberg, 2000 \cite{Griffies_2000}).  For simplicity and momentum
+the squared root of the biharmonic viscosity coefficient
+\citep{Griffies_2000}.  For simplicity and momentum
 balance, the thickness $H_{z}$ appears only when computing the second
-harmonic operator as in Griffies and Hallberg (2000).
+harmonic operator as in \citet{Griffies_2000}.
 
 \subsubsection{Rotated Transverse Stress Tensor}
 
@@ -281,7 +281,7 @@ same properties as the unrotated tensor (\ref{eqtstressu}) and
 (\ref{eqtstressv}).  The additional terms
 that arise from the slopes of $s$-surfaces along
 geopotentials are discretized using a modified version of the triad
-approach of Griffies {\em et al.} (1998) \cite{Griffies_98}.
+approach of \citet{Griffies_98}.
 
 \subsubsection{Horizontal diffusion}
 \label{Smooth_diff}
@@ -430,7 +430,7 @@ applied twice.
 ROMS contains a variety of methods for setting the vertical viscous and
 diffusive coefficients. The choices range from simply choosing fixed
 values to the KPP, generic lengthscale (GLS) and Mellor-Yamada turbulence
-closure schemes.  See Large \cite{Large98} for a review of surface ocean
+closure schemes.  See \citet{Large98} for a review of surface ocean
 mixing schemes.  Many schemes have a background molecular value which
 is used when the turbulent processes are assumed to be small (such as
 in the interior). All assume that there is some $K_m(\zeta,\eta,s)$
@@ -448,8 +448,8 @@ the model.
 \subsubsection{The Large, McWilliams and Doney parameterization}
 \label{sec:origLMD}
 
-The vertical mixing parameterization introduced by Large, McWilliams
-and Doney \cite{Large94} is a versatile first order scheme which has
+The vertical mixing parameterization introduced by
+\citet{Large94} is a versatile first order scheme which has
 been shown to perform well in open ocean settings.  Its design
 facilitates experimentation with additional or modified representations
 of specific turbulent processes.
@@ -527,8 +527,8 @@ diffusivity to satisfy the empirical rule of convection.
 \subparagraph{Turbulent velocity scale}
 To estimate $w_x$ (where $x$ is $m$ - momentum {\em or} $s$
 - any scalar) throughout the boundary layer, surface layer similarity
-theory is utilized.  Following an argument by Troen and Mahrt
-\cite{TM86}, Large et al.\ estimate the velocity scale as
+theory is utilized.  Following an argument by
+\citet{TM86}, \citet{Large94} estimate the velocity scale as
 \begin{equation}
 w_x=\frac{\kappa u_*}{\phi_x(\zeta)}
 \end{equation}
@@ -611,8 +611,8 @@ diffusion term and is written as
 \end{equation}
 
 LMD base their formulation for non-local scalar transport on a
-parameterization for pure free convection from Mailh\^ot and
-Benoit \cite{Mailhot82}. They extend this parameterization to cover any
+parameterization for pure free convection from
+\citet{Mailhot82}. They extend this parameterization to cover any
 unstable surface forcing conditions to give
 \begin{equation}
   \gamma_{T}=C_s\frac{\overline{wT_0}+
@@ -666,7 +666,7 @@ data LMD parameterize the salt fingering case ($R_{\rho}>1.0$)
 
 For diffusive convection ($0<R_{\rho}<1.0$) LMD suggest several
 formulations from the literature and choose the one with the most
-significant impact on mixing (Fedorov \cite{Fedorov88}).
+significant impact on mixing \citep{Fedorov88}.
 \begin{equation}
 \nu_{\theta}^{d}=(1.5 \time 10^{-6})(0.909 \exp(4.6 \exp[-0.54(R_{\rho}^{-1}-1)])
 \end{equation}
@@ -682,8 +682,8 @@ for temperature.  For other scalars,
 \subparagraph{Internal wave generated mixing}
 Internal wave generated mixing serves as the background mixing in the
 LMD scheme.  It is specified as a constant for both scalars and
-momentum.  Eddy diffusivity is estimated based on the data of Ledwell
-et al.\ \cite{LWL93}.  While Peters et al.\ \cite{Peters88} suggest
+momentum.  Eddy diffusivity is estimated based on the data of
+\citet{LWL93}.  While \citet{Peters88} suggest
 eddy viscosity should be 7 to 10 times larger than diffusivity for
 gradient Richardson numbers below approximately 0.7.  Therefore LMD use
 \begin{align}
@@ -694,11 +694,11 @@ gradient Richardson numbers below approximately 0.7.  Therefore LMD use
 
 \subsubsection{Mellor-Yamada}
 \label{sec:MY25}
-One of the more popular closure schemes is that of Mellor and Yamada
-\cite{Mellor74}, \cite{Mellor82}. They actually present a hierarchy of
+One of the more popular closure schemes is that of
+\citet{Mellor74, Mellor82}. They actually present a hierarchy of
 closures of increasing complexity. ROMS provides only the
-``Level 2.5'' closure with the Galperin et al.\ \cite{Galperin88}
-modifications as described in Allen et al.\ \cite{Allen95}.
+``Level 2.5'' closure with the \citet{Galperin88}
+modifications as described in \citet{Allen95}.
 This closure scheme adds two prognostic equations, one
 for the turbulent kinetic energy (${1 \over 2} q^2$) and one for the
 turbulent kinetic energy times a length scale ($q^2l$).
@@ -825,12 +825,12 @@ $q^2l$ are both constrained to be no smaller than $10^{-8}$ while $l$
 is set to be no larger than $0.53q/N$.
 
 \subsubsection{Generic length scale}
-Umlauf and Burchard (\cite{Umlauf2003}) have come up with a generic
+\citep{Umlauf2003} have come up with a generic
 two-equation turbulence closure scheme which can be tuned to behave
 like several of the traditional schemes, including that of Mellor
 and Yamada \S(\ref{sec:MY25}). This is known as the Generic Length
 Scale, or GLS vertical mixing scheme and was introduced to ROMS in
-Warner et al. (\cite{Warner_2005}). Its parameters are set in the
+\citep{Warner_2005}. Its parameters are set in the
 ROMS input file.
 
 The first of Warner et al.'s equations is the same as (\ref{eq:tke1})
@@ -955,6 +955,6 @@ coefficients for the end points.  In this case the coefficients become:
    K_{\bf Nm} \over H^n_{z_{\bf Nm}}} (\phi_{\rm N}^n - \phi_{\rm Nm}^n)
    + {\Delta t \over \Delta \sigma} \tau_s
 \end{eqnarray} This is a standard tridiagonal system for which the
-solution procedure can be found in any standard reference, such as Press
-et al.\ \cite{PFTV}.
+solution procedure can be found in any standard reference, such as
+\citet{PFTV}.
 

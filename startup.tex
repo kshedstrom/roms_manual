@@ -1,5 +1,5 @@
 \documentclass[11pt,twoside,letterpaper]{article}
-\usepackage{latexsym,fancyheadings}
+\usepackage{latexsym,fancyhdr}
 %\usepackage[pdftex]{graphicx}
 \usepackage{graphicx}
 \usepackage{color}
@@ -7,7 +7,11 @@
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
+\usepackage{rotating}
 \usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{doi}
+
 %\usepackage{draftcopy}
 %\documentstyle[12pt]{report}
 %\flushbottom
@@ -18,11 +22,10 @@
 \setlength{\headsep}{0pt}
 \setlength{\textheight}{9.5 in}
 \setlength{\textwidth}{6.5 in}
-\setlength{\headrulewidth}{0pt}
-%\cfoot{\rm II-\thepage} % page number
 \cfoot{\rm \thepage} % page number
 \lhead{}
 \rhead{}
+%\cfoot{\rm II-\thepage} % page number
 %\setlength{\oddsidemargin}{0pt}
 %\setlength{\headheight}{0pt}
 %\setlength{\topmargin}{0pt}
@@ -46,11 +49,4 @@
 \newcommand{\kitem}[1]{\item[\bf#1\hfill]}
 \newcommand{\pder}[2]{\frac{\partial #1}{\partial #2}}
 \def\CC{{C\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
-%\usepackage[pdftex,
-%   pdftitle={Technical Manual for a Coupled Sea-Ice/Ocean
-%   Cirulation Model (Version 3)},
-%   pdfauthor={Katherine S. Hedstr\"om},
-%   pdfkeywords={ROMS, ocean, model},
-%   plainpages=false
-% ]{hyperref}
 \begin{document}
