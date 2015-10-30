@@ -171,7 +171,7 @@ selecting which system-compiler file is to be included from the
 \code{Compilers} directory. See section \S\ref{Inc_fort} and
 \S\ref{make_env}.
 
-\kitem{Local File Options:}
+\kitem{Local File Options:} \mbox{}
 
 \begin{klist}
   \kitem{BINDIR} Directory in which to place the binary executable.
@@ -211,27 +211,27 @@ files (and optional HDF5 library). The recommended way is to take
 advantage of the \code{nc-config} program that comes with NetCDF 4.0.1
 and newer. The files in the \code{Compilers} directory will attempt
 to do this if \code{USE\_NETCDF4} is defined. Specifically, it will
-invoke "nc-config --flibs" and "nc-config --prefix" which you can
+invoke ``nc-config --flibs'' and ``nc-config --prefix'' which you can
 run for testing purposes:
 \begin{verbatim}
-pacman3 201% nc-config --flibs
--L/usr/local/pkg/netcdf/netcdf-4.3.0.gnu-4.7.3/lib -lnetcdff
--L/usr/local/pkg/hdf5/hdf5-1.8.10-p1.gnu-4.7.3/lib
--L/usr/local/pkg/szip/szip-2.1.gnu/lib
--L/usr/local/pkg/udunits/udunits-2.1.24.gnu-4.7.3/lib
--L/usr/local/pkg/netcdf/netcdf-4.3.0.gnu-4.7.3/lib -lnetcdf -lnetcdf
-pacman3 202% nc-config --prefix
-/usr/local/pkg/netcdf/netcdf-4.3.0.gnu-4.7.3
+    pacman3 201% nc-config --flibs
+    -L/usr/local/pkg/netcdf/netcdf-4.3.0.gnu-4.7.3/lib -lnetcdff
+    -L/usr/local/pkg/hdf5/hdf5-1.8.10-p1.gnu-4.7.3/lib
+    -L/usr/local/pkg/szip/szip-2.1.gnu/lib
+    -L/usr/local/pkg/udunits/udunits-2.1.24.gnu-4.7.3/lib
+    -L/usr/local/pkg/netcdf/netcdf-4.3.0.gnu-4.7.3/lib -lnetcdf -lnetcdf
+    pacman3 202% nc-config --prefix
+    /usr/local/pkg/netcdf/netcdf-4.3.0.gnu-4.7.3
 \end{verbatim}
 As you can see, if it needs to link to the hdf5 library, it does
 this automatically. Another example:
 \begin{verbatim}
-kate@ThinkPad-W520$ nc-config --flibs
+    kate@ThinkPad-W520$ nc-config --flibs
 
-kate@ThinkPad-W520$ nf-config --flibs
--L/usr/local/lib -lnetcdff -lnetcdf -lnetcdf
-kate@ThinkPad-W520$ nf-config --prefix
-/usr/local
+    kate@ThinkPad-W520$ nf-config --flibs
+    -L/usr/local/lib -lnetcdff -lnetcdf -lnetcdf
+    kate@ThinkPad-W520$ nf-config --prefix
+    /usr/local
 \end{verbatim}
 This is an example of a system where nc-config is broken but
 nf-config works. Edit the corresponding file in the Compilers
@@ -247,22 +247,23 @@ location of the NetCDF files in one of three ways:
     NETCDF_INCDIR ?= /usr/local/include
     NETCDF_LIBDIR ?= /usr/local/lib
 \end{verbatim}
-  \item Setting it in the build.bash (if you can figure out where in
+  \item Setting them in the build.bash (if you can figure out where in
   all those if cases).
-  \item Setting it in your \code{.profile}
+  \item Setting them in your \code{.profile}
 or \code{.login} files to globally set them. Here is an example for
 \code{tcsh}:
 \begin{verbatim}
-setenv NETCDF_INCDIR /usr/local/netcdf4/include
-setenv NETCDF_LIBDIR /usr/local/netcdf4/lib
-setenv HDF5_LIBDIR /usr/local/hdf5/lib
+    setenv NETCDF_INCDIR /usr/local/netcdf4/include
+    setenv NETCDF_LIBDIR /usr/local/netcdf4/lib
+    setenv HDF5_LIBDIR /usr/local/hdf5/lib
 \end{verbatim}
 The \code{bash} equivalent is:
 \begin{verbatim}
-export NETCDF_INCDIR=/usr/local/netcdf4/include
-export NETCDF_LIBDIR=/usr/local/netcdf4/lib
-export HDF5_LIBDIR=/usr/local/hdf5/lib
+    export NETCDF_INCDIR=/usr/local/netcdf4/include
+    export NETCDF_LIBDIR=/usr/local/netcdf4/lib
+    export HDF5_LIBDIR=/usr/local/hdf5/lib
 \end{verbatim}
+\end{itemize}
 Perhaps you can see why we recommend using \code{nc-config}!
 
 \subsubsection{Build scripts}

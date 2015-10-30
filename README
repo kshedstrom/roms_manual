@@ -1,0 +1,5 @@
+This is the source for the ROMS manual. Simply run:
+
+    pdflatex roms_manaul
+
+to get roms_manual.pdf.
