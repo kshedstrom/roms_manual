@@ -932,7 +932,7 @@ alter the flow.
 
 \input{mixing}
 
-\subsection{Boundary Conditions}
+\subsection{Lateral Boundary Conditions}
 \label{HBC}
 ROMS comes with a variety of boundary conditions, including open,
 closed, and periodic. See
@@ -975,19 +975,24 @@ boundary contitions to the barotropic mode. However, there are times
 when only the tidal elevation is known. A reduced physics option
 is available for estimating $\overline{u}^{\rm ext}$ in that case.
 
+\subsubsection{Shchepetkin boundary condition}
+Similar to Flather in purpose is the Shchepetkin boundary condition
+\citep{Mason2010}. As in the Flather condition, it
+will use a reduced physics option if $\overline{u}^{\rm ext}$ is not
+available.
+
 \subsubsection{Chapman boundary condition}
-The corresponding condition for surface elevation was investigated
-by \citep{Chapman85}, assuming all outgoing signals leave
-at the shallow-water wave speed of $\sqrt{gD}$. This can be useful
-when using the Flather condition on the 2-D momentum equations.
+The condition for surface elevation to be used with either the Flather or
+Shchepetkin momentum boundary is that of
+\citep{Chapman85}, assuming all outgoing signals leave
+at the shallow-water wave speed of $\sqrt{gD}$.
 \begin{equation}
   \frac{\partial \zeta}{\partial t} = \pm \sqrt{gD} \,
   \frac{\partial \zeta}{\partial \xi}
 \end{equation}
 The time derivative here can be handled either explicitly or
-implicitly. The model uses an implicit timestep, with the term
-$\frac{\partial \zeta}{\partial \xi}$ being evaluated at the new
-timestep.
+implicitly in ROMS, depending on how the term
+$\frac{\partial \zeta}{\partial \xi}$ is evaluated.
 
 \subsubsection{Radiation boundary condition}
 In realistic domains, open boundary conditions can be extremely

@@ -13,9 +13,12 @@ the  discussion forum for all things ROMS. There is also a wiki,
 a bug tracking system, and even a developer blog.
 
 The wiki contains parts of this manual, but the nature of wikis is that
-they can be more fluid, with more authors, than a static document such
-as this. Dave Robertson (robertson@marine.rutgers.edu) is the one to
-talk to if you would like to contribute to the wiki.
+they can be more fluid, with more authors, than a document such as
+this. Dave Robertson (robertson@marine.rutgers.edu) is the one to
+talk to if you would like to contribute to the wiki. On the other
+hand, this manual is now at
+\href{https://github.com/kshedstrom/roms_manual}{github}, with all that
+implies.
 
 \subsection{Prerequisites}
 As mentioned in Chapter \ref{Intro}, ROMS has some external
@@ -65,8 +68,7 @@ Alternately, it is available at
 \href{https://github.com/kshedstrom/roms}{github}.
 
 ROMS comes with several cases all ready to go at the flip
-of a switch. Try these out first and get to understand how they
-are set up.
+of a switch. Try these out first and learn how they are set up.
     \begin{itemize}
       \item \S\ref{Build} describes how to pick the cases and set up
       the build environment.
@@ -84,7 +86,8 @@ In addition to this manual, there are some other ROMS resources:
 \begin{itemize}
    \item You may be best served by going to the 
 \href{https://www.myroms.org/wiki/}{ROMS wiki} which includes
-sections called Getting Started and Tutorials.
+sections called Getting Started and Tutorials, as well as a Frequently
+Asked Questions (FAQ) section.
    \item Don't be afraid to use the forum. It has everything from
 employment opportunities to debugging help. Posting there can get
 you help from one of several people, improving your odds of success
@@ -92,10 +95,8 @@ over private emails. Registered users get an email once a day about
 new postings, so you might have to wait a day (or more) for a reply.
    \item There have been ROMS meetings and classes in which a tutorial
 session is included as part of the program.
-   \item There are various resources
-from these online---I've heard good things about the
-\href{http://eros.eas.gatech.edu/ROMS-Tutorial/tutorials.html}{tutorials}
-from Manu Di Lorenzo.
+   \item There are various resources online---please let me know of any I
+should list here.
 \end{itemize}
 
 \subsection{Compiling ROMS}
@@ -104,13 +105,14 @@ from Manu Di Lorenzo.
 \subsubsection{Environment Variables for \code{make}}
 \label{make_var}
 
-ROMS has a growing list of choices the user must make about the
-compilation before starting the compile process,
-set in user-defined variables. Since we now use \code{gnu make}, it is
-possible to set the value of these variables in the Unix environment
-in a build script,
-rather than necessarily inside the \code{Makefile} (see \S\ref{Gmake}).
-The user-definable variables understood by the ROMS \code{makefile} are:
+ROMS has a growing list of choices the user must make before starting
+the compile process. These are user-defined variables, some about
+the model, some about your computer. This section is on the
+computer/compiler pairing that is your build system. Since we now
+use \code{gnu make}, it is possible to set the value of these
+variables in the Unix environment in a build script, rather than
+necessarily inside the \code{Makefile} (see \S\ref{Gmake}).  The
+user-definable variables understood by the ROMS \code{makefile} are:
 \begin{klist}
 
 \kitem{ROMS\_APPLICATION} Set the \code{cpp} option defining the particular
@@ -121,7 +123,7 @@ case, such as \code{BENCHMARK}, or one of your own, such as \code{NEP5}.
 It should be in all upper case by convention.
 
 \kitem{MY\_HEADER\_DIR} Sets the path to the user's header file, if
-any. It can be left empty for the standard cases, where \code{benchmark.h}
+any. It can be left empty for the standard cases, since \code{benchmark.h}
 and the like are found in \code{ROMS/Include}, which is already in
 the search path. In the case of \code{NEP5}, this is set to
 \code{Apps/NEP} where \code{nep5.h} resides.
@@ -152,15 +154,16 @@ and turn on the \code{-g} flag for debugging.
   \kitem{USE\_MPIF90} This flag changes the name of the
   Fortran compiler to \code{mpif90}, while
   \code{USE\_MPI} changes the \code{cpp} flags
-  for changing the source code. \code{OpenMPI} and others
+  for changing the source code (you might need both). \code{OpenMPI} and others
   provide a shell script called \code{mpif90} for finding the required MPI
   files.
   \kitem{USE\_LARGE}  Some systems support both 32-bit and 64-bit
   options. Select this to get 64-bit addressing, usually used for
-  programs needing more than 2 GB of memory on 32-bit systems.
+  programs needing more than 2 GB of memory on 32-bit systems. Does
+  anyone still need this? I run on machines which are 64-bit by default.
   \kitem{USE\_NETCDF4} Set this if linking against the NetCDF4
-  library. Use this if you have a working nc-config or nf-config.
-  If you do, then you can skip the next two.
+  library. Use this if you have a working nc-config or nf-config---highly
+  recommended! If you set this, you can skip the next two.
   \kitem{NETCDF\_INCDIR} The location of the \code{netcdf.mod} and
   \code{typesizes.mod} files.
   \kitem{NETCDF\_LIBDIR} The location of the NetCDF library.
@@ -179,7 +182,7 @@ The default is ``\code{.}'', the current directory.
 
   \kitem{SCRATCH\_DIR} Put the \code{.f90} and the temporary binary files
 in a build directory to avoid clutter. The default is \code{Build}
-under the top directory. Set it to something else if you want
+under the current directory. Set it to something else if you want
 to keep these files for multiple projects at the same time, each in
 their own directory.
 \end{klist}
@@ -212,7 +215,7 @@ advantage of the \code{nc-config} program that comes with NetCDF 4.0.1
 and newer. The files in the \code{Compilers} directory will attempt
 to do this if \code{USE\_NETCDF4} is defined. Specifically, it will
 invoke ``nc-config --flibs'' and ``nc-config --prefix'' which you can
-run for testing purposes:
+run on the command line yourself for testing purposes:
 \begin{verbatim}
     pacman3 201% nc-config --flibs
     -L/usr/local/pkg/netcdf/netcdf-4.3.0.gnu-4.7.3/lib -lnetcdff
@@ -233,9 +236,9 @@ this automatically. Another example:
     kate@ThinkPad-W520$ nf-config --prefix
     /usr/local
 \end{verbatim}
-This is an example of a system where nc-config is broken but
-nf-config works. Edit the corresponding file in the Compilers
-directory:
+This is an example of a system where \code{nc-config} is broken but
+\code{nf-config} works. Edit this line of the corresponding file in the
+\code{Compilers} directory:
 \begin{verbatim}
     NC_CONFIG ?= nf-config
 \end{verbatim}
@@ -248,9 +251,9 @@ location of the NetCDF files in one of three ways:
     NETCDF_LIBDIR ?= /usr/local/lib
 \end{verbatim}
   \item Setting them in the build.bash (if you can figure out where in
-  all those if cases).
-  \item Setting them in your \code{.profile}
-or \code{.login} files to globally set them. Here is an example for
+all those if cases).
+  \item Edit your \code{.profile} or \code{.login} files to globally
+set them. Here is an example for
 \code{tcsh}:
 \begin{verbatim}
     setenv NETCDF_INCDIR /usr/local/netcdf4/include
@@ -331,9 +334,8 @@ will have to provide some information to ROMS and to the operating
 system about how many threads or processes to use. Parallel
 computers may also have some sort of batch queuing system in place
 in which you would submit a job script. I have had easy access to a
-number of systems over the years,
-each with its own style of job script. Some MPI environments
-require that you submit your job with:
+number of systems over the years, each with its own style of job
+script. Some MPI environments require that you run ROMS with:
 \begin{verbatim}
      cd $PBS_O_WORKDIR
      mpirun -np 32 ./oceanM ocean_benchmark3.in
@@ -342,23 +344,26 @@ while others need:
 \begin{verbatim}
      aprun -np 32 ./oceanM ocean_benchmark3.in
 \end{verbatim}
-You just have to find out from the locals.
+You just have to find out from the locals, for this as well as the syntax
+of the batch queue scripts.
 
 If all goes according to plan, ROMS will create both a collection
 of NetCDF files and a verbose text file on standard out. There is a
 large and ever-changing list of ways to view NetCDF files, but I like
-\href{http://meteora.ucsd.edu/\~pierce/ncview\_home\_page.html}{ncview}
+\href{http://meteora.ucsd.edu/\~pierce/ncview\_home\_page.html}{\code{ncview}}
 for a first view of what's going on.
 Other tools include
 \href{http://www.mathworks.com/products/matlab/}{Matlab},
 \href{http://www.python.org/}{Python},
-\href{http://www.ncl.ucar.edu/}{NCL} and
-\href{https://www.myroms.org/wiki/index.php/Plotting_Package_Installation}{Fortran},
-\href{http://www.ferret.noaa.gov/Ferret/}{ferret}.
+\href{http://www.ncl.ucar.edu/}{NCL}
+\href{https://www.myroms.org/wiki/index.php/Plotting_Package_Installation}{Fortran}
+and \href{http://www.ferret.noaa.gov/Ferret/}{ferret}.
 
 If things don't go according to plan, the text output file is your
 friend. Examine it carefully. If it fails on the \code{UPWELLING}
-problem, you can compare your output to that in \S\ref{Output}.
+problem, you can compare your output to that in \S\ref{Output}. If it
+fails on your application, make sure simple domains like \code{UPWELLING}
+work on your system.
 
 \subsection{Warnings and bugs}
 ROMS is not a large program by some standards, but it is still complex
@@ -371,7 +376,8 @@ than 32 bits.
 is compiled.  This can occasionally be dangerous, especially with
 the newer ANSI C versions of \code{cpp}.  Potential problems are listed
 in Appendix \ref{Cpp}. The gnu \code{cpp} with the \code{-traditional} flag
-is known to work well.
+is known to work well. On the other hand, the output of \code{cpp} is
+saved in the \code{\$(SCRATCH\_DIR)}, where it can be examined.
   \item The vertical $\sigma$-coordinate was chosen as being a sensible
 way to handle variations in the water depth as seen in the coastal
 oceans. Changes to the code have allowed us to expand the well-behaved
