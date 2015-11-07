@@ -7,7 +7,7 @@ wave models. If running just the ocean, the model can be run forward
 in time (the nonlinear model) or as an adjoint, tangent linear, or
 representer model for data assimilation purposes. This document
 describes the uncoupled forward model only, specifically the version
-used for the Northeast Pacific domain containing sea ice and other
+used for our domains containing sea ice and other
 changes from the main trunk code. Details are subject to change
 without notice - check your own source code for specific details as
 they apply to you.
@@ -15,44 +15,50 @@ they apply to you.
 The directories shown here are:
 \begin{klist}
   \kitem{Apps} This directory contains a subdirectory for each of my
-  personal applications. The subdirectory contains files used by that
-  application: the ROMS header file for setting cpp definitions, the
-  analytic formulations for fields computed in the model rather than
-  read from files (bottom heat flux of zero, for instance), and ASCII
-  input files read by ROMS on startup to set things such as forcing file
-  names and model time-step. Some of these applications are:
+  personal applications and is not in the trunk code. The subdirectories
+  contain files used by each application: the ROMS header file for
+  setting cpp definitions, the analytic formulations for fields
+  computed in the model rather than read from files (bottom heat
+  flux of zero, for instance), and ASCII input files read by ROMS
+  on startup to set things such as forcing file names and model
+  time-step. Some of these applications are:
 \begin{klist}
   \kitem{Arctic} This is the curvilinear grid covering the whole Arctic
-  ocean, with 5 km resolution off Alaska, coarser to the far side.
-  \kitem{Bering} This is a 4 km grid of the Bering Sea, aligned with
-  the Northeast Pacific grid but at three times the resolution.
-  \kitem{CGOA} This is a 3 km grid of the Gulf of Alaska. It is a
-  subset of the Northeast Pacific grid, but at four times the
-  resolution.
+    ocean, with 5--6 km resolution off Alaska, coarser to the far side.
+  \kitem{Bering} This is a 10 km grid of the Bering Sea, generated for
+    coupling to WRF in the COAWST branch, but also tested with CICE.
   \kitem{Circle} This is a circular domain wave propagation problem
-  with an analytic solution used as a test problem \citep{Lamb32}.
+    with an analytic solution used as a test problem \citep{Lamb32}.
   \kitem{NEP} This is the Northeast Pacific domain covering the
-  waters off the west coast of the US, from California to the Bering
-  Sea. It is a rectangular domain at about 11 km resolution when
-  viewed in a conformal conic projection with standard latitudes of
-  40 and 60 N.
+    waters off the west coast of the US, from California to the Bering
+    Sea. It is a rectangular domain at about 11 km resolution when
+    viewed in a conformal conic projection with standard latitudes of
+    40 and 60 N.
+  \kitem{NWGOA} This is a 1.5 km grid of the Northwest Gulf of Alaska. It
+    gets boundary conditions from the Northeast Pacific grid, but is not
+    aligned with it.
 \end{klist}
   Other unsupported applications are also here. The application-specific
   files included in the main trunk ROMS are elsewhere.
   \kitem{Atmosphere} This directory is under development, not
-  currently supported.
-  \kitem{Compilers} This contains makefile fragments as described in
-  \S\ref{Mult_dir_make}.
+    currently supported. If you want to run with a coupled atmosphere or
+    wave model, contact John Warner for access to the COAWST branch.
+  \kitem{Compilers} This contains \code{makefile} fragments as described in
+    \S\ref{Mult_dir_make}.
   \kitem{Data} Directories under here contain example forcing, grid,
-  and initial condition NetCDF files. There is also a directory
-  containing the headers of these files in the format produced by
-  \code{ncdump} (CDL).
+    and initial condition NetCDF files. There is also a directory
+    containing the headers of these files in the format produced by
+    \code{ncdump} (CDL).
   \kitem{Lib} The ARPACK and MCT libraries are needed by the data
-  assimilation codes and by the coupled models, respectively.
+    assimilation codes and by the coupled models, respectively.
   \kitem{makefile} This is the standard ROMS makefile as described
-  in \S\ref{Gmake}.
+    in \S\ref{Gmake}.
   \kitem{Master} The ROMS main program is here, in various forms for
-  the forward model, coupled models and others. See \S\ref{Master}.
+    the forward model, coupled models and others. See \S\ref{Master}.
+  \kitem{README} A few words about the code, recommended for all github
+    projects.
+  \kitem{README.CICE} A few words about the coupling to the Los Alamos
+    CICE model.
 
 \begin{figure}[t]
 \thinlines
@@ -62,9 +68,9 @@ The directories shown here are:
 \begin{picture}(5505,5286)(1486,-7276)
 \put(6976,-5461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Sediment/}%
 }}}}
-\put(3376,-3061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Circle/}%
+\put(3376,-3061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}NEP/}%
 }}}}
-\put(3376,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}CGOA/}%
+\put(3376,-2761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Circle/}%
 }}}}
 \put(3376,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Bering/}%
 }}}}
@@ -103,7 +109,7 @@ The directories shown here are:
 \put(4876,-7261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Version}%
 }}}}
 \thinlines
-{\color[rgb]{0,0,0}\put(2251,-4486){\line( 1, 0){2550}}
+{\color[rgb]{0,0,0}\put(2251,-5086){\line( 1, 0){2550}}
 }%
 {\color[rgb]{0,0,0}\put(2101,-2386){\line( 1, 0){900}}
 }%
@@ -169,17 +175,21 @@ The directories shown here are:
 }}}}
 \put(1501,-4261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Master/}%
 }}}}
-\put(1501,-4561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}ROMS/}%
+\put(1501,-4561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}README}%
 }}}}
-\put(1501,-4861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}User/}%
+\put(1501,-4861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}README.CICE}%
 }}}}
-\put(1501,-5161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Waves/}%
+\put(1501,-5161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}ROMS/}%
+}}}}
+\put(1501,-5461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}User/}%
+}}}}
+\put(1501,-5761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Waves/}%
 }}}}
 \put(1501,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Apps/}%
 }}}}
 \put(6976,-5161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Biology/}%
 }}}}
-\put(3376,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}NEP/}%
+\put(3376,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}NWGOA/}%
 }}}}
 \end{picture}%
 \end{center}
@@ -192,31 +202,32 @@ The directories shown here are:
   the coupled system.
 \begin{klist}
   \kitem{Adjoint} This is the adjoint of the forward model, for data
-  assimilation.
+    assimilation.
   \kitem{Bin} Various shell and Perl scripts for use with the model.
-  Note that the \code{.sh} files are actually \code{csh} scripts, not
-  \code{sh} scripts---if it were up to me, I'd rename them all to \code{.csh}.
+    Note that the \code{.sh} files are actually \code{csh} scripts, not
+    \code{sh} scripts.
   \kitem{Drivers} The main program includes one of these files,
-  depending on how you are running the model. The forward model is in
-  \code{nl\_ocean.h}.
+    depending on how you are running the model. The forward model is in
+    \code{nl\_ocean.h}.
   \kitem{External} ROMS reads an ASCII file on startup. Here are
-  examples for various applications, also examples of the optional
-  files for extra components such as a sediment model.
+    examples for various applications, also examples of the optional
+    files for extra components such as a sediment model or a stations
+    file.
   \kitem{Functionals} The file \code{analytical.F} can include one
-  or more code bits for the analytic specification of for instance the
-  initial conditions. Here are examples for the supported model test
-  problems.
+    or more code bits for the analytic specification of for instance the
+    initial conditions. Here are examples for the supported model test
+    problems.
   \kitem{Include} Each application has a header file with C
-  preprocessor options for that application. For instance, the
-  \code{UPWELLING} case has the include file \code{upwelling.h}
-  containing C preprocessor options for its periodic channel domain.
-  The full list of available options is in \code{cppdefs.h}.
+    preprocessor options for that application. For instance, the
+    \code{UPWELLING} case has the include file \code{upwelling.h}
+    containing C preprocessor options for its periodic channel domain.
+    The full list of available options is in \code{cppdefs.h}.
   \kitem{License\_ROMS.txt} The open source license under which ROMS
-  is copyrighted.
+    is copyrighted.
   \kitem{Modules} The ROMS data structures are now in Fortran 90
-  module files, located here.
+    module files, located here.
   \kitem{Nonlinear} The routines used by the nonlinear forward model
-  are here, implementing the physics described in \S\ref{Num}.
+    are here, implementing the physics described in \S\ref{Num}.
   \begin{klist}
     \kitem{Biology} The files for the ecosystem parts of the forward
     model are here.
@@ -224,25 +235,27 @@ The directories shown here are:
     model are here.
   \end{klist}
   \kitem{Obsolete} Long unused versions of the boundary conditions
-  are stored here.
+    are stored here.
   \kitem{Programs} Not all computer architectures or compilers are the same.
-  The \code{types.F} program checks your compiler for the sizes of the
-  Fortran floating point types.
+    The \code{types.F} program checks your compiler for the sizes of the
+    Fortran floating point types.
   \kitem{Representer} This is the representer of the forward model, for
-  data assimilation.
+    data assimilation.
   \kitem{SeaIce} The sea ice model described in \S\ref{Iphys} is here.
   \kitem{Tangent} This is the tangent linear of the forward model, for data
-  assimilation.
+    assimilation.
   \kitem{Utility} Here are utility functions used by the various
-  ROMS routines, many dealing with I/O.
+    ROMS routines, many dealing with I/O.
   \kitem{Version} A file containing the time and date of this
-  \code{svn} revision, also the \code{svn} URL---if and only if you
-  check out with svn. At least the date in the file is kept current
-  by Hernan.
+    \code{svn} revision, also the \code{svn} URL---if and only if you
+    check out with svn. At least the date in the file is kept current
+    by Hernan.
 \end{klist}
+  \kitem{SeaIce} This is code for coupling to the Los Alamos CICE model
+    with some tips in README.CICE.
   \kitem{User} Some might choose to use this directory rather than
-  the Apps directory. It serves the same purpose but is arranged
-  by file type rather than by application.
+    the Apps directory. It serves the same purpose but is arranged
+    by file type rather than by application.
   \kitem{Waves} The SWAN wave model is here.
 \end{klist}
 
@@ -254,7 +267,7 @@ The main program is in \code{master.F}. It is simply a shell, including
 one of \code{mct\_coupler.h}, \code{esmf\_coupler.h} or \code{ocean.h}. In
 our case, \code{ocean.h} contains the actual main program, which
 initializes MPI (if needed), calls \code{ROMS\_initialize},
-calls \code{ROMS\_run} with arguments for how many steps to take,
+calls \code{ROMS\_run} with an argument for how long to run for,
 then \code{ROMS\_finalize}, and finally wraps up the MPI.
 See Fig.\ \ref{focean_h}.
 
@@ -285,15 +298,15 @@ See Fig.\ \ref{focean_h}.
 }%
 {\color[rgb]{0,0,0}\put(5701,-2386){\line( 1, 0){300}}
 }%
-\put(1501,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{mpi\_init}}%
+\put(1201,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{mpi\_init}}%
 }}}}
-\put(1501,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ROMS\_initialize}}%
+\put(1201,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ROMS\_initialize}}%
 }}}}
-\put(1501,-1561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ROMS\_run}}%
+\put(1201,-1561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ROMS\_run}}%
 }}}}
-\put(1501,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ROMS\_finalize}}%
+\put(1201,-1861){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ROMS\_finalize}}%
 }}}}
-\put(1501,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{mpi\_finalize}}%
+\put(1201,-2161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{mpi\_finalize}}%
 }}}}
 \put(3901,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{initialize\_parallel}}%
 }}}}
@@ -335,26 +348,26 @@ This is called at the beginning of the run and therefore starts off
 by finding out how many parallel processes are running and which one
 this is, then calls the following ROMS routines:
 \begin{klist}
-  \kitem{initialize\_parallel} is in the \code{mod\_parallel} module and
-  sets up a few variables, including some for the built-in profiling.
-  \kitem{wclock\_on} is in \code{timers.F} and initializes a timer for
-  the built-in profiling.
-  \kitem{inp\_par} calls \code{read\_phypar} to read in the ASCII input
-  file(s) used by ROMS, sets up the parallel tiles, then calls
-  routines to read in the rest of the ASCII input for biology, ice,
-  etc.
-  \kitem{mod\_arrays} allocates and initializes the dynamically sized
-  arrays in ROMS based on the grid sizes read in by \code{inp\_par}.
-  \kitem{initial} reads in the initial conditions from a NetCDF file or
-  computes them analytically. Likewise for the grid, plus it sets up the
-  vertical grid spacing to be used and many other details.
+  \kitem{initialize\_parallel} In the \code{mod\_parallel} module,
+    sets up a few variables, including some for the built-in profiling.
+  \kitem{inp\_par} Call \code{read\_phypar} to read in the ASCII input
+    file(s) used by ROMS, sets up the parallel tiles, then calls
+    routines to read in the rest of the ASCII input for biology, ice,
+    etc.
+  \kitem{wclock\_on} In \code{timers.F}, initialize a timer for
+    the built-in profiling.
+  \kitem{mod\_arrays} Allocate and initialize the dynamically sized
+    arrays in ROMS based on the grid sizes read in by \code{inp\_par}.
+  \kitem{initial} Read in the initial conditions from one or more NetCDF
+    files (one per grid) or computes them analytically. Likewise
+    for the grid, plus it sets up the vertical grid spacing to be
+    used and many other details.
 \end{klist}
 
 \subsubsection{ROMS\_run}
-This loops over all the steps from the starting iteration to the ending
-iteration in its argument list. The loop consists of calls to:
+This calls one of these two routines with the RunInterval argument:
 \begin{klist}
-  \kitem{main3d} or \code{main2d} solves the full
+  \kitem{main3d} or \code{main2d} Solve the full
   equations described in \S\ref{Num} (\code{main3d}) or the depth-integrated
   version only (\code{main2d}).
 \end{klist}
@@ -363,51 +376,67 @@ iteration in its argument list. The loop consists of calls to:
 This is called at the end of the run, whether it was otherwise
 successful or not. The routines called are:
 \begin{klist}
-  \kitem{wrt\_rst} if the run had an error code set, it will write out a
+  \kitem{wrt\_rst} If the run had an error code set, write out a
   restart record of the current model fields in case they are useful in
   diagnosing the trouble.
-  \kitem{wclock\_off} ends the built-in timers and causes them to print
+  \kitem{wclock\_off} End the built-in timers and causes them to print
   out a report.
-  \kitem{close\_io} closes all open files so as to flush the buffers
+  \kitem{close\_io} Close all open files so as to flush the buffers
   and put NetCDF files into a finished state.
 \end{klist}
 
 \subsection{Initialization}
 \label{Ini}
    \begin{klist}
-     \kitem{checkdefs}Reports on which C preprocessor variables
-   have been \code{\#define}d and checks their consistency.
-     \kitem{ana\_grid} Computes the grid internally.
-     \kitem{ana\_mask} Computes the land mask internally.
-     \kitem{get\_grid} Reads in the curvilinear coordinate arrays as
-   well as $f$ and $h$ from a grid NetCDF file.
-     \kitem{set\_scoord}  Sets and initializes relevant variables
+     \kitem{checkdefs}Report on which C preprocessor variables
+   have been \code{\#define}d and checks their consistency (called from
+   \code{inp\_par}).
+     \kitem{ana\_grid} Compute the grid(s) internally.
+     \kitem{ana\_mask} Compute the land mask internally.
+     \kitem{get\_grid} Read in the curvilinear coordinate arrays as
+   well as $f$ and $h$ from one NetCDF file per grid.
+     \kitem{set\_scoord}  Set and initialize relevant variables
    associated with the vertical transformation to nondimensional
    $\sigma$-coordinate described in Appendix~\ref{Scoord}.
-     \kitem{set\_weights} Sets the barotropic time-step average
+     \kitem{set\_weights} Set the barotropic time-step average
    weighting function.
-     \kitem{metrics}   Computes the metric term combinations which do
+     \kitem{metrics}   Compute the metric term combinations which do
    not depend on the surface elevation and therefore remain constant in
    time.
-     \kitem{ana\_hmixcoef} Computes the horizontal mixing coefficients.
-     \kitem{ana\_nudgcoef} Computes the nudging time scales.
+     \kitem{ini\_strengthcoef} Compute a field for the nonlinear ice
+       strength option \citep{Overland_1988}.
+     \kitem{ana\_wtype} Compute the Jerlov water type field internally.
+     \kitem{ana\_nudgcoef} Compute the nudging time scales.
+     \kitem{get\_nudgcoef} Read the nudging time scales from a file.
+     \kitem{ini\_hmixcoef} Initialize the horizontal mixing coefficients.
+     \kitem{ana\_sponge} Compute the horizontal mixing coefficients
+     internally.
      \kitem{ana\_initial} Analytic initial conditions for momentum and
-     active tracers.
+       active tracers.
      \kitem{ana\_passive} Analytic initial conditions for passive tracers.
      \kitem{ana\_biology} Analytic initial conditions for ecosystem tracers.
      \kitem{ana\_sediment} Analytic initial conditions for sediment tracers.
      \kitem{ana\_ice} Analytic initial conditions for ice variables.
-     \kitem{get\_state} Reads initial fields from disk---either
+     \kitem{get\_state} Read initial fields from disk---either
    restart or from some other source which has been converted to the
    appropriate format of NetCDF file.
+     \kitem{get\_wetdry}  or \code{wetdry} Initialize wet/dry masks.
      \kitem{set\_depth}  Compute time-evolving depths.
      \kitem{set\_massflux}  Compute initial horizontal mass fluxes.
+     \kitem{omega}  Compute initial vertical velocities.
+     \kitem{rho\_eos}  Compute initial density fields.
+     \kitem{ana\_psource}  Set up analytic point sources.
+     \kitem{check\_multifile} Read input files in which one or more file
+  is specified to find out time-ranges, etc.
      \kitem{get\_idata} Read in time-invariant forcing data.
-     \kitem{get\_data} reads in the first record of time-varying forcing
+     \kitem{get\_data} Read in the first record of time-varying forcing
   fields, boundary conditions, etc.
+     \kitem{set\_masks} Compute I/O masks.
+     \kitem{ana\_drag} Compute bottom drag coefficients internally.
      \kitem{stiffness} Compute grid stiffness.
      \kitem{grid\_coords}  Convert initial float and station locations to
      fractional grid coordinates.
+     \kitem{nesting} Perform inter-grid communications.
    \end{klist}
 
 \subsubsection{main3d}
@@ -415,10 +444,10 @@ This solves the full three-dimensional equations described in \S\ref{Num}.
 It has siblings \code{main2d} for solving the depth-integrated equations
 and \code{main3d\_offline} for reading files from a prior simulation
 and using them to advect the biological tracers or the Lagrangian floats.
-The full version is shown in Fig.\ \ref{flow}. Note that many
-subroutines are optional and only get called if the appropriate C
-preprocessor switches have been set. The subroutines are
-described as follows:
+The full version is shown in Fig.\ \ref{flow}, where the outer loop is
+over both timesteps and grids. Note that many subroutines are
+optional and only get called if the appropriate C preprocessor
+switches have been set. The subroutines are described as follows:
 
 \begin{figure}
 \thinlines
@@ -475,8 +504,7 @@ described as follows:
 }}}}
 \put(3601,-661){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{set\_vbc}}%
 }}}}
-\put(1401,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,.82,0}add dt to
-time}%
+\put(1401,-961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ntimesteps}}%
 }}}}
 \put(1401,-1261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{get\_data}}%
 }}}}
@@ -499,7 +527,7 @@ only:}%
 }}}}
 \put(1401,-3961){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{radiation\_stress}}%
 }}}}
-\put(1401,-4261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{cawdir\_eval}}%
+\put(1401,-4261){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{albedo\_eval}}%
 }}}}
 \put(1401,-4561){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}\code{ccsm\_flux}}%
 }}}}
@@ -544,102 +572,104 @@ reached}%
 }}}}
 \end{picture}%
 \end{center}
-\caption{Flow chart of the model main program.}
+\caption{Flow chart of the model main program. Calls to \code{nesting}
+for nested grid applications have been left out.}
 \label{flow}
 \end{figure}
 
 \begin{klist}
-  \kitem{get\_data} reads in the second and subsequent records of
-  time-varying forcing fields, boundary conditions, etc.
-  \kitem{set\_data} time interpolates between the records read in by
-  \code{get\_data}.
-  \kitem{ini\_zeta} checks for wet/dry cells if needed and initializes
-  all the time levels of zeta.
-  \kitem{ini\_fields} initializes the 2-D velocities to match the
-  vertical integral of the 3-D velocities, making all the time levels
-  match.
-  \kitem{set\_massflux} computes horizontal mass fluxes, $\frac{H_z
-  u}{n}$ and $\frac{H_z v}{m}$.
-  \kitem{rho\_eos} computes the nonlinear equation of state.
-  \kitem{diag} computes some global sums, prints them, and checks them to
-  see if they are sensible. If not, it stops the model run.
-  \kitem{radiation\_stress} computes the radiation stresses due to
-  wave-current interactions \citep{Mellor_2003,Mellor_2005}.
-  \kitem{cawdir\_eval} computes a 24-hour mean albedo at the marine
-  surface. Not in the trunk code.
-  \kitem{ccsm\_flux} computes the surface fluxes from the atmosphere
-  based on a marine boundary layer. This version comes from CCSM
-  \citep{Large_08} and is
-  reputed to do better outside of the tropics. Not in the trunk code.
-  \kitem{bulk\_flux} computes the surface fluxes from the atmosphere
-  based on a marine boundary layer. This version comes from COARE
-  version 3.0 \citep{Fairall_2003,Taylor_2001,Oost_2002}.
-  \kitem{ncep\_flux} computes the surface fluxes from the NCEP
-  atmospheric model. Not in the trunk code.
+  \kitem{ntimesteps} Find out how many timesteps to take on each grid.
+  \kitem{get\_data} Read in the second and subsequent records of
+    time-varying forcing fields, boundary conditions, etc.
+  \kitem{set\_data} Time interpolate between the records read in by
+    \code{get\_data}.
+  \kitem{ini\_zeta} Check for wet/dry cells if needed and initializes
+    all the time levels of zeta.
+  \kitem{ini\_fields} Initialize the 2-D velocities to match the
+    vertical integral of the 3-D velocities, making all the time levels
+    match.
+  \kitem{set\_massflux} Compute horizontal mass fluxes, $\frac{H_z
+    u}{n}$ and $\frac{H_z v}{m}$.
+  \kitem{rho\_eos} Compute the nonlinear equation of state.
+  \kitem{diag} Compute some global sums, prints them, and checks them to
+    see if they are sensible. If not, it stops the model run.
+  \kitem{radiation\_stress} Compute the radiation stresses due to
+    wave-current interactions \citep{Mellor_2003,Mellor_2005}.
+  \kitem{cawdir\_eval}, \code{ana\_albedo} or \code{albedo\_eval} Compute
+    the albedo at the ice and ocean surface.
+  \kitem{ccsm\_flux} Compute the surface fluxes from the atmosphere
+    based on a marine boundary layer. This version comes from CCSM
+    \citep{Large_08} and is reputed to do better outside of the tropics.
+  \kitem{bulk\_flux} Compute the surface fluxes from the atmosphere
+    based on a marine boundary layer. This version comes from COARE
+    version 3.0 \citep{Fairall_2003,Taylor_2001,Oost_2002}.
+  \kitem{ncep\_flux} Compute the surface fluxes from the NCEP
+    atmospheric model.
   \kitem{bblm} compute the bottom stresses from one of three bottom
-  boundary layer models.
-  \kitem{set\_vbc} computes the surface and bottom fluxes and stresses
-  that aren't computed elsewhere---set vertical boundary conditions.
-  \kitem{set\_tides} computes the tidal boundary conditions from the
-  tidal constituents.
-  \kitem{seaice} runs the sea ice model described in \S\ref{Iphys}. It
-  changes the surface boundary conditions for the ocean and therefore
-  gets called before the call to \code{output} or anything else that
-  would be needing the surface boundary conditions. Not in the trunk
-  code.
-  \kitem{ana\_vmix} is called if there's an analytic profile for the
-  vertical mixing coefficient.
-  \kitem{lmd\_vmix} is called when using the K-profile parameterization
-  of vertical mixing \citep{Large94,Large98}.
-  \kitem{bvf\_mix} computes the vertical mixing as a function of the
-  Brunt-V\"ais\"al\"a frequency.
-  \kitem{hmixing} computes time-dependent horizontal mixing coefficients
-  \citep{S63, Holland_98, Webb_98,Griffies_2000}.
-  \kitem{omega} computes the $\Omega$ vertical velocity from the horizontal
-  divergences.
-  \kitem{wvelocity} computes the physical vertical velocity for the
-  model output.
-  \kitem{set\_zeta} sets the surface elevation to the time-mean over the
-  last baroclinic time-step.
-  \kitem{set\_diags} accumulates the time-average of the diagnostics
-  fields.
-  \kitem{set\_filter} accumulates a weighted sum using a Lanczos filter
+    boundary layer models.
+  \kitem{set\_vbc} Compute the surface and bottom fluxes and stresses
+    that aren't computed elsewhere---set vertical boundary conditions.
+  \kitem{set\_tides} Compute the tidal boundary conditions from the
+    tidal constituents.
+  \kitem{seaice} Run the sea ice model described in \S\ref{Iphys}. It
+    changes the surface boundary conditions for the ocean and therefore
+    gets called before the call to \code{output} or anything else that
+    would be needing the surface boundary conditions. In the case of a
+    perfect restart, \code{ice\_flux\_rst} is called instead on the
+    first timestep---this restores surface fluxes from the restart file.
+  \kitem{ana\_vmix} Called if there's an analytic profile for the
+    vertical mixing coefficient.
+  \kitem{lmd\_vmix} Called when using the K-profile parameterization
+    of vertical mixing \citep{Large94,Large98}.
+  \kitem{bvf\_mix} Compute the vertical mixing as a function of the
+    Brunt-V\"ais\"al\"a frequency.
+  \kitem{hmixing} Compute time-dependent horizontal mixing coefficients
+    \citep{S63, Holland_98, Webb_98,Griffies_2000}.
+  \kitem{omega} Compute the $\Omega$ vertical velocity from the horizontal
+    divergences.
+  \kitem{wvelocity} Compute the physical vertical velocity for the
+    model output.
+  \kitem{set\_zeta} Set the surface elevation to the time-mean over the
+    last baroclinic time-step.
+  \kitem{set\_diags} Accumulate the time-average of the diagnostics
+    fields.
+  \kitem{set\_filter} Accumulate a weighted sum using a Lanczos filter
   for detiding the most important of the output fields. Not in the trunk
   code.
-  \kitem{set\_avg} accumulates time-averaged fields for the averages
+  \kitem{set\_avg} Accumulate time-averaged fields for the averages
   output.
-  \kitem{set\_avg2} accumulates the time-averaged surface fields for the
+  \kitem{set\_avg2} Accumulate the time-averaged surface fields for the
   second averages output. Not in the trunk code.
-  \kitem{output} writes to various output NetCDF files.
-  \kitem{rhs3d} calls \code{pre\_step3d} which computes a predictor
-  stepp on the three-dimensional variables. It then computes
+  \kitem{output} Write to various output NetCDF files.
+  \kitem{rhs3d} Call \code{pre\_step3d} which computes a predictor
+  stepp on the three-dimensional variables, then compute
   right-hand-sides of the three-dimensional velocity fields for the
   corrector step, including pressure gradients.
-  \kitem{my25\_prestep} computes the predictor step for turbulent
+  \kitem{my25\_prestep} Compute the predictor step for turbulent
   kinetic energy prognostic variables, \code{tke} and \code{gls}.
-  \kitem{gls\_prestep} computes the predictor step for turbulent
+  \kitem{gls\_prestep} Compute the predictor step for turbulent
   kinetic energy prognostic variables, \code{tke} and \code{gls}.
-  \kitem{step2d} computes the depth-integrated time-step. It is called in
+  \kitem{step2d} Compute the depth-integrated time-step. It is called in
   a loop over all the short time-steps, first as a predictor step, then
   as a corrector step.
-  \kitem{step3d\_uv} completes the time-step for the three-dimensional
+  \kitem{step3d\_uv} Complete the time-step for the three-dimensional
   velocities.
-  \kitem{omega} computes the $\Omega$ vertical velocity.
-  \kitem{my25\_corstep} performs the corrector step for turbulent kinetic
+  \kitem{omega} Compute the $\Omega$ vertical velocity.
+  \kitem{my25\_corstep} Perform the corrector step for turbulent kinetic
   energy and length scale prognostic variables, \code{tke} and \code{gls}
   \citep{Mellor82, Galperin88}.
-  \kitem{gls\_corstep} performs the corrector step for turbulent kinetic
+  \kitem{gls\_corstep} Perform the corrector step for turbulent kinetic
   energy and length scale prognostic variables, \code{tke} and \code{gls}
   \citep{Umlauf2003, Warner_2005}.
-  \kitem{biology} computes the changes to the biological tracers due to
+  \kitem{biology} Compute the changes to the biological tracers due to
   biological activity using one of several options for the ecosystem
   model.
-  \kitem{sediment} computes changes to the sediment tracers
+  \kitem{sediment} Compute changes to the sediment tracers
   \citep{Warner_2008}.
-  \kitem{step3d\_t} completes the tracer time-step.
-  \kitem{ice\_frazil} computes the frazil ice growth, if any. Not in the
-  trunk code.
-  \kitem{step\_floats} time-steps the Lagrangian floats.
+  \kitem{step3d\_t} Complete the tracer time-step.
+  \kitem{ice\_frazil} Compute the frazil ice growth, if any. Called from
+  inside \code{step3d\_t}.
+  \kitem{step\_floats} Time-step the Lagrangian floats.
 \end{klist}
 
 \subsection{Modules}

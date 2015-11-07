@@ -61,7 +61,7 @@ Hibler's ice strength is given by:
 \begin{equation}
   P = P^* A h_i e^{-C(1-A)}
 \end{equation}
-while \citep{Overland_1988} advocate a nonlinear strength:
+while \citet{Overland_1988} advocate a nonlinear strength:
 \begin{equation}
   P = P^* A h_i^2 e^{-C(1-A)}
 \end{equation}
@@ -91,7 +91,7 @@ internal ice stress term is updated on a shorter timestep so as to
 allow the elastic wave velocity to be resolved.
 
 Once the new ice velocities are computed, the ice tracers can be
-advected using the MPDATA scheme \citet{Smolark90}. The tracers in
+advected using the MPDATA scheme \citep{Smolark90}. The tracers in
 this case are the ice thickness, ice concentration, snow thickness,
 internal ice temperature, and surface melt ponds. The continuity
 equations describing the evolution of these parameters (equations
@@ -114,7 +114,7 @@ $S_s$ and $S_A$), which will be described in \S\ref{Growth}:
 \label{ist3b}
 \end{align}
 The first two equations represent the conservation of ice and snow.
-Equation \ref{ist3b} is discussed in some detail in MK89, but
+Equation (\ref{ist3b}) is discussed in some detail in MK89, but
 represents the advection of ice blocks in which no ridging occurs as
 long as there is any open water.
 %An optional ridging term can be added
@@ -233,7 +233,7 @@ set to different values depending on whether ice is melting or
 freezing:
 \begin{align}
     \Phi & = 4.0 \qquad\qquad W_{ao} \geq 0 \\
-    \Phi & = 0.5 \qquad\qquad W_{ao} < 0 \\
+    \Phi & = 0.5 \qquad\qquad W_{ao} < 0
 \end{align}
 
 \begin{figure}[ht]
@@ -274,17 +274,14 @@ freezing can occur.}
 \label{fm+k}
 \end{figure}
 
-Similar to Eq. \ref{ist4a} is the snow equation:
+Similar to Eq. (\ref{ist4a}) is the snow equation:
 \begin{equation}
   {D A h_s \over D t} = \left[ A (W_{s} - W_{sm}) \right]
 \end{equation}
 where $W_s$ and $W_{sm}$ are the snowfall and snow melt rates,
-respectively, in units of equivalent water. Also in the model is
-the depth of the melt ponds in spring, $h_{mp}$ which can be up to
-0.1 m, after which melting ice contributes to $W_{ro}$. The melt
-ponds are not part of the thermal conductivity computations. They
-could contribute to the albedo computation, but that has been
-largely commented out.
+respectively, in units of equivalent water. Currently all snow and
+ice melt ends up in $W_{ro}$, though melt ponds could be added with
+some effort.
 
 \begin{table}
 \hspace{9 mm}
@@ -304,7 +301,9 @@ largely commented out.
   $\epsilon_s$ & 0.99 & longwave emissivity of snow \\
   $E(T,r)$ && enthalpy of the ice/brine system \\
   $F_T\!\uparrow$ && heat flux from the ocean into the ice \\
+  $h^\star$ && test for thick snow pushing ice surface under water \\
   $H\!\downarrow$ && sensible heat \\
+  $I_o$ & part of $(1-\alpha_i)SW\!\!\downarrow$ & shortwave radiation entering ice \\
   $i_w$ && fraction of the solar heating transmitted \\
   && through a lead into the water below \\
   $k_i$ & 2.04 W m$^{-1}$ K${^-1}$ & thermal conductivity of ice \\
@@ -313,7 +312,7 @@ largely commented out.
   $L_s$ & 110 MJ m$^{-3}$ & latent heat of fusion of snow \\
   $LE\!\downarrow$ && latent heat \\
   $LW\!\!\downarrow$ && incoming longwave radiation \\
-  $m$ & $-0.054^\circ$C/PSU & coefficient in linear $T_f(S) = mS$ equation \\
+  $m$ & $-0.054^\circ$C & coefficient in linear $T_f(S) = mS$ equation \\
   $\Phi$ && contribution to $A$ equation from freezing water \\
   $Q_{ai}$ && heat flux out of the snow/ice surface \\
   $Q_{ao}$ && heat flux out of the ocean surface \\
@@ -322,7 +321,7 @@ largely commented out.
   $Q_{s}$  && heat flux up through the snow \\
   $r$   & $0 \le r \le 0.2 $ & brine fraction in ice \\
   $\rho_i$ & 910 $m^3/kg$ & density of ice \\
-  $S_i$ & 3.2 PSU & salinity of the ice \\
+  $S_i$ & 3.2 & salinity of the ice \\
   $SW\!\!\downarrow$ && incoming shortwave radiation \\
   $\sigma$ & $5.67 \times 10^{-8}$ W m$^{-2}$ K$^{-4}$ &
   Stefan-Boltzmann constant \\
@@ -398,14 +397,21 @@ $\Delta T_3$. As in Parkinson and Washington, if $T_3$
 is found to be above the melting temperature, it is set to $T_{\rm melt}$
 and the extra energy goes into melting the snow or ice:
 \begin{align}
-   W_{ai} & = \frac{Q_{ai} - Q_{i2} }{ \rho_o L_3} \\
-   L_3 & \equiv \left[ E(T_3,1) - E(T_1, R_1) \right]
+   W_{ai} & = \frac{Q_{ai} - Q_{i2} }{ \rho_o L_3} \label{eqWai} \\
+   L_3 & \equiv \left[ E(T_3,1) - E(T_1, r) \right]
 \end{align}
 Note that $L_3 = (1-r)L_i$ plus a small sensible heat correction.
-We can store water on the surface in melt pools to a fixed
-depth---everything extra melted at the surface is assumed to flow into
-the ocean as $W_{ro}$. The melt ponds however do not contribute to
-the heat flux computation.
+
+If there is no snow, there is an option to allow some of the incoming
+shortwave radiation ($I_o = 0.17(1-\alpha_i)SW\!\!\downarrow$) to
+enter the ice and contribute to heating up the ice rather than to
+melting the surface ice \citep{Maykut71}. It essentially reduces $Q_{i2}$
+by the amount $I_o$ in both equations (\ref{eqWai}) and (\ref{eqdEdt}).
+
+%We can store water on the surface in melt pools to a fixed
+%depth---everything extra melted at the surface is assumed to flow into
+%the ocean as $W_{ro}$. The melt ponds however do not contribute to
+%the heat flux computation.
 
 Inside the ice there are brine pockets in which there is salt water
 at the {\it in situ} freezing temperature. It is assumed that the ice
@@ -421,7 +427,7 @@ The enthalpy of the combined ice/brine system is given by
 \end{equation}
 Substituting in for $r$ and differentiating gives:
 \begin{equation}
-  \frac{\partial E }{ \partial T} = - \frac{S_i m L_i }{ T_1^2} + C_{pi}
+  \frac{\partial E }{ \partial T_1} = - \frac{S_i m L_i }{ T_1^2} + C_{pi}
 \end{equation}
 
 Inside the snow, we have
@@ -458,10 +464,11 @@ the ice:
 \begin{equation}
    \rho_i h_i \left[ \frac{\partial E }{ \partial t} + \vec{v} \cdot 
    \nabla E \right] = Q_{I0} - Q_{I2}
+  \label{eqdEdt}
 \end{equation}
 We can use the chain rule to obtain an equation for timestepping $T_1$:
 \begin{equation}
-   \rho_i h_i \frac{\partial E }{ \partial T}
+   \rho_i h_i \frac{\partial E }{ \partial T_1}
    \left[ \frac{\partial T_1 }{ \partial t} + \vec{v} \cdot 
    \nabla T_1 \right] = Q_{I0} - Q_{I2}
 \end{equation}
@@ -473,6 +480,19 @@ where
   \frac{T_3 - (2 + C_k) T_1 }{ 1 + C_k} \right]
 \end{align*}
 
+When the snow gets thick enough, it pushes the ice down to the point
+where seawater floods onto the ice where it can possibly refreeze.
+The condition for such thick snow is $h^\star > 0$, where
+\begin{equation}
+    h^\star = h_s - \frac{(\rho_w - \rho_i)}{\rho_s} h_i
+\end{equation}
+An optional model process is to convert the thick snow into ice
+directly:
+\begin{align}
+    h_s & = h_s - \frac{\rho_i h^\star}{\rho_w} \\
+    h_i & = h_i + \frac{\rho_s h^\star}{\rho_w}
+\end{align}
+
 \subsubsection{Ocean surface boundary conditions}
 The ocean receives surface stresses from both the atmosphere and the
 ice, according to the ice concentration:
@@ -482,7 +502,7 @@ ice, according to the ice concentration:
    K_m \frac{\partial v_w }{ \partial z} & = \frac{A }{ \rho_o} \tau_{io}^y
     + \frac{1-A }{ \rho_o} \tau_{ao}^y
 \end{align}
-where the relevant variables are in table \ref{tobc}.
+where the relevant variables are in Table \ref{tobc}.
 
 \begin{table}
 \hspace{35 mm}
@@ -552,22 +572,9 @@ new $T_0$ as the freezing temperature for that salinity:
 \begin{align}
    W_{io} &= {1 \over L_o} \left[ {Q_{io} \over \rho_o} + C_{po}
    C_{T_z} (T_o - T) \right] \\
-   S_0 &= { C_{S_z} S + (W_{ai}H(-W_{ai}) - W_{io})) S_i \over
-   C_{S_z} + W_{ai}H(-W_{ai}) + W_{ro} - W_{io} }
+   S_0 &= { C_{S_z} S + (W_{ro} - W_{io})) S_i \over
+   C_{S_z} + W_{ro} - W_{io} }
 \end{align}
-Note that the term $W_{ai}H(-W_{ai})$ is the contribution of melting
-only, not refreezing of melt ponds.
-
-%Once we have a the value for $F_T$, we can use it to find the ice
-%growth rates:
-%\begin{align}
-%   W_{io} &= \frac{1 }{ \rho_o L_o} (Q_{io} - F_T) \\
-%   W_{ao} &= \frac{1 }{ \rho_o L_o} (Q_{ao} - F_T) \\
-%\end{align}
-%where
-%\begin{equation}
-%   L_o \equiv \left[ E(T_0,1) - E(T_1,r_1) \right]
-%\end{equation}
 
 \subsubsection{Frazil ice formation}
 \label{frazil}
@@ -599,7 +606,7 @@ Variable & Value & Definition \\ \hline
    $m_{w_1}$ && mass of water before freezing \\
    $m_{w_2}$ && mass of water after freezing \\
    $m$ & $-0.0543$ & constant in freezing equation \\
-   $n$ & $7.59 \times 10^{-4}$ & constant in freezing equation \\
+%   $n$ & $7.59 \times 10^{-4}$ & constant in freezing equation \\
    $S_1$ && salinity before freezing \\
    $S_2$ && salinity after freezing \\
    $T_1$ && temperature before freezing \\
@@ -620,12 +627,16 @@ leads to:
 We also want the final temperature and salinity to be on the freezing
 line, which we approximate as:
 \begin{equation}
-   T_f = m S + n z .
+   T_f = m S .
+%   T_f = m S + n z .
+  \label{eq_t_f}
 \end{equation}
 We can then solve for $\gamma$:
 \begin{equation}
-   \gamma = \frac{-T_1 + mS_1 + nz }{ {L }{ C_{pw}}+ T_1 \left( 1
+%   \gamma = \frac{-T_1 + mS_1 + nz }{ {L }{ C_{pw}}+ T_1 \left( 1
+   \gamma = \frac{-T_1 + mS_1 }{ {L }{ C_{pw}}+ T_1 \left( 1
    - \frac{C_{pi} }{ C_{pw}} \right) - mS_1} .
+  \label{eq_gam}
 \end{equation}
 The ocean is checked at each depth $k$ and at each timestep for
 supercooling.  If the water is below freezing, the temperature and
@@ -634,6 +645,9 @@ and the ice above is thickened by the amount:
 \begin{equation}
    \Delta h = \gamma_k \Delta z_k \frac{\rho_w}{\rho_i} .
 \end{equation}
+Note that \citet{Steele89} include a compressibility term in equations
+(\ref{eq_t_f}) and (\ref{eq_gam}), but we use potential temperature
+instead of {\em in situ} temperature.
 
 \subsubsection{Differences from Mellor and Kantha}
 We have tried to modify the \code{hakkis} model to more closely follow
@@ -647,10 +661,10 @@ MK89. However, there are also ways in which we have deviated from it.
 %    ocean model.
   \item Add various limiters:
     \begin{itemize}
-      \item Ice concentration:$A_{\min} \leq A \leq 1.0$, $A_{\min} = 0.0$.
+      \item Ice concentration:$A_{\min} \leq A \leq 1.0$, $A_{\min} =
+      1.e-30$.
       \item Ice thickness: $h_i \geq 0.0$.
       \item Snow thickness: $h_s \geq 0.0$.
       \item Brine fraction: $r \leq r_{\max}$, $r_{\max} = 0.2$
-     \item Surface water: $0.0 \leq W_s \leq W_{s\max}$, $W_{s\max} = 0.1$
     \end{itemize}
 \end{itemize}
