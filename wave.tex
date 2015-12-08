@@ -1610,7 +1610,7 @@ fields are defined analytically.  The other extreme is one in which
 everything is read from files, as in our Arctic simulations.
 Figure \ref{fbath_arc} shows the bathymetry and the extent of this
 domain. The grid is non-uniform, having more resolution close to
-Alaska - a measure of grid spacing is shown in Figure
+Alaska---a measure of grid spacing is shown in Figure
 \ref{fgspace_arc}.
 
 \begin{figure}
@@ -1874,7 +1874,10 @@ fresh water inputs for different parts of the domain.
 \subsubsection{Arctic code chunks}
 The \code{Apps/Arctic} directory contains the \code{ana\_}
 family of include files for setting the bottom drag, the horizontal
-nudging coefficients and the passive tracers.
+nudging coefficients and the passive tracers. The bottom drag is a
+function of the bottom depth with a tunable parameter which was
+adjusted to give a reasonable Bering Strait throughflow.
+
 Doing a search for \code{ARCTIC} shows up a few other bits of code. One
 is in \code{output.F}, forcing a new station file after every
 restart:
@@ -2042,6 +2045,23 @@ in Fig.\ \ref{fbath_NWGOA}.
 \caption{Bathymetry of the NWGOA domain.}
 \label{fbath_NWGOA}
 \end{figure}
+
+The bathymetry was clipped to 20 m elevation above sea level for the
+wetting and drying algorithm. Smoothing and editing was done to
+give a stable simulation, but the usual bottom steepness metric
+depends on water depth being everywhere positive. The assumption
+is that extremely shallow waters would be vertically well-mixed,
+so that pressure gradient errors would vanish. It was discovered
+that the rotated mixing tensors for horizontal diffusion were
+unstable in the near-shore, with high-and-dry points next to
+relatively deep wet points; thus the explicit horizontal diffusion
+was turned off. The model ran stably with the third-order upwind
+advection scheme providing some implicit diffusion.
+
+The bathymetry is a combination of ARDEM (Danielson, personal
+communication) and a Cook Inlet product from Lyon Lanerolle
+(personal communication). This melding was found to give better
+tides at Anchorage than either product alone.
 
 \subsubsection{\code{nwgoa.h}}
 The C preprocessor variable \code{NWGOA} has been chosen to label
