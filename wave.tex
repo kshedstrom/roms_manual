@@ -1910,7 +1910,8 @@ for \code{Lm}, \code{Mm}, and \code{N} are:
           Mm == 1088          ! Number of J-direction INTERIOR RHO-points
            N == 50            ! Number of vertical levels
 \end{verbatim}
-The vertical structure is set to our new favorite, using the new stretching:
+The vertical structure is set to our new favorite, using the new
+stretching function:
 \begin{verbatim}
   Vtransform == 2                          ! transformation equation
  Vstretching == 4                          ! stretching function
@@ -1924,16 +1925,18 @@ The vertical structure is set to our new favorite, using the new stretching:
 The best ocean fields we knew of when setting this up are known as SODA, a
 reanalysis from 1958 through 2008 by
 \citet{Carton_2005}. There are global HYCOM fields for later years.
-There are \code{Python} scripts to create
-initial and boundary conditions from the SODA and HYCOM files. Snow and ice
-initial conditions are set to uniform thicknesses where the SST is
-cold, zero otherwise. Boundary conditions are assumed to be not
-needed with the boundaries so far from the pack ice.
+There are \code{Python} scripts to create initial, climatology and
+boundary conditions from the SODA and HYCOM files. Snow and ice initial
+conditions are set to uniform thicknesses where the SST is cold, zero
+otherwise. Ice boundary conditions are assumed to be not needed with the
+boundaries so far from the pack ice.
 
-The side known as ``South'' is along the North Pacific.  The side
-known as ``West'' is only open for a short bit in the North Pacific.
-The last two boundaries are on the Atlantic and Canadian sides;
-have our usual combination of radiation and nudging:
+The side known as ``South'' is across the North Pacific and the
+``East'' and ``West'' sides are only open for a short bit in the
+North Pacific. The ``North'' boundary is on the Atlantic side; these
+all have our usual combination of radiation and nudging for the
+ocean. The ice boundary conditions are closed here, but ``outflow
+cells'' have been created along the ``North'' side.
 \begin{verbatim}
    LBC(isFsur) ==   Che     Che     Che     Che         ! free-surface
    LBC(isUbar) ==   Shc     Shc     Shc     Shc         ! 2D U-momentum
@@ -1976,16 +1979,18 @@ by \code{ccsm\_flux.F}. We are using the second. We have \code{Python}
 scripts for downloading MERRA so that the MERRA files can be used
 as is, on their native grid, then interpolated by ROMS internally
 to the domain at hand.  We have added a processing step to the MERRA
-files so that only values from over the ocean are used - these are
-extrapolated into the land points in the MERRA fields.
+files so that only values from over the ocean are used---these are
+extrapolated into the land points in the MERRA fields (R. Dussin,
+personal communication).
 
 For fresh water input from land, we have the ARDAT fields for the
 Arctic ocean \citep{Whitefield_2015}, which includes monthly river
-temperature. These are applied as point sources to include the
-effects of bringing in warm water. For the rest of the domain, we
-are applying \citet{Dai_2009} as the \code{RUNOFF} field. Other
-forcings include a nudging to sea surface salinity, a fastice
-climatology from Andy Mahoney and tides from OTPS.
+temperature. These are applied as point sources to include the effects
+of bringing in warm water. For the rest of the domain, we are applying
+\citet{Dai_2009} as the \code{RUNOFF} field. Other forcings include a
+nudging to sea surface salinity, a fastice climatology from Andy Mahoney,
+tides from OTPS and a nudging to a monthly climatology around the edges
+from the same sources as the boundary conditions.
 
 \subsubsection{ocean.in}
 We use an internal time-step of 200 $s$ and an external time-step of 10
@@ -2004,28 +2009,131 @@ in Fig.\ \ref{fnep1}--\ref{fnep2} .
 
 \begin{figure}
 \setlength{\unitlength}{10 mm}
-\begin{picture}(16,9)(0.0,0.4)
-\includegraphics[width=16cm]{pics/usurf_Arc}
+\begin{picture}(16,20)(0.0,0.4)
+\includegraphics[width=16cm]{pics/aice_sep5_82}
   \end{picture}
-\caption{Surface velocity averaged over the month of June, 1986.}
+\caption{Ice concentration averaged over the month of September, 1982.}
 \label{fnep1}
 \end{figure}
 
 \begin{figure}
 \setlength{\unitlength}{10 mm}
-\begin{picture}(16,12)(0.0,0)
-\includegraphics[width=16cm]{pics/aice_Arc}
+\begin{picture}(16,20)(0.0,0)
+\includegraphics[width=16cm]{pics/hice_sep5_82}
   \end{picture}
-\caption{Ice concentration averaged over the month of June, 1986.}
+\caption{Ice thickness averaged over the month of September, 1982.}
+\label{fnep2}
+\end{figure}
+
+\subsection{Northwest Gulf of Alaska example}
+\label{NWGOA}
+The Northwest Gulf of Alaska (NWGOA) domain is set up much like the
+Arctic, described in \S\ref{ARCTIC}. This is a rectangular domain
+with uniform 1.5 km resolution over Cook Inlet and beyond, as shown
+in figure \ref{fbath_NWGOA}.
+
+\begin{figure}
+\setlength{\unitlength}{10mm}
+\begin{picture}(0,16)(0,0)
+\includegraphics{pics/bath_NWGOA}
+  \end{picture}
+\caption{Bathymetry of the NWGOA domain.}
+\label{fbath_NWGOA}
+\end{figure}
+
+\end{figure}
+
+\subsubsection{\code{nwgoa.h}}
+The C preprocessor variable \code{NWGOA} has been chosen to label
+this domain---the header include file then becomes \code{nwgoa.h}.
+It shares many of the options with the Arctic domain, differing in
+that has neither outflow cells nor any attempt at landfast ice. One
+notable change is the inclusion of the \code{WET\_DRY} option, which
+was challenging to get to run stably. Another change is that fresh water
+is now all coming from the output of a hydrology model (Hill and Beamer,
+personal communication)---\code{RUNOFF} is not used here.
+
+\subsubsection{NWGOA code chunks}
+The \code{Apps/NWGOA} directory contains the \code{ana\_}
+family of include files for setting the bottom drag, the horizontal
+nudging coefficients and the passive tracers.
+Doing a search for \code{NWGOA} shows up a few other bits of code.
+The only such bit that is not shared by \code{ARCTIC} is in
+\code{mod\_scalars.F}:
+\begin{verbatim}
+#ifdef NWGOA
+        real(r8) :: max_speed = 80.0_r8         ! m/s
+#else
+        real(r8) :: max_speed = 20.0_r8         ! m/s
+#endif
+\end{verbatim}
+This is because the summer river flows can be large enough to
+exceed the default ``speed limit'' put into the code to check for growing
+instabilities. 
+
+\subsubsection{Model domain}
+A number of horizontal grid points was chosen to resolve the
+domain at 1.5 km everywhere. Values
+for \code{Lm}, \code{Mm}, and \code{N} are:
+\begin{verbatim}
+          Lm == 792           ! Number of I-direction INTERIOR RHO-points
+          Mm == 360           ! Number of J-direction INTERIOR RHO-points
+           N == 50            ! Number of vertical levels
+\end{verbatim}
+The vertical structure is again our current favorite:
+\begin{verbatim}
+  Vtransform == 2                          ! transformation equation
+ Vstretching == 4                          ! stretching function
+
+     THETA_S == 7.0d0                      ! surface stretching parameter
+     THETA_B == 2.0d0                      ! bottom  stretching parameter
+      TCLINE == 250.0d0                    ! critical depth (m)
+\end{verbatim}
+
+\subsubsection{Initial and boundary conditions}
+All initial and boundary conditions were extracted from prior runs
+in the \code{NEP6} domain covering the Northeast Pacific. The
+\code{LBC} options are the same as in the \code{Arctic} for all open
+boundaries. We did not need any nudging to climatology in this case.
+
+\subsubsection{Forcing}
+We are using the same MERRA forcing with extrapolation into land as
+described above, as well as a tidal file from OTPS. The fresh water
+forcing is daily output from a hydrology model, interpolated to the
+ROMS grid and then converted to lateral ``sources'' along the
+coastline.
+
+\subsubsection{ocean.in}
+We use an internal time-step of 30 $s$ and an external time-step of
+3 $s$. The horizontal viscosity is:
+\begin{verbatim}
+       VISC2 == 25.0d0                          ! m2/s
+\end{verbatim}
+while the explicit horizontal diffusivity was turned off.
+
+\subsubsection{Output}
+The model writes voluminous information to standard out, as shown
+for the \code{UPWELLING} case.  It also writes out NetCDF files for
+restart, daily averages, stations and floats. In this case we also
+saved hourly history output.
+Plots can be made from any of these files; some examples are shown
+in Fig.\ \ref{fnwgoa1}--\ref{fnwgoa2} .
+
+\begin{figure}
+\setlength{\unitlength}{10 mm}
+\begin{picture}(16,9)(0.0,0.4)
+\includegraphics[width=16cm]{pics/sss_nwgoa}
+  \end{picture}
+\caption{Surface salinity for 10 August, 2008.}
+\label{fnwgoa1}
 \end{figure}
 
 \begin{figure}
 \setlength{\unitlength}{10 mm}
 \begin{picture}(16,18)(0.0,0)
-\includegraphics[width=16cm]{pics/float_Arc}
+\includegraphics[width=16cm]{pics/sst_nwgoa}
   \end{picture}
-\caption{Five-day tracks of some surface floats, showing the starting
-positions in blue.}
-\label{fnep2}
+\caption{Surface temperature and velocities for 10 August, 2008.}
+\label{fnwgoa2}
 \end{figure}
 
