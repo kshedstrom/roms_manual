@@ -1601,6 +1601,8 @@ at day 5.}
 \label{fsm2}
 \end{figure}
 
+\newpage
+
 \subsection{Arctic example}
 \label{ARCTIC}
 The upwelling/downwelling examples is one in which all the start-up
@@ -2030,17 +2032,15 @@ in Fig.\ \ref{fnep1}--\ref{fnep2} .
 The Northwest Gulf of Alaska (NWGOA) domain is set up much like the
 Arctic, described in \S\ref{ARCTIC}. This is a rectangular domain
 with uniform 1.5 km resolution over Cook Inlet and beyond, as shown
-in figure \ref{fbath_NWGOA}.
+in Fig.\ \ref{fbath_NWGOA}.
 
 \begin{figure}
 \setlength{\unitlength}{10mm}
-\begin{picture}(0,16)(0,0)
+\begin{picture}(0,10)(0,0)
 \includegraphics{pics/bath_NWGOA}
   \end{picture}
 \caption{Bathymetry of the NWGOA domain.}
 \label{fbath_NWGOA}
-\end{figure}
-
 \end{figure}
 
 \subsubsection{\code{nwgoa.h}}
@@ -2050,16 +2050,15 @@ It shares many of the options with the Arctic domain, differing in
 that has neither outflow cells nor any attempt at landfast ice. One
 notable change is the inclusion of the \code{WET\_DRY} option, which
 was challenging to get to run stably. Another change is that fresh water
-is now all coming from the output of a hydrology model (Hill and Beamer,
-personal communication)---\code{RUNOFF} is not used here.
+is now all coming from the output of a hydrology model---\code{RUNOFF}
+is not used here.
 
 \subsubsection{NWGOA code chunks}
-The \code{Apps/NWGOA} directory contains the \code{ana\_}
-family of include files for setting the bottom drag, the horizontal
-nudging coefficients and the passive tracers.
-Doing a search for \code{NWGOA} shows up a few other bits of code.
-The only such bit that is not shared by \code{ARCTIC} is in
-\code{mod\_scalars.F}:
+The \code{Apps/NWGOA} directory contains the \code{ana\_} family
+of include files for setting the bottom drag, the horizontal nudging
+coefficients and the passive tracers. Doing a search for \code{NWGOA}
+shows up a few other bits of code. The only such bit not shared
+by \code{ARCTIC} is in \code{mod\_scalars.F}:
 \begin{verbatim}
 #ifdef NWGOA
         real(r8) :: max_speed = 80.0_r8         ! m/s
@@ -2093,8 +2092,9 @@ The vertical structure is again our current favorite:
 \subsubsection{Initial and boundary conditions}
 All initial and boundary conditions were extracted from prior runs
 in the \code{NEP6} domain covering the Northeast Pacific. The
-\code{LBC} options are the same as in the \code{Arctic} for all open
-boundaries. We did not need any nudging to climatology in this case.
+\code{LBC} options are the same as in the \code{Arctic} for all
+open boundaries. There is no need for any nudging to climatology
+in this case.
 
 \subsubsection{Forcing}
 We are using the same MERRA forcing with extrapolation into land as
@@ -2113,15 +2113,14 @@ while the explicit horizontal diffusivity was turned off.
 
 \subsubsection{Output}
 The model writes voluminous information to standard out, as shown
-for the \code{UPWELLING} case.  It also writes out NetCDF files for
-restart, daily averages, stations and floats. In this case we also
-saved hourly history output.
-Plots can be made from any of these files; some examples are shown
-in Fig.\ \ref{fnwgoa1}--\ref{fnwgoa2} .
+for the \code{UPWELLING} case. It also writes out NetCDF files for
+restart, daily averages, stations and floats. We also saved hourly
+history output. Plots can be made from any of these files; some
+examples are shown in Fig.\ \ref{fnwgoa1}--\ref{fnwgoa2} .
 
 \begin{figure}
 \setlength{\unitlength}{10 mm}
-\begin{picture}(16,9)(0.0,0.4)
+\begin{picture}(16,13)(0.0,0.4)
 \includegraphics[width=16cm]{pics/sss_nwgoa}
   \end{picture}
 \caption{Surface salinity for 10 August, 2008.}
@@ -2130,7 +2129,7 @@ in Fig.\ \ref{fnwgoa1}--\ref{fnwgoa2} .
 
 \begin{figure}
 \setlength{\unitlength}{10 mm}
-\begin{picture}(16,18)(0.0,0)
+\begin{picture}(16,14)(0.0,0)
 \includegraphics[width=16cm]{pics/sst_nwgoa}
   \end{picture}
 \caption{Surface temperature and velocities for 10 August, 2008.}
