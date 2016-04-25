@@ -660,9 +660,9 @@ for each edge.
    \kitem{Vertical $\sigma$-coordinates parameters} \mbox{}
      \begin{klist}
        \kitem{THETA\_S}  $\sigma$-coordinate surface control parameter,
-     [$0 < \code{theta\_s} < 20$].
+     [$0 < \code{theta\_s} < 20$ for old style].
        \kitem{THETA\_B}  $\sigma$-coordinate bottom  control parameter,
-     [$0 < \code{theta\_b} < 1$].
+     [$0 < \code{theta\_b} < 1$ for old style].
        \kitem{TCLINE}   Width of the surface or bottom boundary layer
      in which higher vertical resolution is required during stretching.
      \end{klist}
@@ -899,7 +899,7 @@ direct \code{cppdefs.h} to include the file \code{upwelling.h}:
         #undef  MIX_GEO_UV
         #define MIX_S_UV
         #define SPLINES_VDIFF
-	#define SPLINES_VVISC
+        #define SPLINES_VVISC
         #define TS_U3HADVECTION
         #define TS_C4VADVECTION
         #undef  TS_MPDATA
@@ -926,7 +926,7 @@ direct \code{cppdefs.h} to include the file \code{upwelling.h}:
         #if defined GLS_MIXING || defined MY25_MIXING
         # define KANTHA_CLAYSON
         # define N2S2_HORAVG
-	# define RI_SPLINES
+        # define RI_SPLINES
         #else
         # define ANA_VMIX
         #endif
@@ -1790,7 +1790,7 @@ our Arctic domain---the header include file then becomes \code{arctic.h}:
 # define BULK_FLUXES
 # define CCSM_FLUXES
 # define ARCTIC_MERRA_HACK
-# if defined BULK_FLUXES || defined CCSM_FLUXES
+# if defined BULK_FLUXES
 #  define LONGWAVE_OUT
 #  undef DIURNAL_SRFLUX
 #  define SOLAR_SOURCE
