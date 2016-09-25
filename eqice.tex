@@ -175,7 +175,7 @@ constants are listed in Table \ref{icemomvars}.
   \hline
 \end{tabular}
 }
-\caption{Variables used in the ice momentum equations}
+\caption{Variables used in the ice momentum equations.}
 \label{icemomvars}
 \end{table}
 
@@ -183,6 +183,159 @@ Note that Hibler's $h_I$ variable is equivalent to our $A h_i$
 combination - his $h_I$ is the average thickness over the whole
 gridbox while our $h_i$ is the average thickness over the ice-covered
 fraction of the gridbox. 
+
+\subsubsection{Landfast ice}
+\label{Landfast_ice}
+
+The Arctic ocean has many shallow shelves, on which landfast ice
+can form every winter. The model as described thus far has no way to
+reproduce the landfast ice, but \citet{Lemieux_2015} describes a
+landfast ice parameterization. Basal stress terms $\tau_b$ are added to
+equations (\ref{ist1}) and (\ref{ist2}) representing a bottom drag
+applied to the deepest ice keels. Included is a parameterization of the
+ice thickness distribution so that even a single ice-category model can
+use the landfast ice option. Figure \ref{f_landfast} shows a cartoon of
+an ice floe with a keel.
+
+\begin{figure}[ht]
+
+\begin{center}
+\definecolor{cc87137}{RGB}{200,113,55}
+\definecolor{c2ad4ff}{RGB}{42,212,255}
+\definecolor{c55ddff}{RGB}{85,221,255}
+\definecolor{c0072ff}{RGB}{0,114,255}
+
+
+\begin{tikzpicture}[y=0.80pt, x=0.80pt, yscale=-1.000000, xscale=1.000000, inner sep=0pt, outer sep=0pt]
+\begin{scope}[shift={(0,-485.43307)}]
+  \path[fill=cc87137,rounded corners=0.0000cm] (149.3704,752.5492) rectangle
+    (449.3704,772.5492);
+  \path[draw=c2ad4ff,fill=c55ddff,line join=miter,line cap=butt,even odd rule,line
+    width=0.800pt] (150.0000,602.3622) -- (150.0000,622.3622) --
+    (250.0000,622.3622) -- (260.0000,741.9196) -- (270.0000,622.3622) --
+    (360.0000,622.3622) -- (360.0000,602.3622) -- (270.0000,602.3622) --
+    (260.0000,592.3622) -- (250.0000,602.3622) -- cycle;
+  \path[draw=c0072ff,line join=miter,line cap=butt,miter limit=4.00,even odd
+    rule,line width=1.600pt] (360.0000,606.7695) .. controls (365.0000,606.7695)
+    and (374.1050,600.8756) .. (377.6873,601.0614) .. controls (381.2696,601.2471)
+    and (379.9588,603.7348) .. (395.6076,607.9057) .. controls (406.2484,608.4328)
+    and (407.0792,603.2019) .. (417.7482,602.1621) .. controls (430.6436,599.4896)
+    and (427.8328,609.1786) .. (441.1189,609.7014) .. controls (452.2796,609.3679)
+    and (447.9592,604.7616) .. (458.6417,600.6002) .. controls (461.0764,598.8109)
+    and (473.4825,605.7417) .. (472.3709,604.8806);
+  \path[draw=c0072ff,line join=miter,line cap=butt,miter limit=4.00,even odd
+    rule,line width=1.600pt] (150.0000,604.2510) .. controls (148.3100,605.5942)
+    and (142.4698,606.3718) .. (140.0415,606.6003) .. controls (125.5603,609.5491)
+    and (124.8491,595.8552) .. (116.5882,605.9987) .. controls (111.6403,609.6048)
+    and (104.8953,602.7983) .. (99.3704,605.4365);
+\end{scope}
+  \path[draw=black,dash pattern=on 2.40pt off 0.80pt,line join=miter,line
+    cap=butt,miter limit=4.00,even odd rule,line width=0.800pt] (150.0000,35.4486)
+    -- (150.0000,95.5276);
+  \path[draw=black,dash pattern=on 2.40pt off 0.80pt,line join=miter,line
+    cap=butt,miter limit=4.00,even odd rule,line width=0.800pt] (450.0000,36.7078)
+    -- (450.0000,98.0460);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (280.8509,47.3375) -- (150.6296,47.3375);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (280.2213,76.7816) -- (150.6296,76.7816);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (296.0000,77.4112) -- (360.5953,77.4112);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (308.0000,47.3375) -- (450.0000,47.3375);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (280.0000,186.9291) -- (280.0000,136.9291);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (280.0000,206.9291) -- (280.0000,256.9291);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (210.0000,86.9291) -- (210.0000,116.9291);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (210.0000,166.9291) -- (210.0000,136.9291);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (250.0000,86.9291) -- (250.0000,106.9291);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (250.0000,146.9291) -- (250.0000,116.9291);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (360.0000,86.9291) -- (361.2592,120.0034);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (360.0000,166.9291) -- (360.0000,136.9291);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (149.6707,180.0034) -- (149.6707,120.5593);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (149.7818,197.4850) -- (150.4114,265.7437);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (210.0000,86.9291) -- (210.0000,116.9291);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (210.0000,166.9291) -- (210.0000,136.9291);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (250.0000,86.9291) -- (250.0000,106.9291);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (250.0000,146.9291) -- (250.0000,116.9291);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (360.0000,86.9291) -- (361.2592,120.0034);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (360.0000,166.9291) -- (360.0000,136.9291);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+    (219.2597,121.9665) -- (249.2597,121.9665);
+  \path[->,>=stealth,draw=black,line join=miter,line cap=butt,even odd rule,line width=0.800pt]
+(302.1470,121.8554) -- (272.1470,121.8554);
+
+  \path[fill=black,line join=miter,line cap=butt,line width=0.800pt]
+    (269.3704,202.5219) node[above right] (text7731) {$h_{rb}$};
+  \path[fill=black,line join=miter,line cap=butt,line width=0.800pt]
+    (362.4447,135.0403) node[above right] (text7735) {$h_d$};
+  \path[fill=black,line join=miter,line cap=butt,line width=0.800pt]
+    (283.7776,52.5219) node[above right] (text7739) {$\Delta x$};
+  \path[fill=black,line join=miter,line cap=butt,line width=0.800pt]
+    (284.4073,80.6330) node[above right] (text7743) {$l_i$};
+  \path[fill=black,line join=miter,line cap=butt,line width=0.800pt]
+    (143.1481,194.4107) node[above right] (text7747) {$h_w$};
+  \path[fill=black,line join=miter,line cap=butt,line width=0.800pt]
+    (193.1481,108.8180) node[above right] (text7751) {$h_l$};
+  \path[fill=black,line join=miter,line cap=butt,line width=0.800pt]
+    (231.8888,113.1515) node[above right] (text7755) {$h_{rt}$};
+  \path[fill=black,line join=miter,line cap=butt,line width=0.800pt]
+    (254.3626,127.4611) node[above right] (text4378) {$\beta l_i$};
+\end{tikzpicture}
+\caption{Cartoon of an ice floe with a deep keel.}
+\label{f_landfast}
+\end{center}
+\end{figure}
+
+\begin{table}[pt]
+\hspace{9.5 mm}
+\vbox{
+\begin{tabular}{|c|c|l|} \hline
+  Variable & Value & Description \\ \hline
+  $h_w$ && water depth \\
+  $h_{rt}$ && ridge height above level ice \\
+  $h_{rb}$ && draft of keels below level ice bottom \\
+  $h_d$ && draft of ice below sea surface \\
+  $l_i$ && length of ice floe within grid cell \\
+  $\beta$ & O(0.01) & ridged fraction of floe \\
+  $k_1$ & 8.0 & tunable parameter \\
+  $k_2$ & 15.0 & tunable parameter \\
+  $u_0$ & $5.0\times 10^{-5}$ & small velocity \\
+  $C_b$ & 20 & ice strength parameter \\
+  \hline
+\end{tabular}
+}
+\caption{Variables used in the landfast ice parameterization.}
+\label{fasticevars}
+\end{table}
+
+Introducing the tunable parameters $k_1$ and $k_2$, plus the
+expression $h_c = A h_w/k_1$, the $u$-component of the basal
+stress due to the dragging of ice keels is computed as:
+\begin{equation}
+  \tau_{bu} = 
+    \begin{cases}
+      0& \text{if $h \leq h_c$},\\
+      k_2 \left( \frac{u}{|\vec{v}| + u_0} \right)
+            (h-h_c)\exp^{-C_b(1-A)}& \text{if $h > h_c$}.
+    \end{cases}
+\end{equation}
+The expression for the $v$-component is similar.
 
 \subsection{Thermodynamics}
 \label{Growth}
