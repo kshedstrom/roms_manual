@@ -59,13 +59,11 @@ running it.
 
 \subsection{Acquiring the ROMS code}
 The main ROMS code is available for download via \code{svn} at
-\url{https://www.myroms.org/svn/src/}.
-The version of the model described in this document is a merger between
-ROMS 3.7 and a sea-ice model.
-The sea ice code is a branch off a different repository and requires
-special access---contact Dave Robertson (as above) for more information.
-Alternately, it is available at
-\href{https://github.com/kshedstrom/roms}{github}.
+\url{https://www.myroms.org/svn/src/}. The version of the model
+described in this document is a merger between ROMS 3.7 and a sea-ice
+model and is available at
+\href{https://github.com/kshedstrom/roms}{github}. I am no longer
+maintaining the svn branch on the myroms.org site.
 
 ROMS comes with several cases all ready to go at the flip
 of a switch. Try these out first and learn how they are set up.
@@ -166,7 +164,8 @@ and turn on the \code{-g} flag for debugging.
   recommended! If you set this, you can skip the next two.
   \kitem{NETCDF\_INCDIR} The location of the \code{netcdf.mod} and
   \code{typesizes.mod} files.
-  \kitem{NETCDF\_LIBDIR} The location of the NetCDF library.
+  \kitem{NETCDF\_LIBDIR} The location of the NetCDF and netcdf-fortran
+  libraries.
 \end{klist}
 
 \kitem{FORT} A shorthand name for the compiler to be used when
@@ -184,7 +183,8 @@ The default is ``\code{.}'', the current directory.
 in a build directory to avoid clutter. The default is \code{Build}
 under the current directory. Set it to something else if you want
 to keep these files for multiple projects at the same time, each in
-their own directory.
+their own directory or if they need to be outside your source tree to
+comply with system quotas.
 \end{klist}
 \end{klist}
 
@@ -198,7 +198,8 @@ Before compiling, you will need to find out some background information:
  \item Is there a working NetCDF-fortran library?
  \item Where is it?
  \item Was it built with the above compiler?
- \item Did it come with a working \code{nc-config}?
+ \item Did it come with a working \code{nc-config}? How about
+ \code{nf-config}?
  \item Do you have access to MPI or OpenMP?
 \end{itemize}
 As described more fully in \S\ref{Inc_fort}, the \code{makefile} will be
@@ -355,7 +356,7 @@ for a first view of what's going on.
 Other tools include
 \href{http://www.mathworks.com/products/matlab/}{Matlab},
 \href{http://www.python.org/}{Python},
-\href{http://www.ncl.ucar.edu/}{NCL}
+\href{http://www.ncl.ucar.edu/}{NCL},
 \href{https://www.myroms.org/wiki/index.php/Plotting_Package_Installation}{Fortran}
 and \href{http://www.ferret.noaa.gov/Ferret/}{ferret}.
 

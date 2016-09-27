@@ -348,7 +348,7 @@ be included in the tides forcing file.
 \noindent {\bf(d) Rivers}
 
 Point sources can be used to provide river inflow to the model.
-These too can be specified in a forcing file if not provided via
+These have their own input file (\code{SSFNAME}) if not provided via
 \code{ana\_psource}.
 
 \subsubsection{\code{ocean.in}}
@@ -497,9 +497,9 @@ for each edge.
      records.
        \kitem{NDEFHIS}  Number of time-steps between starting new history
      files.
-       \kitem{NHIS2}  Number of time-steps between writing secondary
+       \kitem{NQCK}  Number of time-steps between writing secondary
      history records.
-       \kitem{NDEFHIS2}  Number of time-steps between starting new
+       \kitem{NDEFQCK}  Number of time-steps between starting new
      secondary history files.
        \kitem{NTSAVG}    Starting time-step for the accumulation of
      output time-averaged data.  For instance, you might want to average
@@ -780,7 +780,7 @@ Values for all of these for the ice model are now set in \code{ice.in}.
      \begin{klist}
        \kitem{Hout} History output switches, one line per variable.
 Check the \code{ocean.in} file for the names of the fields involved.
-       \kitem{Hout2} Secondary history output switches, one line
+       \kitem{Qout} Secondary history output switches, one line
        per variable.
 Check the \code{ocean.in} file for the names of the fields involved.
        \kitem{Aout} Averages output switches, one line per variable.
@@ -829,10 +829,12 @@ for forcing files.
      \end{klist}
     \kitem{Output NetCDF file names} \mbox{}
      \begin{klist}
+       \kitem{DAINAME}  Data assimilation next cycle initial conditions
+     file.
        \kitem{GSTNAME}  GST analysis restart file.
        \kitem{RSTNAME}  Restart file.
        \kitem{HISNAME}  History file.
-       \kitem{HIS2NAME} Secondary history file.
+       \kitem{QCKNAME}  Secondary history file.
        \kitem{TLMNAME}  Tangent linear file.
        \kitem{TLFNAME}  Impulse forcing file (for tangent linear model).
        \kitem{ADJNAME}  Adjoint file.
@@ -1042,7 +1044,7 @@ In this problem we want to resolve the
 surface Ekman layer and to use a surface wind stress rather than a body
 force.  We want the amplitude of the wind to ramp up with time so we
 modify \code{ana\_smflux.h} accordingly.
-The wind will build to an amplitude of 0.1 Pascals / $\rho_o$,
+The wind stress will build to an amplitude of 0.1 Pascals / $\rho_o$,
 or $10^{-4} m^2 s^{-2}$.
 
 We need to edit \code{ana\_vmix.h} to make sure that the
@@ -1072,6 +1074,8 @@ records every 1/4 day, restart records once a day.
      LDEFOUT == T
         NHIS == 72
      NDEFHIS == 0
+        NQCK == 0
+     NDEFQCK == 0
       NTSAVG == 1
         NAVG == 72
      NDEFAVG == 0
@@ -1103,7 +1107,8 @@ The vertical stretching is set to a modest value of
 \label{Output}
 The model writes much information to standard out. While I like
 having \code{ninfo} set to 1 in general, I set it to 72 here to save
-space:
+space. Also note that this was run before the secondary history output
+option was added to the trunk code.
 \begin{verbatim}
 
  Model Input Parameters:  ROMS/TOMS version 3.7  
@@ -1698,9 +1703,9 @@ our Arctic domain---the header include file then becomes \code{arctic.h}:
 # ifdef ICE_MODEL
 #  define ANA_ICE
 #  define INI_GLORYS_ICE
-#  define  OUTFLOW_MASK
-#  define  FASTICE_CLIMATOLOGY
-#  undef ICE_LANDFAST
+#  define OUTFLOW_MASK
+#  undef  FASTICE_CLIMATOLOGY
+#  define ICE_LANDFAST
 #  define ICE_THERMO
 #  define ICE_MK
 #  define ICE_MOMENTUM
@@ -1763,7 +1768,7 @@ our Arctic domain---the header include file then becomes \code{arctic.h}:
 #ifdef SOLVE3D
 # define WTYPE_GRID
 
-# undef LMD_MIXING
+# define LMD_MIXING
 # ifdef LMD_MIXING
 #  define LMD_RIMIX
 #  define LMD_CONVEC
@@ -1774,7 +1779,7 @@ our Arctic domain---the header include file then becomes \code{arctic.h}:
 #  undef LMD_DDMIX
 # endif
 
-# define GLS_MIXING
+# undef GLS_MIXING
 # undef MY25_MIXING
 
 # if defined GLS_MIXING || defined MY25_MIXING
@@ -1789,7 +1794,7 @@ our Arctic domain---the header include file then becomes \code{arctic.h}:
 # define CORE_FORCING
 # define BULK_FLUXES
 # define CCSM_FLUXES
-# define ARCTIC_MERRA_HACK
+# undef ARCTIC_MERRA_HACK
 # if defined BULK_FLUXES
 #  define LONGWAVE_OUT
 #  undef DIURNAL_SRFLUX
@@ -1827,8 +1832,8 @@ our Arctic domain---the header include file then becomes \code{arctic.h}:
 
 #define LTIDES
 #ifdef LTIDES
-# ifndef USE_DEBUG
-#  define FILTERED
+# if defined AVERAGES && !defined USE_DEBUG
+#  undef FILTERED
 # endif
 # define SSH_TIDES
 # define UV_TIDES
@@ -1993,12 +1998,14 @@ Arctic ocean \citep{Whitefield_2015}, which includes monthly river
 temperature. These are applied as point sources to include the effects
 of bringing in warm water. For the rest of the domain, we are applying
 \citet{Dai_2009} as the \code{RUNOFF} field. Other forcings include a
-nudging to sea surface salinity, a fastice climatology from Andy Mahoney,
-tides from OTPS and a nudging to a monthly climatology around the edges
-from the same sources as the boundary conditions.
+nudging to sea surface salinity, tides from OTPS and a nudging to
+a monthly climatology around the edges from the same sources as the
+boundary conditions. We were using a landfast ice climatology for the
+Beaufort Sea from Andy Mahoney, but have since switched to a landfast
+ice parameterization from \citet{Lemieux_2015}.
 
 \subsubsection{ocean.in}
-We use an internal time-step of 200 $s$ and an external time-step of 10
+We use an internal time-step of 60 to 100 $s$ and an external time-step of 10
 $s$. The horizontal viscosity and diffusion is:
 \begin{verbatim}
         TNU2 == 5.0d0  5.0d0                    ! m2/s

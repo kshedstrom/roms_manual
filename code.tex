@@ -9,7 +9,7 @@ representer model for data assimilation purposes. This document
 describes the uncoupled forward model only, specifically the version
 used for our domains containing sea ice and other
 changes from the main trunk code. Details are subject to change
-without notice - check your own source code for specific details as
+without notice---check your own source code for specific details as
 they apply to you.
 
 The directories shown here are:
@@ -181,9 +181,11 @@ The directories shown here are:
 }}}}
 \put(1501,-5161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}ROMS/}%
 }}}}
-\put(1501,-5461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}User/}%
+\put(1501,-5461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}SeaIce/}%
 }}}}
-\put(1501,-5761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Waves/}%
+\put(1501,-5761){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}User/}%
+}}}}
+\put(1501,-6061){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Waves/}%
 }}}}
 \put(1501,-2461){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Apps/}%
 }}}}
@@ -252,7 +254,9 @@ The directories shown here are:
     by Hernan.
 \end{klist}
   \kitem{SeaIce} This is code for coupling to the Los Alamos CICE model
-    with some tips in README.CICE.
+    with some tips in README.CICE. It works, although the coupling is
+    inefficient and we hope to provide a better coupling via COAWST or
+    some other means.
   \kitem{User} Some might choose to use this directory rather than
     the Apps directory. It serves the same purpose but is arranged
     by file type rather than by application.
@@ -729,8 +733,8 @@ variables. The complete list is:
     is defined, this will set up the variational data assimilation
     variables.
   \kitem{mod\_grid.F} This provides the storage for the model grid fields. 
-  \kitem{mod\_ice.F} If \code{ICE\_MODEL} is defined, this will provide
-    storage for the ice fields.
+  \kitem{mod\_ice.F} If \code{ICE\_MODEL} or \code{CICE\_MODEL} is
+    defined, this will provide storage for the ice fields.
   \kitem{mod\_iounits.F} This contains a number of variables used by the
     I/O, including file names and file IDs.
   \kitem{mod\_kinds.F}  This contains the integers associated with the
@@ -1042,7 +1046,7 @@ step is done and in the monotonicity constraining algorithms.
   \citep{SS2003}.
     \kitem{PJ\_GRADPSQ4}  Define for quartic 4 Pressure Jacobian
   \citep{SS2003}.
-    \kitem{DJ\_GRADPS}  Define for weighted density Jacobian
+    \kitem{WJ\_GRADPS}  Define for weighted density Jacobian
   \citep{Song98}.
     \kitem{ATM\_PRESS}  Define to impose atmospheric sea-level pressure
   onto the sea surface.
@@ -1070,6 +1074,8 @@ step is done and in the monotonicity constraining algorithms.
     \kitem{COOL\_SKIN} Define for cool skin correction.
     \kitem{LONGWAVE} Define to compute net longwave radiation.
     \kitem{LONGWAVE\_OUT} Define to compute outgoing longwave radiation.
+  Sea-ice models compute the outgoing longwave over the
+  ice-covered part of the domain, requiring this option over the ocean.
     \kitem{EMINUSP} Define to compute evaporation minus precipitation.
     \kitem{EMINUSP\_SSH} Define to compute changes in SSH due to
   evaporation minus precipitation.
@@ -1085,7 +1091,7 @@ step is done and in the monotonicity constraining algorithms.
  from averaged data (with snapshots greater or equal to 24 hours)
  can be modulated by the local diurnal cycle which is a function
  longitude, latitude and day-of-year.
-   \begin{klist}
+  \begin{klist}
     \kitem{ALBEDO\_CLOUD} Define to use albedo equation for shortwave
   radiation (for water).
     \kitem{ALBEDO\_CSIM} Define to use albedo function of ice type
@@ -1114,7 +1120,8 @@ step is done and in the monotonicity constraining algorithms.
   model fields.
     \kitem{AVERAGES2}   Define to write out secondary time-averaged
   model fields.
-    \kitem{HISTORY2}   Define to write out secondary history fields.
+    \kitem{QUICK}       Define to write out secondary history fields.
+    \kitem{NO\_HIS}     Define to turn off writing of primary history fields.
     \kitem{AVERAGES\_DETIDE}    Define to write out time-averaged
   detided fields, one method.
     \kitem{FILTERED}    Define to write out time-averaged
@@ -1196,8 +1203,9 @@ step is done and in the monotonicity constraining algorithms.
     \kitem{ANA\_SNOW}    Define for analytic snow fall rate.
     \kitem{ANA\_SPFLUX}  Define for analytic surface passive tracers
   fluxes.
-    \kitem{ANA\_SPINNING}  Define for an analytic time-varying rotation
+    \kitem{ANA\_SPINNING}Define for an analytic time-varying rotation
   force.
+    \kitem{ANA\_SPONGE}  Define for analytic sponge (higher viscosity).
     \kitem{ANA\_SRFLUX}  Define for an analytic kinematic surface
   shortwave radiation.
     \kitem{ANA\_SSFLUX}  Define for an analytic kinematic surface
@@ -1239,8 +1247,14 @@ step is done and in the monotonicity constraining algorithms.
    density (epineutral) surfaces.
      \kitem{MIX\_S\_TS}  Define for diffusion along constant $s$
    surfaces.
-     \kitem{CLIMA\_TS\_MIX}  Define for diffusion of tracer perturbation
-     $T-Tclm$
+     \kitem{TS\_MIX\_CLIMA}  Define for diffusion of tracer perturbation
+   $T-Tclm$.
+     \kitem{TS\_MIX\_MAX\_SLOPE}  Define for maximum slope in
+   epineutral diffusion.
+     \kitem{TS\_MIX\_MIN\_STRAT}  Define for minimum stratification in
+   epineutral diffusion.
+     \kitem{TS\_MIX\_STABILITY}  Define for weighting diffusion between
+   two time levels.
   \end{klist}
   \kitem{Vertical mixing} \mbox{}
   \begin{klist}
@@ -1365,14 +1379,14 @@ step is done and in the monotonicity constraining algorithms.
    	  strength from \citet{Overland_1988}.
 	\kitem{ICE\_ADVECT} Define for advection of ice tracers.
 	\kitem{ICE\_SMOLAR} Define to use MPDATA for ice tracers (no
-	other option).
+	  other option).
 	\kitem{ICE\_UPWIND} Define for upwind advection.
 	\kitem{ICE\_SHOREFAST} Define for simple shorefast-ice
-	algorithm \citep{Budgell05}.
+	  algorithm \citep{Budgell05}.
 	\kitem{ICE\_LANDFAST} Define for alternate shorefast-ice
-	algorithm \citep{Lemieux_2015}.
+	  algorithm \citep{Lemieux_2015}.
 	\kitem{FASTICE\_CLIMATOLOGY} Define for clamping to a
-	climatology of landfast ice.
+	  climatology of landfast ice.
 	\kitem{ICE\_BULK\_FLUXES} Define for ice part of bulk flux
 	  computation.
 	\kitem{ICE\_I\_O} Define to allow light into the ice as heat.
@@ -1380,8 +1394,10 @@ step is done and in the monotonicity constraining algorithms.
  	  to ice.
 	\kitem{OUTFLOW\_MASK} Define for Hibler style outflow cells.
 	\kitem{INI\_GLORYS\_ICE} Define to read initial conditions
-	for \code{aice}, \code{hice}, and surface temperature from a
-	GLORYS file.
+	  for \code{aice}, \code{hice}, and surface temperature from a
+	  GLORYS file.
+	\kitem{NO\_SCORRECTION\_ICE} Define to turn off salinity
+          nudging under the ice.
       \end{klist}
   \end{klist}
   \kitem{Boundary conditions} \mbox{}
@@ -1482,6 +1498,7 @@ term in both Flather or reduced physics boundary conditions.
        \kitem{IVLEV\_EXPLICIT} Define for Ivlev explicit grazing
        algorithm.
     \end{klist}
+    \kitem{RED\_TIDE} Define for red tide biological model.
   \end{klist}
   \kitem{Sediment transport model} \mbox{}
   \begin{klist}

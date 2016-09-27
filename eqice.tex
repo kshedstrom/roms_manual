@@ -303,7 +303,8 @@ an ice floe with a keel.
 \end{figure}
 
 \begin{table}[pt]
-\hspace{9.5 mm}
+\begin{center}
+%\hspace{9.5 mm}
 \vbox{
 \begin{tabular}{|c|c|l|} \hline
   Variable & Value & Description \\ \hline
@@ -312,6 +313,7 @@ an ice floe with a keel.
   $h_{rb}$ && draft of keels below level ice bottom \\
   $h_d$ && draft of ice below sea surface \\
   $l_i$ && length of ice floe within grid cell \\
+  $\Delta x$ && $x$-dimension of grid cell \\
   $\beta$ & O(0.01) & ridged fraction of floe \\
   $k_1$ & 8.0 & tunable parameter \\
   $k_2$ & 15.0 & tunable parameter \\
@@ -320,6 +322,7 @@ an ice floe with a keel.
   \hline
 \end{tabular}
 }
+\end{center}
 \caption{Variables used in the landfast ice parameterization.}
 \label{fasticevars}
 \end{table}
