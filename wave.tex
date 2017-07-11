@@ -3,12 +3,13 @@
 This chapter describes the parts of ROMS for which the user is
 responsible when configuring it for a given application.  Section
 \ref{User} describes the process in a generic fashion while
-\S\ref{UpDown} and \S\ref{ARCTIC} step through the application of ROMS
-to upwelling/downwelling and wind-driven Arctic problems,
-respectively.  As distributed, ROMS is ready to run quite a few
-examples, where the C preprocessor flags determine which is to be
-executed.  Some of these examples are described in
-\citet{Haidvogel99}, some are listed here:
+\S\ref{UpDown}, \S\ref{ARCTIC}, \S\ref{NWGOA} and \S\ref{BEAUFORT}
+step through the application of ROMS to idealized upwelling/downwelling
+and several realistic wind-driven domains respectively.  As
+distributed, ROMS is ready to run quite a few examples, where the
+C preprocessor flags determine which is to be executed.  Some of
+these examples are described in \citet{Haidvogel99}, some are listed
+here:
 \begin{klist}
    \kitem{BASIN} This is a rectangular, flat-bottomed basin with
  double-gyre wind forcing. When run, it produces a western boundary
@@ -16,7 +17,7 @@ executed.  Some of these examples are described in
  which goes unstable and generates eddies. The goal is to run
  adiabatically to study the homogenization of potential vorticity.
  It earned its nickname of Big Bad Basin by taking a long time to
- run and causing difficulties for the spectral versions of SPEM.
+ run and by causing difficulties for the spectral versions of SPEM.
 %   \kitem{CANYON\_A} The canyon is a periodic channel with a steep shelf
 % along one wall, where the shelf contains a steep canyon.  There is a
 % periodic forcing which causes the water to oscillate along the
@@ -63,7 +64,7 @@ test package}. The ASCII input files are under \code{ROMS/External}.
 The four main sections you need to change in ROMS are the \code{makefile}
 or \code{build.bash}, an include file with \code{cpp} options, any
 analytic functions, and the ASCII input file. If more realistic fields
-are desired, you will have to provide other input files as well, for
+are desired, you will have to provide other NetCDF input files as well, for
 instance for the grid and the wind forcing.
 
 \subsubsection{Case Name}
@@ -160,9 +161,9 @@ number of active tracers:
 \end{tabbing}
 The number of biological tracers is set in the \code{biology.in} file.
 There are no constraints on these except $\code{Lm} \geq 2$, $\code{Mm}
-\geq 2$, $\code{N} \geq 2$ and $\code{NAT} \geq 1$.  \code{Lm} and
+\geq 2$, $\code{N} \geq 1$ and $\code{NAT} \geq 1$.  \code{Lm} and
 \code{Mm} should be at least 3 if the domain is periodic in that
-direction.
+direction. If $\code{N} == 1$, don't define SOLVE\_3D.
 
 \subsubsection{$x,y$ grid}
 The subroutine \code{get\_grid} or \code{ana\_grid} is called by
@@ -217,11 +218,9 @@ biggnu \= \kill
    \>while $k = \code{N}$ refers to the surface.
 \end{tabbing}
 
-%The range of $\xi$ is 1 to \code{L} and the range of $\eta$ is 1 to
-%\code{M}.  Therefore $i$ and $\xi$ are the same at $\psi$
-%points, as are $j$ and $\eta$.  (This matters in the floats---Dale and
-%I disagreed on how this should be and then Dale later changed to my
-%point of view after I had recoded things to match his).
+In terms of grid extent, the model is expecting values for rho-point indices
+from $i = 0$ through $i = $Lm$ + 1$, even though the computational
+domain extends from $i = 1$ through $i = $Lm.
 
 \subsubsection{Initial conditions}
 The initial values for the model fields are provided by either
@@ -318,9 +317,10 @@ surface tracer fluxes.
 \noindent {\bf(b) Climatology}
 
 One way to force the model is via a nudging to the tracer and/or
-momentum climatologies. Nudging to tracers was used in the North
-Atlantic simulations in sponge layers along the northern and southern
-boundaries. Set the climatologies in \code{ana\_tclima.h} or in a
+momentum climatologies. Nudging to values from a global model
+near the boundaries can be useful when the boundary conditions alone
+are not entirely well-behaved.
+Set the climatologies in \code{ana\_tclima.h} or in a
 file read by \code{get\_data}, set \code{LtracerCLM} in
 \code{ocean\_wiki\_test.in} and also set the array \code{Tnudgcof} in
 either \code{ana\_nudgcoef.h} or in a file (with name in \code{NUDNAME}
@@ -365,9 +365,10 @@ equals signs. It is possible for ROMS to run on more than one grid
 simultaneously, with the number of grids being read from the input
 file. If there is one equals sign (\code{=}), ROMS will use the
 corresponding value for all grids. If there are two (\code{==}), ROMS
-will read a value for each grid. Thus far, our domains have used just
-one grid since the inter-grid coupling has only been released very
-recently.
+will read a value for each grid. Thus far, most domains have used just
+one grid, though I did run a two-grid Palau domain---check in
+\code{Apps/Palau} for a two-grid ocean.in
+file (which I generated using a Python script).
 
 ROMS will ignore the parameters not needed by the current simulation,
 e.g., the GLS parameters will not be read if you are not using that
@@ -816,9 +817,12 @@ Check the \code{ocean.in} file for the names of the fields involved.
      \end{klist}
     \kitem{Boundary, Climatology and Forcing NetCDF files} These can
 each have an array of files, with one set of files per variable,
-each file in a set for a different range of times. See
-\code{ocean.in} for syntax. Note that the trunk code only does this
-for forcing files.
+each file in a set for a different range of times. See \code{ocean.in}
+for syntax. Note that the trunk code only does this for forcing
+files, while if you use the code described here, you {\em must}
+specify the number of files of the appropriate type before providing
+the filenames. For instance, not setting \code{NBCFILES} before setting
+\code{BRYNAME} will lead to a segmentation fault.
      \begin{klist}
        \kitem{NCLMFILES}  Number of climatology files.
        \kitem{CLMNAME}  Climatology file.
@@ -983,7 +987,7 @@ for diagnostic output with the \code{DIAGNOSTICS\_TS} and
 
 \subsubsection{Model domain}
 The flow does not vary in $x$, so \code{Lm} can be almost anything.
-Set the values for \code{Lm}, \code{Mm}, \code{N} and \code{NT} in
+Set the values for \code{Lm}, \code{Mm}, \code{N} and \code{NAT} in
 the input file:
 \begin{verbatim}
           Lm == 41            ! Number of I-direction INTERIOR RHO-points
@@ -1051,7 +1055,7 @@ We need to edit \code{ana\_vmix.h} to make sure that the
 vertical viscosity \code{Akv} is set to the value we want.  This
 must be large at the surface ($10^{-2} m^2 s^{-1}$) to create a thick
 Ekman layer, but has been chosen to decrease with depth.  We also need
-to check that \code{ana\_sbflux}, \code{ana\_stflux}, etc.\ are
+to check that \code{ana\_btflux}, \code{ana\_stflux}, etc.\ are
 set correctly, in this case taking the default of zero rather than
 explicitly setting anything for \code{UPWELLING}. However, we do set
 \code{ana\_srflux} to be non-zero in case we opt to turn on one of
@@ -1932,14 +1936,15 @@ stretching function:
 \end{verbatim}
 
 \subsubsection{Initial and boundary conditions}
-The best ocean fields we knew of when setting this up are known as SODA, a
-reanalysis from 1958 through 2008 by
-\citet{Carton_2005}. There are global HYCOM fields for later years.
-There are \code{Python} scripts to create initial, climatology and
-boundary conditions from the SODA and HYCOM files. Snow and ice initial
-conditions are set to uniform thicknesses where the SST is cold, zero
-otherwise. Ice boundary conditions are assumed to be not needed with the
-boundaries so far from the pack ice.
+The best ocean fields we knew of when setting this up are known as
+SODA, a reanalysis from 1958 through 2008 by \citet{Carton_2005}.
+There are global HYCOM fields for later years. There are \code{Python}
+scripts to create initial, climatology and boundary conditions from
+the SODA and HYCOM files. Ice initial thickness and concentration
+are extracted from a GLORYS simulation while the other initial ice
+conditions are set to uniform values where the SST is cold, zero
+otherwise. Ice boundary conditions are assumed to be not needed
+with the boundaries so far from the pack ice.
 
 The side known as ``South'' is across the North Pacific and the
 ``East'' and ``West'' sides are only open for a short bit in the
@@ -2126,9 +2131,9 @@ in this case.
 \subsubsection{Forcing}
 We are using the same MERRA forcing with extrapolation into land as
 described above, as well as a tidal file from OTPS. The fresh water
-forcing is daily output from a hydrology model, interpolated to the
-ROMS grid and then converted to lateral ``sources'' along the
-coastline.
+forcing is daily output from a hydrology model \citep{Beamer_2016},
+interpolated to the ROMS grid and then converted to lateral ``sources''
+along the coastline.
 
 \subsubsection{ocean.in}
 We use an internal time-step of 30 $s$ and an external time-step of
@@ -2161,5 +2166,170 @@ examples are shown in Fig.\ \ref{fnwgoa1}--\ref{fnwgoa2} .
   \end{picture}
 \caption{Surface temperature and velocities for 10 August, 2008.}
 \label{fnwgoa2}
+\end{figure}
+
+\subsection{Beaufort Sea example}
+\label{BEAUFORT}
+The Beaufort Sea (BEAUFORT) domains are set up much like the Arctic,
+described in \S\ref{ARCTIC}. This is actually two domains, a roughly
+3 km curvilinear domain (Beaufort2), and a rectangular domain with
+uniform 0.5 km resolution over the coastal Beaufort (Beaufort3),
+as shown in Fig.\ \ref{fbath_Beaufort2}--\ref{fbath_Beaufort3}.
+
+\begin{figure}
+\setlength{\unitlength}{10mm}
+\begin{picture}(0,8)(0,0)
+\includegraphics{pics/bath_Beau2}
+  \end{picture}
+\caption{Bathymetry of the larger Beaufort Sea domain.}
+\label{fbath_Beaufort2}
+\end{figure}
+
+\begin{figure}
+\setlength{\unitlength}{10mm}
+\begin{picture}(0,6)(0,0)
+\includegraphics{pics/bath_Beau3}
+  \end{picture}
+\caption{Bathymetry of the smaller Beaufort Sea domain.}
+\label{fbath_Beaufort3}
+\end{figure}
+
+The bathymetry was clipped to 3 $m$ and 2 $m$ depth for the two
+domains, respectively. The wetting and drying algorithm was turned
+on later for the small domain after an enclosed bay became unstable
+several years into the run. The bathymetry is from ARDEM version
+2 (Danielson, personal communication).
+
+\subsubsection{\code{beaufort.h}}
+The C preprocessor variable \code{BEAUFORT} has been chosen to label
+both of these domains---the header include file then becomes
+\code{beaufort.h}.  It shares many of the options with the Arctic
+domain, differing in that there are no outflow cells and in that
+we've enabled the KPP bottom boundary layer code. Like the Arctic,
+this domain uses the ARDAT hydrology for fresh water inputs, but
+unlike the Arctic, does not also include RUNOFF.
+
+\subsubsection{BEAUFORT code chunks}
+The \code{Apps/Beaufort} directory contains the \code{ana\_} family
+of include files for setting the bottom drag and the horizontal
+nudging coefficients. The only novelty here is that the two grids
+have differing nudging coefficients along the eastern boundary:
+\begin{verbatim}
+! cff3-point wide linearly tapered nudging zone
+      IF (Lm(ng) == 936) THEN ! Beaufort3 grid only
+        DO i=MAX(IstrT,Lm(ng)+1-INT(cff3)),IendT       ! EAST boundary
+          DO j=JstrT,JendT
+            wrk(i,j)=MAX(wrk(i,j),                                      &   
+     &               cff1+REAL(Lm(ng)+1-i,r8)*(cff2-cff1)/cff3)
+          END DO
+        END DO
+      END IF
+\end{verbatim}
+since it is only an open boundary in the smaller domain.
+
+\subsubsection{Model domains}
+A number of horizontal grid points was chosen to resolve the outer
+domain at roughly 3.0 km everywhere, while the inner domain has a
+uniform 0.5 km resolution. Values for \code{Lm}, \code{Mm}, and
+\code{N} are:
+\begin{verbatim}
+          Lm == 400           ! Number of I-direction INTERIOR RHO-points
+          Mm == 96            ! Number of J-direction INTERIOR RHO-points
+           N == 50            ! Number of vertical levels
+\end{verbatim}
+\begin{verbatim}
+          Lm == 936           ! Number of I-direction INTERIOR RHO-points
+          Mm == 160           ! Number of J-direction INTERIOR RHO-points
+           N == 30            ! Number of vertical levels
+\end{verbatim}
+The smaller domain is entirely on the shelf and was deemed too
+shallow to require our usual 50 levels. The vertical structure is
+again our current favorite:
+\begin{verbatim}
+  Vtransform == 2                          ! transformation equation
+ Vstretching == 4                          ! stretching function
+
+     THETA_S == 7.0d0                      ! surface stretching parameter
+     THETA_B == 2.0d0                      ! bottom  stretching parameter
+      TCLINE == 250.0d0                    ! critical depth (m)
+\end{verbatim}
+
+\subsubsection{Initial and boundary conditions}
+All initial and boundary conditions for the larger domain were
+extracted from prior runs of the \code{ARCTIC} domain while those
+for the smaller domain were extracted from the larger domain. In
+both cases, we use higher frequencies of one to three hours for the
+ice fields and daily averages for the ocean fields.  The \code{LBC}
+options are the same as in the \code{ARCTIC} for all open boundaries,
+except we now use ``RadNud'' for the ice velocities and ``Mix'' for
+all the other ice variables. There is no need for any nudging to
+climatology in the ocean, but we use a nudging band to monthly
+climatologies for some sea ice variables with a relatively short
+(three-day) timescale close to the boundary.
+
+\subsubsection{Forcing}
+We use the same MERRA forcing with extrapolation into land as
+described above, as well as a tidal file from OTPS. I've omitted
+the tidal potential contribution in these domains. The fresh water
+forcing is from the monthly ARDAT climatology \citep{Whitefield_2015},
+interpolated to the ROMS grid and then converted to lateral ``sources''
+along the coastline.
+
+\subsubsection{ocean.in}
+We use an internal time-step of 60 $s$ for the larger domain and an internal time-step of 45 $s$ for
+the smaller domain. Both have an external-internal time-step ratio of 20.
+The horizontal diffusivity and viscosity for the larger domain are:
+\begin{verbatim}
+        TNU2 == 2*1.0d0                         ! m2/s
+       VISC2 == 5.0d0                           ! m2/s
+\end{verbatim}
+while the smaller has:
+\begin{verbatim}
+        TNU2 == 2*0.2d0                         ! m2/s
+       VISC2 == 1.0d0                           ! m2/s
+\end{verbatim}
+
+\subsubsection{Output}
+The model writes voluminous information to standard out, as shown
+for the \code{UPWELLING} case. It also writes out NetCDF files for
+restart, daily averages, three-hourly averaged surface fields,
+stations and floats.  Plots can be made from any of these files;
+some examples are shown in Fig.\ \ref{fbeau1}--\ref{fbeau3}.  Fig.\
+\ref{fbeau1} shows the land-fast ice extent, in which it is clear
+that I've turned off the land-fast ice parameterization within the
+boundary nudging band.
+
+\begin{figure}
+\setlength{\unitlength}{10 mm}
+\begin{picture}(16,6)(0.0,0.0)
+\includegraphics[width=16cm]{pics/ice_vel_beau}
+  \end{picture}
+\caption{Ice speed contour at 0.0005 for the April climatology in
+  the smaller Beaufort domain. This contour was chosen as an estimate
+  of the land-fast ice extent.}
+\label{fbeau1}
+\end{figure}
+
+\begin{figure}
+\setlength{\unitlength}{10 mm}
+\begin{picture}(16,6)(0.0,0)
+\includegraphics[width=16cm]{pics/aice_beau}
+  \end{picture}
+\caption{Sea-ice concentration for the June climatology in the
+  smaller Beaufort domain. Note the location of a few warm rivers
+  between 148 and 151 W longitude.}
+\label{fbeau2}
+\end{figure}
+
+\begin{figure}
+\setlength{\unitlength}{10 mm}
+\begin{picture}(16,12)(0.0,0)
+\includegraphics[width=16cm]{pics/slice_beau}
+  \end{picture}
+\caption{Vertical slices for the August climatology in the smaller
+  Beaufort domain, (a) temperature, (b) salinity, (c) longshore
+  velocity and (d) cross-shore velocity. Note the warm, fresh water
+  right up on the shelf, trapped by a barrier island.}
+\label{fbeau3}
 \end{figure}
 

@@ -14,41 +14,46 @@ they apply to you.
 
 The directories shown here are:
 \begin{klist}
-  \kitem{Apps} This directory contains a subdirectory for each of my
-  personal applications and is not in the trunk code. The subdirectories
-  contain files used by each application: the ROMS header file for
-  setting cpp definitions, the analytic formulations for fields
-  computed in the model rather than read from files (bottom heat
-  flux of zero, for instance), and ASCII input files read by ROMS
-  on startup to set things such as forcing file names and model
-  time-step. Some of these applications are:
+  \kitem{Apps} This directory contains a subdirectory for each of
+  my personal applications and is not in the trunk code. In fact,
+  it is now a git submodule, i.e., a separate repository. Its
+  subdirectories contain files used by each application: the ROMS
+  header file for setting cpp definitions, the analytic formulations
+  for fields computed in the model rather than read from files
+  (bottom heat flux of zero, for instance), and ASCII input files
+  read by ROMS on startup to set things such as forcing file names
+  and model time-step. Some of these applications are:
 \begin{klist}
-  \kitem{Arctic} This is the curvilinear grid covering the whole Arctic
-    ocean, with 5--6 km resolution off Alaska, coarser to the far side.
+  \kitem{Arctic} This is the curvilinear grid covering the whole
+    Arctic ocean, with 5--6 km resolution off Alaska, coarser to the
+    far side.
+  \kitem{Beaufort} This is shared code for two different Beaufort Sea
+    domains, one curvilinear at 3 km, the other rectangular at 0.5 km.
   \kitem{Bering} This is a 10 km grid of the Bering Sea, generated for
     coupling to WRF in the COAWST branch, but also tested with CICE.
   \kitem{Circle} This is a circular domain wave propagation problem
     with an analytic solution used as a test problem \citep{Lamb32}.
   \kitem{NEP} This is the Northeast Pacific domain covering the
-    waters off the west coast of the US, from California to the Bering
-    Sea. It is a rectangular domain at about 11 km resolution when
-    viewed in a conformal conic projection with standard latitudes of
-    40 and 60 N.
+    waters off the west coast of the US, from California to the
+    Bering Sea. It is a rectangular domain at about 11 km resolution
+    when viewed in a conformal conic projection with standard
+    latitudes of 40 and 60 N.
   \kitem{NWGOA} This is a 1.5 km grid of the Northwest Gulf of Alaska. It
-    gets boundary conditions from the Northeast Pacific grid, but is not
-    aligned with it.
+    gets boundary conditions from the Northeast Pacific grid, but
+    is not aligned with it.
 \end{klist}
   Other unsupported applications are also here. The application-specific
   files included in the main trunk ROMS are elsewhere.
   \kitem{Atmosphere} This directory is under development, not
-    currently supported. If you want to run with a coupled atmosphere or
-    wave model, contact John Warner for access to the COAWST branch.
+    currently distributed. If you want to run with a coupled atmosphere
+    or wave model, contact John Warner for access to the COAWST
+    branch or wait for the NUOPC coupling code to become public.
   \kitem{Compilers} This contains \code{makefile} fragments as described in
     \S\ref{Mult_dir_make}.
   \kitem{Data} Directories under here contain example forcing, grid,
     and initial condition NetCDF files. There is also a directory
-    containing the headers of these files in the format produced by
-    \code{ncdump} (CDL).
+    containing the headers of these files in the format produced
+    by \code{ncdump} (CDL).
   \kitem{Lib} The ARPACK and MCT libraries are needed by the data
     assimilation codes and by the coupled models, respectively.
   \kitem{makefile} This is the standard ROMS makefile as described
@@ -57,8 +62,8 @@ The directories shown here are:
     the forward model, coupled models and others. See \S\ref{Master}.
   \kitem{README} A few words about the code, recommended for all github
     projects.
-  \kitem{README.CICE} A few words about the coupling to the Los Alamos
-    CICE model.
+  \kitem{README.CICE} A few words about the ``fake'' (direct) coupling
+    to the Los Alamos CICE model.
 
 \begin{figure}[t]
 \thinlines
@@ -191,7 +196,7 @@ The directories shown here are:
 }}}}
 \put(6976,-5161){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}Biology/}%
 }}}}
-\put(3376,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}NWGOA/}%
+\put(3376,-3361){\makebox(0,0)[lb]{{{{\color[rgb]{0,0,0}.../}%
 }}}}
 \end{picture}%
 \end{center}
@@ -224,6 +229,8 @@ The directories shown here are:
     \code{UPWELLING} case has the include file \code{upwelling.h}
     containing C preprocessor options for its periodic channel domain.
     The full list of available options is in \code{cppdefs.h}.
+    Another important include file is \code{globaldefs.h}, which can
+    define some helper C preprocessor tags.
   \kitem{License\_ROMS.txt} The open source license under which ROMS
     is copyrighted.
   \kitem{Modules} The ROMS data structures are now in Fortran 90
@@ -251,12 +258,23 @@ The directories shown here are:
   \kitem{Version} A file containing the time and date of this
     \code{svn} revision, also the \code{svn} URL---if and only if you
     check out with svn. At least the date in the file is kept current
-    by Hernan.
+    by Hernan. ``git log'' can show you the svn history, in commits such as:
+    \begin{verbatim}
+      commit b4e77b3a45208ee8059ca7b83e038371a60bc0d0
+      Author: arango <arango@f091316a-d328-0410-a40a-876eff57d070>
+      Date:   Fri Jun 23 23:22:54 2017 +0000
+
+          src:ticket:733
+	      
+	  git-svn-id: https://www.myroms.org/svn/src/trunk@851
+		  f091316a-d328-0410-a40a-876eff57d070
+    \end{verbatim}
+    where the commit is associated with trac ticket 733 and svn revision 851.
 \end{klist}
   \kitem{SeaIce} This is code for coupling to the Los Alamos CICE model
     with some tips in README.CICE. It works, although the coupling is
-    inefficient and we hope to provide a better coupling via COAWST or
-    some other means.
+    inefficient. The Norwegians have also been working on this problem
+    and they have released the \code{metroms} coupling using MCT on github.
   \kitem{User} Some might choose to use this directory rather than
     the Apps directory. It serves the same purpose but is arranged
     by file type rather than by application.
@@ -353,9 +371,9 @@ by finding out how many parallel processes are running and which one
 this is, then calls the following ROMS routines:
 \begin{klist}
   \kitem{initialize\_parallel} In the \code{mod\_parallel} module,
-    sets up a few variables, including some for the built-in profiling.
+    set up a few variables, including some for the built-in profiling.
   \kitem{inp\_par} Call \code{read\_phypar} to read in the ASCII input
-    file(s) used by ROMS, sets up the parallel tiles, then calls
+    file(s) used by ROMS, set up the parallel tiles, then call
     routines to read in the rest of the ASCII input for biology, ice,
     etc.
   \kitem{wclock\_on} In \code{timers.F}, initialize a timer for
@@ -363,13 +381,13 @@ this is, then calls the following ROMS routines:
   \kitem{mod\_arrays} Allocate and initialize the dynamically sized
     arrays in ROMS based on the grid sizes read in by \code{inp\_par}.
   \kitem{initial} Read in the initial conditions from one or more NetCDF
-    files (one per grid) or computes them analytically. Likewise
-    for the grid, plus it sets up the vertical grid spacing to be
+    files (one per grid) or compute them analytically. Likewise
+    for the grid, plus set up the vertical grid spacing to be
     used and many other details.
 \end{klist}
 
 \subsubsection{ROMS\_run}
-This calls one of these two routines with the RunInterval argument:
+Call one of these two routines with the RunInterval argument:
 \begin{klist}
   \kitem{main3d} or \code{main2d} Solve the full
   equations described in \S\ref{Num} (\code{main3d}) or the depth-integrated
@@ -423,7 +441,7 @@ successful or not. The routines called are:
      \kitem{ana\_ice} Analytic initial conditions for ice variables.
      \kitem{get\_state} Read initial fields from disk---either
    restart or from some other source which has been converted to the
-   appropriate format of NetCDF file.
+   appropriate NetCDF format.
      \kitem{get\_wetdry}  or \code{wetdry} Initialize wet/dry masks.
      \kitem{set\_depth}  Compute time-evolving depths.
      \kitem{set\_massflux}  Compute initial horizontal mass fluxes.
@@ -591,7 +609,7 @@ switches have been set. The subroutines are described as follows:
     time-varying forcing fields, boundary conditions, etc.
   \kitem{set\_data} Time interpolate between the records read in by
     \code{get\_data}.
-  \kitem{ini\_zeta} Check for wet/dry cells if needed and initializes
+  \kitem{ini\_zeta} Check for wet/dry cells if needed and initialize
     all the time levels of zeta.
   \kitem{ini\_fields} Initialize the 2-D velocities to match the
     vertical integral of the 3-D velocities, making all the time levels
@@ -599,21 +617,22 @@ switches have been set. The subroutines are described as follows:
   \kitem{set\_massflux} Compute horizontal mass fluxes, $\frac{H_z
     u}{n}$ and $\frac{H_z v}{m}$.
   \kitem{rho\_eos} Compute the nonlinear equation of state.
-  \kitem{diag} Compute some global sums, prints them, and checks them to
-    see if they are sensible. If not, it stops the model run.
+  \kitem{diag} Compute some global sums, print them, and check them to
+    see if they are sensible. If not, stop the model run.
   \kitem{radiation\_stress} Compute the radiation stresses due to
     wave-current interactions \citep{Mellor_2003,Mellor_2005}.
   \kitem{cawdir\_eval}, \code{ana\_albedo} or \code{albedo\_eval} Compute
     the albedo at the ice and ocean surface.
   \kitem{ccsm\_flux} Compute the surface fluxes from the atmosphere
     based on a marine boundary layer. This version comes from CCSM
-    \citep{Large_08} and is reputed to do better outside of the tropics.
+    \citep{Large_08} and is reputed to do better outside of the tropics
+    than the default bulk flux computation.
   \kitem{bulk\_flux} Compute the surface fluxes from the atmosphere
     based on a marine boundary layer. This version comes from COARE
     version 3.0 \citep{Fairall_2003,Taylor_2001,Oost_2002}.
   \kitem{ncep\_flux} Compute the surface fluxes from the NCEP
     atmospheric model.
-  \kitem{bblm} compute the bottom stresses from one of three bottom
+  \kitem{bblm} Compute the bottom stresses from one of three bottom
     boundary layer models.
   \kitem{set\_vbc} Compute the surface and bottom fluxes and stresses
     that aren't computed elsewhere---set vertical boundary conditions.
@@ -649,7 +668,7 @@ switches have been set. The subroutines are described as follows:
   \kitem{set\_avg2} Accumulate the time-averaged surface fields for the
   second averages output. Not in the trunk code.
   \kitem{output} Write to various output NetCDF files.
-  \kitem{rhs3d} Call \code{pre\_step3d} which computes a predictor
+  \kitem{rhs3d} Call \code{pre\_step3d} to compute a predictor
   step on the three-dimensional variables, then compute
   right-hand-sides of the three-dimensional velocity fields for the
   corrector step, including pressure gradients.
@@ -794,79 +813,79 @@ conditionally includes code bits for computing analytic values for a
 wide variety of fields. Many are alternates for reading from NetCDF
 files, especially for idealized problems.
    \begin{klist}
-     \kitem{ana\_aiobc} Compute open boundary conditions for the ice
+     \kitem{ana\_aiobc} Provide analytic open boundary conditions for the ice
    concentration.
      \kitem{ana\_albedo} Compute analytic surface albedo.
-     \kitem{ana\_biology} Compute analytic initial conditions for the
+     \kitem{ana\_biology} Provide analytic initial conditions for the
    biology tracers.
      \kitem{ana\_btflux}  Compute analytic kinematic bottom flux of
    tracer type variables (default of zero).
-     \kitem{ana\_cloud} Compute analytic cloud fraction.
+     \kitem{ana\_cloud} Provide analytic cloud fraction.
      \kitem{ana\_diag} Compute customized diagnostics.
-     \kitem{ana\_dqdsst} Compute analytic variation of surface heat
+     \kitem{ana\_dqdsst} Provide analytic variation of surface heat
    flux as a function of SST.
      \kitem{ana\_drag} Compute customized bottom drag coefficients.
-     \kitem{ana\_fsobc} Compute analytic open boundary conditions for
+     \kitem{ana\_fsobc} Provide analytic open boundary conditions for
    the free surface.
      \kitem{ana\_grid}  Set up an analytic grid.
-     \kitem{ana\_hiobc} Compute open boundary conditions for the ice
+     \kitem{ana\_hiobc} Provide analytic open boundary conditions for the ice
    thickness.
-     \kitem{ana\_hsnobc} Compute open boundary conditions for the snow
+     \kitem{ana\_hsnobc} Provide analytic open boundary conditions for the snow
    thickness.
-     \kitem{ana\_hsnobc} Compute open boundary conditions for the snow
+     \kitem{ana\_hsnobc} Provide analytic open boundary conditions for the snow
    thickness.
-     \kitem{ana\_humid} Compute analytic atmospheric humidity.
-     \kitem{ana\_ice} Compute analytic initial conditions for the sea ice.
+     \kitem{ana\_humid} Provide analytic atmospheric humidity.
+     \kitem{ana\_ice} Provide analytic initial conditions for the sea ice.
      \kitem{ana\_initial}  Set up analytic initial conditions for the ocean.
-     \kitem{ana\_lrflux}  Compute analytic kinematic surface
+     \kitem{ana\_lrflux}  Provide analytic kinematic surface
    downward longwave radiation.
      \kitem{ana\_m2clima} Set up an analytic climatology for the
    two-dimensional momentum.
-     \kitem{ana\_m2obc} Compute open boundary conditions for the
+     \kitem{ana\_m2obc} Provide analytic open boundary conditions for the
    two-dimensional momentum.
      \kitem{ana\_m3clima} Set up an analytic climatology for the
    three-dimensional momentum.
-     \kitem{ana\_m3obc} Compute open boundary conditions for the
+     \kitem{ana\_m3obc} Provide open boundary conditions for the
    three-dimensional momentum.
      \kitem{ana\_mask}  Set up an analytic mask.
      \kitem{ana\_ncep}  Set up analytic fields as if they came from NCEP.
      \kitem{ana\_nudgcoef}  Set up spatially dependent nudging
    coefficients for nudging to a climatology.
-     \kitem{ana\_pair}  Compute analytic sea-level air pressure.
-     \kitem{ana\_passive}  Compute analytic initial conditions for
+     \kitem{ana\_pair}  Provide analytic sea-level air pressure.
+     \kitem{ana\_passive}  Provide analytic initial conditions for
    passive tracers.
-     \kitem{ana\_perturb}  Compute analytic perturbations to the
+     \kitem{ana\_perturb}  Provide analytic perturbations to the
    initial conditions.
-     \kitem{ana\_psource}  Compute analytic point source fluxes.
-     \kitem{ana\_rain}  Compute analytic rainfall.
+     \kitem{ana\_psource}  Provide analytic point source fluxes.
+     \kitem{ana\_rain}  Provide analytic rainfall.
      \kitem{ana\_scope}  Set adjoint sensitivity spatial scope masking
    arrays.
-     \kitem{ana\_sediment}  Compute analytic initial conditions for the
+     \kitem{ana\_sediment}  Provide analytic initial conditions for the
    sediment tracers.
-     \kitem{ana\_smflux}  Compute analytic kinematic surface
+     \kitem{ana\_smflux}  Provide analytic kinematic surface
    momentum flux (wind stress).
-     \kitem{ana\_snow}  Compute analytic snowfall.
+     \kitem{ana\_snow}  Provide analytic snowfall.
      \kitem{ana\_specir}  Set surface solar downwelling spectral
      irradiance at just beneath the sea surface.
      \kitem{ana\_spinning}  Set time-variable rotation force as the
    sum of Coriolis and Centripetal accelerations.  This is used in polar
    coordinate applications (annulus grid).
-     \kitem{ana\_sponge} Compute spatially variable horizontal mixing
+     \kitem{ana\_sponge} Provide spatially variable horizontal mixing
    coefficients.
-     \kitem{ana\_srflux}  Compute analytic kinematic surface
+     \kitem{ana\_srflux}  Provide analytic kinematic surface
    shortwave radiation.
-     \kitem{ana\_ssh}  Compute analytic sea surface height.
-     \kitem{ana\_sss}  Compute analytic sea surface salinity.
-     \kitem{ana\_sst}  Compute analytic sea surface temperature.
-     \kitem{ana\_stflux}  Compute analytic kinematic surface
+     \kitem{ana\_ssh}  Provide analytic sea surface height.
+     \kitem{ana\_sss}  Provide analytic sea surface salinity.
+     \kitem{ana\_sst}  Provide analytic sea surface temperature.
+     \kitem{ana\_stflux}  Provide analytic kinematic surface
    flux of tracer type variables.
-     \kitem{ana\_tair}  Compute analytic air temperature.
-     \kitem{ana\_tclima}  Compute analytic tracer climatology fields.
-     \kitem{ana\_tobc}  Compute analytic open boundary conditions for
+     \kitem{ana\_tair}  Provide analytic air temperature.
+     \kitem{ana\_tclima}  Provide analytic tracer climatology fields.
+     \kitem{ana\_tobc}  Provide analytic open boundary conditions for
    all tracers (active, passive, biology, and sediment).
-     \kitem{ana\_vmix}  Compute analytic vertical mixing coefficients.
-     \kitem{ana\_winds}  Compute analytic winds.
-     \kitem{ana\_wwave}  Compute analytic wind-induced wave amplitude,
+     \kitem{ana\_vmix}  Provide analytic vertical mixing coefficients.
+     \kitem{ana\_winds}  Provide analytic winds.
+     \kitem{ana\_wwave}  Provide analytic wind-induced wave amplitude,
      direction and period.
    \end{klist}
 
@@ -880,17 +899,17 @@ processes check for the return code on reads and writes and exit on
 failure. In many cases, the master process is the only one actually
 doing the I/O, but it then broadcasts its status to the rest.
    \begin{klist}
-     \kitem{def\_*} Creates the ROMS NetCDF file of the appropriate
+     \kitem{def\_*} Create the ROMS NetCDF file of the appropriate
    type, including dimensions, attributes, and variables.
-     \kitem{def\_info} Adds some standard scalar variables to any NetCDF file.
-     \kitem{get\_*fld} Reads a field from a netcdf file, perhaps
+     \kitem{def\_info} Add some standard scalar variables to any NetCDF file.
+     \kitem{get\_*fld} Read a field from a netcdf file, perhaps
      using one of \code{nf\_fread2d} and its kin. \code{nf\_fread2d}
      is special in that it can read uniformly gridded forcing files
      and call \code{regrid} to regrid them onto the ROMS grid.
-     \kitem{wrt\_*} Writes to the ROMS NetCDF file of the appropriate type.
+     \kitem{wrt\_*} Write to the ROMS NetCDF file of the appropriate type.
    \end{klist}
 \kitem{Text input} ROMS can parse text files in a specific format.
-These files replace what other models use namelists for.
+These files replace what many other models use namelists for.
   \begin{klist}
     \kitem{read\_*} The ocean\_xx.in file is read by \code{read\_phypar}
     while others read the stations, floats, and other text files.
@@ -930,12 +949,12 @@ branch on github. They can be grouped into several categories:
 The default horizontal advection is 3rd-order upstream bias for
 3D momentum and 4th-order centered for 2D momentum. The default
 vertical advection is 4th-order centered for 3D momentum. If this
-is the case, no flags for momentum advection need to be activated except
-for \code{UV\_ADV}.
+is what you want, no flags for momentum advection need to be
+activated except for \code{UV\_ADV}.
 
 The 3rd-order upstream split advection (\code{UV\_U3ADV\_SPLIT}) can be used
 to correct for the spurious mixing of the advection operator in
-terrain-following coordinates. If this is the case, the advection
+terrain-following coordinates. If this is chosen, the advection
 operator is split into advective and viscosity components and several
 internal flags are activated in \code{globaldefs.h}.  Notice that
 horizontal and vertical advection of momentum is 4th-order centered
@@ -970,7 +989,7 @@ The default horizontal and vertical advection is 4th-order centered.
 
 The 3rd-order upstream split advection (\code{TS\_U3ADV\_SPLIT}) can be used
 to correct for the spurious diapycnal diffusion of the advection
-operator in terrain-following coordinates. If this is the case, the
+operator in terrain-following coordinates. If this is chosen, the
 advection operator is split in advective and diffusive components
 and several internal flags are activated in \code{globaldefs.h}.  Notice
 that horizontal and vertical advection of tracer is 4th-order centered
@@ -1396,7 +1415,7 @@ step is done and in the monotonicity constraining algorithms.
 	\kitem{INI\_GLORYS\_ICE} Define to read initial conditions
 	  for \code{aice}, \code{hice}, and surface temperature from a
 	  GLORYS file.
-	\kitem{NO\_SCORRECTION\_ICE} Define to turn off salinity
+	\kitem{NO\_SCORRECTION\_ICE} Define to turn off surface salinity
           nudging under the ice.
       \end{klist}
   \end{klist}
@@ -1425,8 +1444,8 @@ term in both Flather or reduced physics boundary conditions.
      \kitem{POT\_TIDES} Define if imposing potential tides.
      \kitem{RAMP\_TIDES} Define if ramping (over one day) tidal forcing
      from zero.
-     \kitem{ADD\_FSOBC} Define to tidal elevation to processed OBC data.
-     \kitem{ADD\_M2OBC} Define to tidal currents to processed OBC data.
+     \kitem{ADD\_FSOBC} Define to add tidal elevation to processed OBC data.
+     \kitem{ADD\_M2OBC} Define to add tidal currents to processed OBC data.
      \kitem{FSOBC\_REDUCED} Define for reduced physics when
      providing SSH boundary conditions but not the 2D momentum
      fields.
@@ -1435,9 +1454,9 @@ term in both Flather or reduced physics boundary conditions.
   \end{klist}
   \kitem{Climatology} These are for \code{OFFLINE} options only.
   \begin{klist}
-     \kitem{OCLIMATOLOGY} Define for processing the vertical momentum
+     \kitem{OCLIMATOLOGY} Define for reading (rather than computing) the vertical momentum
    climatology arrays.
-     \kitem{AKTCLIMATOLOGY} Define for processing the tracer
+     \kitem{AKTCLIMATOLOGY} Define for reading the tracer
      vertical diffusion climatology arrays.
   \end{klist}
   \kitem{Ecosystem models} \mbox{}
@@ -1465,7 +1484,7 @@ term in both Flather or reduced physics boundary conditions.
       \kitem{CLIM\_ICE\_1D} Define if 1-D with ice.
     \end{klist}
     \kitem{BIO\_UMAINE} Define for \citet{Xiu_2014},
-  \citet{Xiu_2012} model.
+  \citet{Xiu_2012} model with iron limitation.
     \begin{klist}
         \kitem{OXYGEN}
 	\kitem{CARBON}
@@ -1537,12 +1556,13 @@ term in both Flather or reduced physics boundary conditions.
     attribute on restart.
     \kitem{NO\_READ\_GHOST} Define to not include ghost points during
     read/scatter.
-    \kitem{NO\_WRITE\_GRID} Define to omit writing grid arrays.
+    \kitem{NO\_WRITE\_GRID} Define to omit writing of grid arrays.
     \kitem{PARALLEL\_IN} Define for parallel input via HDF5 or pnetcdf
     libraries.
     \kitem{PARALLEL\_OUT} Define for parallel output via HDF5 or pnetcdf
     libraries.
-    \kitem{PERFECT\_RESTART} Define to include perfect restart variables.
+    \kitem{PERFECT\_RESTART} Define to include reading and writing enough
+      variables and time levels for a perfect restart.
     \kitem{PNETCDF} Define for parallel I/O via pnetcdf library
     (classic format).
     \kitem{POSITIVE\_ZERO} Define for positive zero on output.
@@ -1602,7 +1622,8 @@ parallel design of ROMS were:
   \item Don't hard-code the number of processes.
   \item MPI and OpenMP share the same basic structure.
   \item Don't break the serial optimizations.
-  \item Same result as serial code for any number of processes.
+  \item Same result as serial code for any number of processes
+  (not always the case for large numbers of processes).
   \item Portability---able to run on any (Unix) system.
 \end{itemize}
 First, some \code{cpp} options. If we're compiling for \code{MPI},
@@ -1958,7 +1979,7 @@ syntax as the pre-parallel, pre-module code once had.
 
 In ROMS, the distributed memory I/O is all happening on the master process
 (0) unless you specifically ask it to use MPI-I/O, which requires
-either or both of \code{PARALLEL\_IN} \code{PARALLEL\_OUT} and
+either or both of \code{PARALLEL\_IN}, \code{PARALLEL\_OUT} and
 either of the \code{HDF5} or \code{PNETCDF} \code{cpp} flags to be
 defined. If you choose \code{HDF5}, you will be reading and/or writing
 \code{HDF5} files and will need to update your pre- and post-processing

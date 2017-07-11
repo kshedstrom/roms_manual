@@ -40,6 +40,11 @@ the first radius of deformation \citep{AL}.
 \label{fcgr}
 \end{figure}
 
+Note that the relative placement of the velocity points which match
+the indices of the central tracer point is known as the Southwest
+convention while some other well-known models use a Northeast
+convention.
+
 \subsubsection{Vertical grid}
 The vertical discretization also uses a second-order finite-difference
 approximation.  Just as we use a staggered horizontal grid, the 
@@ -158,8 +163,8 @@ since these are the values inside masked regions.
 
 There is now an option to have wetting and drying in the model, in
 which a cell can switch between being wet or being dry as the tides
-come in and go out, for instance. Cells which are masked out as in
-Fig.~\ref{fmask1} are never allowed to be wet, however.
+come in and go out, for instance. However, cells which are masked out as in
+Fig.~\ref{fmask1} are never allowed to be wet.
 \begin{itemize}
    \item In the case of wetting and drying, a critical depth, $D_{crit}$,
 is supplied by the user.
@@ -351,7 +356,7 @@ is the flux through an interface between adjacent grid boxes.
 This method of averaging was chosen because it internally conserves
 first moments in the model domain, although it is still possible to
 exchange mass and energy through the open boundaries. The method is
-similar to that used in \citet{AL}; though their
+similar to that used in \citet{AL}, though their
 scheme also conserves enstrophy. Instead, we will focus on (nearly) retaining
 constancy preservation while coupling the barotropic
 (depth-integrated) equations and the baroclinic equations.
@@ -1031,9 +1036,9 @@ for centered differencing and a leapfrog time step while ROMS uses
 one-sided differences.
 
 The radiation approach is appropriate for waves leaving the domain. A
-check is made to see which way the phase velocity is headed. If it is
-entering the domain, a zero gradient condition is applied unless the next
-option is also specified.
+check is made to see which way the phase velocity is headed. If it
+is entering the domain, a zero gradient condition is applied unless
+an additional nudging option is also specified as described below.
 
 \subsubsection{Mixed radiation-nudging boundary condition}
 As described in \citep{Marchesiello2001}, ROMS has an option for providing

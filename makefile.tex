@@ -48,7 +48,7 @@ target: dependencies
 <TAB>  command
 \end{verbatim}
 The target \code{model} depends on the object files, \code{main.o}
-and friends. They have to exist and be up to date before model's link
+and friends. They have to exist and be up to date before \code{model}'s link
 command can be run. If the target is out of date according to the
 timestamp on the file, then the commands will
 be run. Note that the tab is required on the command lines.
@@ -136,8 +136,8 @@ model: $(OBJS)
 \end{verbatim}
 as your whole \code{Makefile}. \code{Make} will automatically invoke its
 default Fortran compiler, possibly \code{f77} or \code{g77}, with whatever
-default compile options it happens to have (\code{FFLAGS}). One built
-in rule often looks like:
+default compile options it happens to have (\code{FFLAGS}). One built-in
+rule often looks like:
 \begin{verbatim}
 .c.o:
         $(CC) $(CFLAGS) -c $<

@@ -333,11 +333,12 @@ stress due to the dragging of ice keels is computed as:
 \begin{equation}
   \tau_{bu} = 
     \begin{cases}
-      0& \text{if $h \leq h_c$},\\
+      0& \text{if $h_w \geq h_c$},\\
       k_2 \left( \frac{u}{|\vec{v}| + u_0} \right)
-            (h-h_c)\exp^{-C_b(1-A)}& \text{if $h > h_c$}.
+            (h_w-h_c)\exp^{-C_b(1-A)}& \text{if $h_w < h_c$}.
     \end{cases}
 \end{equation}
+where $h_w$ is the water depth.
 The expression for the $v$-component is similar.
 
 \subsection{Thermodynamics}
@@ -347,7 +348,7 @@ The thermodynamics is based on calculating how much ice grows and
 melts on each of the surface, bottom, and sides of the ice floes,
 as well as frazil ice formation \citep{Mellor89}.
 Once the ice tracers are advected, the ice concentration and
-thickness are timestepped according to the terms on the right:
+thickness are timestepped according to the terms on the right.
 
 Equations (\ref{ist3a}) and (\ref{ist3b}) become:
 \begin{align}
@@ -445,10 +446,8 @@ some effort.
 \begin{tabular}{|c|c|l|} \hline
   Variable & Value & Description \\ \hline
   $\alpha_w$ & 0.10 & shortwave albedo of water \\
-  $\alpha_i$ & 0.60 & shortwave albedo of wet ice \\
-  $\alpha_i$ & 0.65 & shortwave albedo of dry ice \\
-  $\alpha_s$ & 0.72 & shortwave albedo of wet snow \\
-  $\alpha_s$ & 0.85 & shortwave albedo of dry snow \\
+  $\alpha_i$ & 0.60, 0.65 & shortwave albedo of wet, dry ice \\
+  $\alpha_s$ & 0.72, 0.85 & shortwave albedo of wet snow \\
   $C_k$ && snow correction factor \\
   $C_{pi}$ & 2093 J kg$^{-1}$ K$^{-1}$ & specific heat of ice \\
   $C_{po}$ & 3990 J kg$^{-1}$ K$^{-1}$ & specific heat of water \\

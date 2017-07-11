@@ -18,7 +18,7 @@ this. Dave Robertson (robertson@marine.rutgers.edu) is the one to
 talk to if you would like to contribute to the wiki. On the other
 hand, this manual is now at
 \href{https://github.com/kshedstrom/roms_manual}{github}, with all that
-implies.
+implies (not that I've gotten pull requests there yet).
 
 \subsection{Prerequisites}
 As mentioned in Chapter \ref{Intro}, ROMS has some external
@@ -245,7 +245,7 @@ This is an example of a system where \code{nc-config} is broken but
 \end{verbatim}
 If you insist on using the old method, it requires setting the
 location of the NetCDF files in one of three ways:
-\begin{itemize}
+\begin{enumerate}
   \item Hardcoding lines in the Compilers/xxx-yyy.mk file:
 \begin{verbatim}
     NETCDF_INCDIR ?= /usr/local/include
@@ -267,7 +267,7 @@ The \code{bash} equivalent is:
     export NETCDF_LIBDIR=/usr/local/netcdf4/lib
     export HDF5_LIBDIR=/usr/local/hdf5/lib
 \end{verbatim}
-\end{itemize}
+\end{enumerate}
 Perhaps you can see why we recommend using \code{nc-config}!
 
 \subsubsection{Build scripts}
@@ -279,8 +279,8 @@ type:
 \begin{verbatim}
     make -f makefile.circle_pgi
 \end{verbatim}
-for instance. Another option of keeping track of the user-defined
-choices in a \code{build script}. The advantage is that updates
+for instance. Another option for keeping track of the user-defined
+choices is in a \code{build script}. The advantage is that updates
 to the \code{build scripts} are less frequent than updates to the
 \code{makefile}. There are now two of these scripts in the \code{ROMS/Bin}
 directory: \code{build.sh} (which is surprisingly a \code{csh} script)
@@ -300,7 +300,7 @@ Both scripts have the same options:
 \end{klist}
 Note that the default is to compile serially and to issue a
 ``\code{make clean}'' before compiling. It is left as an exercise
-for the user if you prefer different default behavior.
+for the user if you prefer a different default behavior.
 
 There are also a few variables which are not recognized by the ROMS
 \code{makefile}, but are used locally inside the build script. These
