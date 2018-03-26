@@ -1938,7 +1938,8 @@ stretching function:
 \subsubsection{Initial and boundary conditions}
 The best ocean fields we knew of when setting this up are known as
 SODA, a reanalysis from 1958 through 2008 by \citet{Carton_2005}.
-There are global HYCOM fields for later years. There are \code{Python}
+There are global HYCOM (\href{https://hycom.org/}{https://hycom.org/})
+fields for later years. There are \code{Python}
 scripts to create initial, climatology and boundary conditions from
 the SODA and HYCOM files. Ice initial thickness and concentration
 are extracted from a GLORYS simulation while the other initial ice
@@ -2003,7 +2004,8 @@ Arctic ocean \citep{Whitefield_2015}, which includes monthly river
 temperature. These are applied as point sources to include the effects
 of bringing in warm water. For the rest of the domain, we are applying
 \citet{Dai_2009} as the \code{RUNOFF} field. Other forcings include a
-nudging to sea surface salinity, tides from OTPS and a nudging to
+nudging to sea surface salinity, tides from \citet{Egbert_2002}
+(TPXO) and a nudging to
 a monthly climatology around the edges from the same sources as the
 boundary conditions. We were using a landfast ice climatology for the
 Beaufort Sea from Andy Mahoney, but have since switched to a landfast
@@ -2070,8 +2072,8 @@ relatively deep wet points; thus the explicit horizontal diffusion
 was turned off. The model ran stably with the third-order upwind
 advection scheme providing some implicit diffusion.
 
-The bathymetry is a combination of ARDEM (Danielson, personal
-communication) and a Cook Inlet product from Lyon Lanerolle
+The bathymetry is a combination of ARDEM \citep{Danielson_2015}
+and a Cook Inlet product from Lyon Lanerolle
 (personal communication). This melding was found to give better
 tides at Anchorage than either product alone.
 
@@ -2130,7 +2132,7 @@ in this case.
 
 \subsubsection{Forcing}
 We are using the same MERRA forcing with extrapolation into land as
-described above, as well as a tidal file from OTPS. The fresh water
+described above, as well as a tidal file from TPXO. The fresh water
 forcing is daily output from a hydrology model \citep{Beamer_2016},
 interpolated to the ROMS grid and then converted to lateral ``sources''
 along the coastline.
@@ -2155,7 +2157,8 @@ examples are shown in Fig.\ \ref{fnwgoa1}--\ref{fnwgoa2} .
 \begin{picture}(16,13)(0.0,0.4)
 \includegraphics[width=16cm]{pics/sss_nwgoa}
   \end{picture}
-\caption{Surface salinity for 10 August, 2008.}
+\caption{Surface salinity for 10 August, 2008. Graticules shown
+   are 60$^\circ$N and 150$^\circ$W.}
 \label{fnwgoa1}
 \end{figure}
 
@@ -2164,7 +2167,8 @@ examples are shown in Fig.\ \ref{fnwgoa1}--\ref{fnwgoa2} .
 \begin{picture}(16,14)(0.0,0)
 \includegraphics[width=16cm]{pics/sst_nwgoa}
   \end{picture}
-\caption{Surface temperature and velocities for 10 August, 2008.}
+\caption{Surface temperature and velocities for 10 August, 2008.
+   Graticules shown are 60$^\circ$N and 150$^\circ$W.}
 \label{fnwgoa2}
 \end{figure}
 
@@ -2181,7 +2185,7 @@ as shown in Fig.\ \ref{fbath_Beaufort2}--\ref{fbath_Beaufort3}.
 \begin{picture}(0,8)(0,0)
 \includegraphics{pics/bath_Beau2}
   \end{picture}
-\caption{Bathymetry of the larger Beaufort Sea domain.}
+\caption{Bathymetry of the larger Beaufort2 domain ($m$).}
 \label{fbath_Beaufort2}
 \end{figure}
 
@@ -2190,15 +2194,15 @@ as shown in Fig.\ \ref{fbath_Beaufort2}--\ref{fbath_Beaufort3}.
 \begin{picture}(0,6)(0,0)
 \includegraphics{pics/bath_Beau3}
   \end{picture}
-\caption{Bathymetry of the smaller Beaufort Sea domain.}
+\caption{Bathymetry of the smaller Beaufort3 domain ($m$).}
 \label{fbath_Beaufort3}
 \end{figure}
 
 The bathymetry was clipped to 3 $m$ and 2 $m$ depth for the two
 domains, respectively. The wetting and drying algorithm was turned
 on later for the small domain after an enclosed bay became unstable
-several years into the run. The bathymetry is from ARDEM version
-2 (Danielson, personal communication).
+several years into the run. The bathymetry is from ARDEM
+\citep{Danielson_2015}.
 
 \subsubsection{\code{beaufort.h}}
 The C preprocessor variable \code{BEAUFORT} has been chosen to label
@@ -2229,8 +2233,8 @@ since it is only an open boundary in the smaller domain.
 
 \subsubsection{Model domains}
 A number of horizontal grid points was chosen to resolve the outer
-domain at roughly 3.0 km everywhere, while the inner domain has a
-uniform 0.5 km resolution. Values for \code{Lm}, \code{Mm}, and
+domain at roughly 3.0 km everywhere (Beaufort2), while the inner domain has a
+uniform 0.5 km resolution (Beaufort3). Values for \code{Lm}, \code{Mm}, and
 \code{N} are:
 \begin{verbatim}
           Lm == 400           ! Number of I-direction INTERIOR RHO-points
@@ -2242,7 +2246,7 @@ uniform 0.5 km resolution. Values for \code{Lm}, \code{Mm}, and
           Mm == 160           ! Number of J-direction INTERIOR RHO-points
            N == 30            ! Number of vertical levels
 \end{verbatim}
-The smaller domain is entirely on the shelf and was deemed too
+The Beaufort3 domain is entirely on the shelf and was deemed too
 shallow to require our usual 50 levels. The vertical structure is
 again our current favorite:
 \begin{verbatim}
@@ -2255,9 +2259,9 @@ again our current favorite:
 \end{verbatim}
 
 \subsubsection{Initial and boundary conditions}
-All initial and boundary conditions for the larger domain were
+All initial and boundary conditions for the Beaufort2 domain were
 extracted from prior runs of the \code{ARCTIC} domain while those
-for the smaller domain were extracted from the larger domain. In
+for the Beaufort3 domain were extracted from Beaufort2. In
 both cases, we use higher frequencies of one to three hours for the
 ice fields and daily averages for the ocean fields.  The \code{LBC}
 options are the same as in the \code{ARCTIC} for all open boundaries,
@@ -2269,21 +2273,22 @@ climatologies for some sea ice variables with a relatively short
 
 \subsubsection{Forcing}
 We use the same MERRA forcing with extrapolation into land as
-described above, as well as a tidal file from OTPS. I've omitted
+described above, as well as a tidal file from TPXO. I've omitted
 the tidal potential contribution in these domains. The fresh water
 forcing is from the monthly ARDAT climatology \citep{Whitefield_2015},
 interpolated to the ROMS grid and then converted to lateral ``sources''
 along the coastline.
 
 \subsubsection{ocean.in}
-We use an internal time-step of 60 $s$ for the larger domain and an internal time-step of 45 $s$ for
-the smaller domain. Both have an external-internal time-step ratio of 20.
-The horizontal diffusivity and viscosity for the larger domain are:
+We use an internal time-step of 60 $s$ for Beaufort2 and an internal
+time-step of 45 $s$ for
+Beaufort3. Both have an external-internal time-step ratio of 20.
+The horizontal diffusivity and viscosity for Beaufort2 are:
 \begin{verbatim}
         TNU2 == 2*1.0d0                         ! m2/s
        VISC2 == 5.0d0                           ! m2/s
 \end{verbatim}
-while the smaller has:
+while Beaufort3 has:
 \begin{verbatim}
         TNU2 == 2*0.2d0                         ! m2/s
        VISC2 == 1.0d0                           ! m2/s
@@ -2304,8 +2309,8 @@ boundary nudging band.
 \begin{picture}(16,6)(0.0,0.0)
 \includegraphics[width=16cm]{pics/ice_vel_beau}
   \end{picture}
-\caption{Ice speed contour at 0.0005 for the April climatology in
-  the smaller Beaufort domain. This contour was chosen as an estimate
+\caption{Ice speed contour at 0.0005 $m/s$ for the April climatology in
+  the Beaufort3 domain. This contour was chosen as an estimate
   of the land-fast ice extent.}
 \label{fbeau1}
 \end{figure}
@@ -2316,8 +2321,8 @@ boundary nudging band.
 \includegraphics[width=16cm]{pics/aice_beau}
   \end{picture}
 \caption{Sea-ice concentration for the June climatology in the
-  smaller Beaufort domain. Note the location of a few warm rivers
-  between 148 and 151 W longitude.}
+  Beaufort3 domain. Note the location of a few warm rivers
+  between 148$^\circ$ and 151$^\circ$ W longitude.}
 \label{fbeau2}
 \end{figure}
 
@@ -2326,10 +2331,9 @@ boundary nudging band.
 \begin{picture}(16,12)(0.0,0)
 \includegraphics[width=16cm]{pics/slice_beau}
   \end{picture}
-\caption{Vertical slices for the August climatology in the smaller
-  Beaufort domain, (a) temperature, (b) salinity, (c) longshore
-  velocity and (d) cross-shore velocity. Note the warm, fresh water
+\caption{Vertical slices for the August climatology in the
+  Beaufort3 domain, (a) salinity, (b) temperature ($^\circ$C), (c) longshore
+  velocity ($m/s$) and (d) cross-shore velocity ($m/s$). Note the warm, fresh water
   right up on the shelf, trapped by a barrier island.}
 \label{fbeau3}
 \end{figure}
-

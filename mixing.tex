@@ -429,7 +429,8 @@ applied twice.
 \label{Vmix}
 ROMS contains a variety of methods for setting the vertical viscous and
 diffusive coefficients. The choices range from simply choosing fixed
-values to the KPP, generic lengthscale (GLS) and Mellor-Yamada turbulence
+values to the K-profile Parameterization (KPP) of \citet{Large94},
+generic lengthscale (GLS) and Mellor-Yamada turbulence
 closure schemes.  See \citet{Large98} for a review of surface ocean
 mixing schemes.  Many schemes have a background molecular value which
 is used when the turbulent processes are assumed to be small (such as
@@ -455,7 +456,7 @@ facilitates experimentation with additional or modified representations
 of specific turbulent processes.
 
 \paragraph{Surface boundary layer}
-The Large, McWilliams and Doney scheme (LMD)
+The Large, McWilliams and Doney scheme (LMD, also known as KPP)
 matches separate parameterizations for vertical mixing
 of the surface boundary layer and the ocean interior.  A formulation
 based on boundary layer similarity theory is applied in the water
@@ -647,7 +648,7 @@ with viscosity estimated as:
 0&   \text{$Ri_g>Ri_0$}.  
 \end{cases}
 \end{equation}
-where $\nu_0$ is $5.0 \times 10^{-3}$, $Ri_0 = 0.7$.  
+where $\nu_0$ is $5.0 \times 10^{-3} m^2/s$, $Ri_0 = 0.7$.  
 
 \subparagraph{Double diffusive processes}
 The second component of the interior mixing parameterization represents

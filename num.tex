@@ -188,7 +188,7 @@ efficiency, we choose to use a split-explicit time step, integrating
 the depth-integrated equations with a shorter time step than the full
 3-D equations. There is an integer ratio $M$ between the time steps. The
 exact details of how the time stepping is done vary from one version
-of ROMS to the next, with the east coast ROMS described here being older
+of ROMS to the next, with the Rutgers ROMS described here being older
 than other branches. Still, all versions have these steps:
 
 \begin{enumerate}
@@ -1029,7 +1029,8 @@ where
 \end{align}
 These terms are evaluated at the closest interior point in a manner
 consistent with the time stepping scheme used. The phase velocities are
-limited so that the local CFL condition is satisfied. They are then
+limited so that the local Courant-Friedrichs-Lewy (CFL) condition
+is satisfied. They are then
 applied to the boundary point using equation (\ref{eqrk}), again using
 a consistent time stepping scheme. Raymond and Kuo give the form used
 for centered differencing and a leapfrog time step while ROMS uses

@@ -60,8 +60,8 @@ running it.
 \subsection{Acquiring the ROMS code}
 The main ROMS code is available for download via \code{svn} at
 \url{https://www.myroms.org/svn/src/}. The version of the model
-described in this document is a merger between ROMS 3.7 and a sea-ice
-model and is available at
+described in this document is a merger between ROMS 3.7 and the
+integrated Budgell sea-ice model and is available at
 \href{https://github.com/kshedstrom/roms}{github}. I am no longer
 maintaining the svn branch on the myroms.org site.
 
@@ -93,8 +93,6 @@ over private emails. Registered users get an email once a day about
 new postings, so you might have to wait a day (or more) for a reply.
    \item There have been ROMS meetings and classes in which a tutorial
 session is included as part of the program.
-   \item There are various resources online---please let me know of any I
-should list here.
 \end{itemize}
 
 \subsection{Compiling ROMS}
@@ -117,7 +115,8 @@ user-definable variables understood by the ROMS \code{makefile} are:
 application. This is used for setting up options inside the code
 specific to this application and also determines the name of the
 \code{.h} header file for it. This can be either a predefined
-case, such as \code{BENCHMARK}, or one of your own, such as \code{NEP5}.
+case, such as \code{BENCHMARK}, or one of your own, such as \code{NEP5}
+(a Northeast Pacific application).
 It should be in all upper case by convention.
 
 \kitem{MY\_HEADER\_DIR} Sets the path to the user's header file, if
@@ -157,11 +156,12 @@ and turn on the \code{-g} flag for debugging.
   files.
   \kitem{USE\_LARGE}  Some systems support both 32-bit and 64-bit
   options. Select this to get 64-bit addressing, usually used for
-  programs needing more than 2 GB of memory on 32-bit systems. Does
-  anyone still need this? I run on machines which are 64-bit by default.
+  programs needing more than 2 GB of memory on 32-bit systems.
+  I run on machines which are 64-bit by default, making this option
+  obsolete.
   \kitem{USE\_NETCDF4} Set this if linking against the NetCDF4
-  library. Use this if you have a working nc-config or nf-config---highly
-  recommended! If you set this, you can skip the next two.
+  library, which is highly
+  recommended. If you set this, you can skip the next two.
   \kitem{NETCDF\_INCDIR} The location of the \code{netcdf.mod} and
   \code{typesizes.mod} files.
   \kitem{NETCDF\_LIBDIR} The location of the NetCDF and netcdf-fortran
